@@ -1,7 +1,7 @@
 /**
  * Necessary Imports
  */
-import { ClientCredentialsAuthProvider } from '@twurple/auth';
+import { ClientCredentialsAuthProvider, StaticAuthProvider } from '@twurple/auth';
 import { ApiClient } from '@twurple/api';
 import { DirectConnectionAdapter, EventSubListener } from '@twurple/eventsub';
 import { NgrokAdapter } from '@twurple/eventsub-ngrok';
@@ -13,6 +13,7 @@ import { NgrokAdapter } from '@twurple/eventsub-ngrok';
 const clientId = process.env.TWITCH_CLIENT_ID;
 const clientSecret = process.env.TWITCH_CLIENT_SECRET;
 const authProvider = new ClientCredentialsAuthProvider(clientId, clientSecret);
+const apiAuthProvider = new StaticAuthProvider(process.env.TWITCH_CLIENT_ID, process.env.APP_ACCESS_TOKEN);
 const apiClient = new ApiClient({ authProvider });
 
 /**
@@ -90,7 +91,7 @@ export class Twitch_Streamer {
     }
 
     private async retrieve_twitch_id() {
-        const user_data = await apiClient.callApi({url:"users", method:"GET", jsonBody:`login=${this._name}`});
+        const user_data = await apiClient.users.getUserByName(this.name);
     
         console.log(user_data);
     
