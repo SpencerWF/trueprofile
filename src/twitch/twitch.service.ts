@@ -11,9 +11,9 @@ import { NgrokAdapter } from '@twurple/eventsub-ngrok';
  */
 
 const clientId = process.env.TWITCH_CLIENT_ID;
+console.log(process.env.TWITCH_CLIENT_ID);
 const clientSecret = process.env.TWITCH_CLIENT_SECRET;
 const authProvider = new ClientCredentialsAuthProvider(clientId, clientSecret);
-// const apiAuthProvider = new StaticAuthProvider(process.env.TWITCH_CLIENT_ID, process.env.APP_ACCESS_TOKEN);
 const apiClient = new ApiClient({ authProvider });
 
 /**
