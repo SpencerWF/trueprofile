@@ -70,7 +70,7 @@ export class Twitch_Streamer {
 
     public async setup_live_subscriptions() {
         if(this.twitch_id == "") {
-            this.retrieve_twitch_id();
+            await this.retrieve_twitch_id();
         }
 
         this._onlineSubscription = await twitch_listener.subscribeToStreamOnlineEvents(this.twitch_id, e => {
