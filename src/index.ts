@@ -1,5 +1,5 @@
 import * as dotenv from "dotenv";
-import * as twitchService from "./twitch/twitch.service";
+import { Twitch_Streamer } from "./twitch/twitch.service";
 
 dotenv.config();
 
@@ -9,7 +9,7 @@ if(!process.env.PORT) {
     process.exit(1);
 }
 
-const me = new twitchService.Twitch_Streamer("trueprofile");
+const me = new Twitch_Streamer("trueprofile");
 await me.setup_live_subscriptions()
 
 // Will need to be in twitch service
