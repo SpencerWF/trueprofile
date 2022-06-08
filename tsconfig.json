@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
-    "module": "es2022",
-    "target": "ESNext",
+    "module": "commonjs",
+    "target": "ES2017",
     "moduleResolution": "Node",
     "esModuleInterop": true,
-    "outDir": "dist",
-    "inlineSourceMap": true
+    "outDir": "dist"
   },
   "ts-node": {
     "esm": true

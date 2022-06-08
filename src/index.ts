@@ -1,5 +1,5 @@
 import * as dotenv from "dotenv";
-import { Twitch_Streamer } from "./twitch/twitch.service";
+import { init_listener, Twitch_Streamer } from "./twitch/twitch.service";
 
 dotenv.config();
 
@@ -9,8 +9,10 @@ if(!process.env.PORT) {
     process.exit(1);
 }
 
+init_listener();
+
 const me = new Twitch_Streamer("trueprofile");
-await me.setup_live_subscriptions()
+me.setup_live_subscriptions()
 
 // Will need to be in twitch service
 // Setting up event listener

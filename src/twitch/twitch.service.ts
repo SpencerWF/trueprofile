@@ -26,14 +26,13 @@ const twitch_listener = new EventSubListener({
     adapter: new NgrokAdapter(),
     secret: listenerSecret
 });
-await twitch_listener.listen();
 
 /**
  * Exported Functions
  */
-// export const track_status_twitch = (streamer_name: string): boolean {
-
-// }
+export const init_listener = async () => {
+    await twitch_listener.listen();    
+}
 
 
 /**
