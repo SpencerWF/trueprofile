@@ -1,4 +1,5 @@
 import * as dotenv from "dotenv";
+import * as twitchService from "./twitch/twitch.service";
 
 dotenv.config();
 
@@ -8,26 +9,10 @@ if(!process.env.PORT) {
     process.exit(1);
 }
 
+const me = new twitchService.Twitch_Streamer("trueprofile");
+await me.setup_live_subscriptions()
 
 // Will need to be in twitch service
 // Setting up event listener
 //await apiClient.eventSub.deleteAllSubscriptions();
 
-const listenerSecret = get_unique_reference_number();
-
-const listener = new EventSubListener({
-    apiClient,
-    adapter: new NgrokAdapter(),
-    secret: listenerSecret
-});
-await listener.listen();
-
-const userId = '798790185';
-
-const onlineSubscription = await listener.subscribeToStreamOnlineEvents(userId, e => {
-  console.log(`${e.broadcasterDisplayName} just went live!`);
-});
-
-const offlineSubscription = await listener.subscribeToStreamOfflineEvents(userId, e => {
-  console.log(`${e.broadcasterDisplayName} just went offline.`);
-});
