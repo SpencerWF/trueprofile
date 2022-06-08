@@ -97,7 +97,7 @@ export class Twitch_Streamer {
         console.log("User Data:");
         console.log(user_data);
     
-        this._twitch_id = user_data["data"]["id"];
+        this._twitch_id = user_data.id;
     }
 }
 
