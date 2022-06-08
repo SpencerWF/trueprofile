@@ -73,7 +73,9 @@ export class Twitch_Streamer {
         if(this.twitch_id == "") {
             await this.retrieve_twitch_id();
         }
-
+        if(!this.twitch_id) {
+            return false;
+        }
         this._onlineSubscription = await twitch_listener.subscribeToStreamOnlineEvents(this.twitch_id, e => {
             console.log(`${e.broadcasterDisplayName} just went live!`);
         });
