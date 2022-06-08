@@ -1,8 +1,9 @@
 import * as dotenv from "dotenv";
+dotenv.config();
+
 import { init_listener, Twitch_Streamer } from "./twitch/twitch.service";
 
-// dotenv.config();
-dotenv.config({ path: __dirname+'/.env' });
+
 
 // import * as streamerService from "./streamer/streamer.service";
 
