@@ -13,7 +13,7 @@ import { NgrokAdapter } from '@twurple/eventsub-ngrok';
 const clientId = process.env.TWITCH_CLIENT_ID;
 const clientSecret = process.env.TWITCH_CLIENT_SECRET;
 const authProvider = new ClientCredentialsAuthProvider(clientId, clientSecret);
-const apiAuthProvider = new StaticAuthProvider(process.env.TWITCH_CLIENT_ID, process.env.APP_ACCESS_TOKEN);
+// const apiAuthProvider = new StaticAuthProvider(process.env.TWITCH_CLIENT_ID, process.env.APP_ACCESS_TOKEN);
 const apiClient = new ApiClient({ authProvider });
 
 /**
@@ -92,7 +92,7 @@ export class Twitch_Streamer {
 
     private async retrieve_twitch_id() {
         const user_data = await apiClient.users.getUserByName(this.name);
-    
+        console.log("User Data:");
         console.log(user_data);
     
         this._twitch_id = user_data["data"]["id"];
