@@ -44,7 +44,7 @@ export const update = async () => {
 
 }
 
-export const delete = async () => {
+export const del = async () => {
 
 }
 
