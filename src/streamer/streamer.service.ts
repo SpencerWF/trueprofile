@@ -106,7 +106,7 @@ export const add_twitch = async (username: string, twitch_name: string) => {
         const rows = await db.query(checkQueryString, [twitch_id]);
 
         if(Array.isArray(rows[0]) && rows[0].length==0) {
-            const queryString = "UPDATE streamers SET twitch_name=?, twitch_id=? WHERE unique_id=?";
+            const queryString = "UPDATE streamers SET twitch_name=?, twitch_id=? WHERE username=?";
 
             try {
                 db.query(queryString, [twitch_name, twitch_id, username]);
@@ -118,6 +118,7 @@ export const add_twitch = async (username: string, twitch_name: string) => {
 
             // Setup Twitch Streamer and Subscribe to online/offline events
             const twitch_streamer: Twitch_Streamer = new Twitch_Streamer(twitch_name);
+            twitch_streamer.twitch_id = twitch_id;
 
             twitch_streamer.setup_live_subscriptions();
             console.log("Setup subscriptions");

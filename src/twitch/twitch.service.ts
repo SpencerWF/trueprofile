@@ -84,14 +84,17 @@ export class Twitch_Streamer {
         if(!this.twitch_id) {
             return false;
         }
-        this._onlineSubscription = await twitch_listener.subscribeToStreamOnlineEvents(this.twitch_id, e => {
-            console.log(`${e.broadcasterDisplayName} just went live!`);
-        });
-    
-        
-        this._offlineSubscription = await twitch_listener.subscribeToStreamOfflineEvents(this.twitch_id, e => {
-            console.log(`${e.broadcasterDisplayName} just went offline.`);
-        });
+        setTimeout(async () => {
+            this._onlineSubscription = await twitch_listener.subscribeToStreamOnlineEvents(this.twitch_id, e => {
+                console.log(`${e.broadcasterDisplayName} just went live!`);
+            });
+            setTimeout(async () => {
+                this._offlineSubscription = await twitch_listener.subscribeToStreamOfflineEvents(this.twitch_id, e => {
+                    console.log(`${e.broadcasterDisplayName} just went offline.`);
+                });
+            }, 1000);
+        }, 1000);
+
     }
 
     public async cancel_live_subscriptions() {
