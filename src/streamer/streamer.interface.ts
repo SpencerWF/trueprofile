@@ -1,8 +1,8 @@
 export interface BaseStreamer {
     username: string;
     account_type: string;
-    create_date: Date;
-    modification_date: Date;
+    create_date?: Date;
+    modification_date?: Date;
     email: string;
     password_hash: string;
     twitch_id?: string;

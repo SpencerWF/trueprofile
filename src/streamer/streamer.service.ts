@@ -3,12 +3,16 @@
  */
 import { Streamer, BaseStreamer } from "./streamer.interface";
 import { Streamers } from "./streamers.interface";
+import { Twitch_Streamer, retrieve_twitch_id } from "../twitch/twitch.service";
 
 /**
  * Necessary Imports
  */
 import mysql from "mysql2";
-import util 
+
+/**
+ * Necessary Defines
+ */
 const mysqlConfig = {
     host: process.env.SQL_HOST,
     user: process.env.SQL_USER,
@@ -20,21 +24,21 @@ const mysqlConfig = {
  * Service Functions
  */
 
-export const findall = async (): Promise<Streamer[]> => {
+// export const findall = async (): Promise<Streamer[]> => {
 
-}
+// }
 
-export const find = async (unique_id: string): Promise<Item> => {
-    if(process.env.MYSQL == 'true') {
+// export const find = async (unique_id: string): Promise<Streamer> => {
+//     if(process.env.MYSQL == 'true') {
 
-    } else {
+//     } else {
 
-    }
+//     }
 
-    return null;
-}
+//     return null;
+// }
 
-export const create = async (streamer: Streamer) => {
+export const create = async (streamer: BaseStreamer) => {
     if(process.env.MYSQL == 'true') {
         const queryString = "INSERT INTO streamer (unique_id, username, password, account_type) VALUES (UUID_TO_BIN(UUID()), ?, ?);";
         const db = await makeDb(mysqlConfig);
@@ -74,6 +78,18 @@ export const del = async () => {
     return null;
 }
 
+export const get_id = async (username: string) {
+    if(process.env.MYSQL == 'true') {
+        const queryString = "SELECT unique_id FROM streamers WHERE username=?";
+        const db = await makeDb(mysqlConfig);
+
+        const rows = await db.query(queryString, [username]);
+        console.table(rows[0]);
+
+        return rows[0][0];
+    }
+}
+
 /**
  * 
  */
@@ -82,11 +98,42 @@ function makeDb(config) {
     const connection = mysql.createConnection( mysqlConfig );
 
     return {
-        query( sql, args ) {
+        async query( sql, args ) {
             return await connection.query(sql, args);
         },
-        close() {
+        async close() {
             return await connection.end();
         }
     }
+}
+
+export const add_twitch = async (username: string, twitch_name: string) => {
+    const twitch_id = await retrieve_twitch_id(twitch_name);
+
+    if(twitch_id) {
+        const db = makeDb(mysqlConfig);
+        const checkQueryString = "SELECT unique_id FROM streamers WHERE twitch_id=?";
+
+        const rows = await db.query(checkQueryString, [twitch_id]);
+
+        if(rows[0].length==0) {
+            const queryString = "UPDATE streamers SET twitch_name=?, twitch_id=? WHERE unique_id=?";
+
+            try {
+                db.query(queryString, [twitch_name, twitch_id, username]);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                db.close();
+            }
+
+            // Setup Twitch Streamer and Subscribe to online/offline events
+            const twitch_streamer: Twitch_Streamer = new Twitch_Streamer(twitch_name);
+
+            twitch_streamer.setup_live_subscriptions();
+            console.log("Setup subscriptions");
+        }
+    }
+
+    return null;
 }

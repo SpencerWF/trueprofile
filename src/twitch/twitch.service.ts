@@ -11,7 +11,6 @@ import { NgrokAdapter } from '@twurple/eventsub-ngrok';
  */
 
 const clientId = process.env.TWITCH_CLIENT_ID;
-console.log(process.env.TWITCH_CLIENT_ID);
 const clientSecret = process.env.TWITCH_CLIENT_SECRET;
 const authProvider = new ClientCredentialsAuthProvider(clientId, clientSecret);
 const apiClient = new ApiClient({ authProvider });
@@ -32,9 +31,17 @@ const twitch_listener = new EventSubListener({
  * Exported Functions
  */
 
-
 export const init_listener = async () => {
-    await twitch_listener.listen();    
+    await twitch_listener.listen();
+}
+
+export const retrieve_twitch_id = async (twitch_name: string): Promise<string | null> => {
+    const user_data = await apiClient.users.getUserByName(twitch_name);
+    if(user_data.id) {
+        return user_data.id;
+    }
+
+    return null;
 }
 
 /**

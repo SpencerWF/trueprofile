@@ -1,9 +1,17 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 
-import { init_listener, Twitch_Streamer } from "./twitch/twitch.service";
+import { BaseStreamer } from "./streamer/streamer.interface";
 
+import * as streamerService from "./streamer/streamer.service";
+import { init_listener } from "./twitch/twitch.service";
 
+const me: BaseStreamer = {
+    username: "TrueProfile",
+    account_type: "free",
+    email: "swalkerfooks@gmail.com",
+    password_hash: "098poilkjmnb"
+}
 
 // import * as streamerService from "./streamer/streamer.service";
 
@@ -13,8 +21,9 @@ if(!process.env.PORT) {
 
 init_listener();
 
-const me = new Twitch_Streamer("trueprofile");
-me.setup_live_subscriptions()
+streamerService.create(me);
+// const me_id = await streamerService.get_id(me.username);
+streamerService.add_twitch(me.username, "trueprofile");
 
 // Will need to be in twitch service
 // Setting up event listener
