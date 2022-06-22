@@ -78,12 +78,12 @@ export class Twitch_Streamer {
     }
 
     public async setup_live_subscriptions() {
-        if(this.twitch_id == "") {
-            await this.retrieve_twitch_id();
-        }
-        if(!this.twitch_id) {
-            return false;
-        }
+        // if(this.twitch_id == "") {
+        //     await this.retrieve_twitch_id();
+        // }
+        // if(!this.twitch_id) {
+        //     return false;
+        // }
         setTimeout(async () => {
             this._onlineSubscription = await twitch_listener.subscribeToStreamOnlineEvents(this.twitch_id, e => {
                 console.log(`${e.broadcasterDisplayName} just went live!`);

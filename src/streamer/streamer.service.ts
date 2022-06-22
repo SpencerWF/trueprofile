@@ -123,6 +123,9 @@ export const add_twitch = async (username: string, twitch_name: string) => {
             twitch_streamer.cancel_live_subscriptions();
             // twitch_streamer.setup_live_subscriptions();
             console.log("Setup subscriptions");
+            setTimeout(() => {
+                twitch_streamer.setup_live_subscriptions();
+            }, 5000);
         }
     }
 
