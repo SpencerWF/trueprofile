@@ -120,7 +120,8 @@ export const add_twitch = async (username: string, twitch_name: string) => {
             const twitch_streamer: Twitch_Streamer = new Twitch_Streamer(twitch_name);
             twitch_streamer.twitch_id = twitch_id;
 
-            twitch_streamer.setup_live_subscriptions();
+            twitch_streamer.cancel_live_subscriptions();
+            // twitch_streamer.setup_live_subscriptions();
             console.log("Setup subscriptions");
         }
     }

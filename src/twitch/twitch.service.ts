@@ -144,6 +144,7 @@ export class Twitch_Streamer {
 /**
  * Service Functions 
  */
+
 function make_reference_number(): string {
     let output_string: string = "";
     let options: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
