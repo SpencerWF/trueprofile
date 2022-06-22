@@ -8,7 +8,7 @@ import { Twitch_Streamer, retrieve_twitch_id } from "../twitch/twitch.service";
 /**
  * Necessary Imports
  */
-import mysql from "mysql2";
+import mysql from "mysql2/promise";
 
 /**
  * Necessary Defines
