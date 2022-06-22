@@ -32,22 +32,6 @@ const twitch_listener = new EventSubListener({
  * Exported Functions
  */
 
-export const add = async () => {
-
-}
-
-export const find = async () => {
-
-}
-
-export const update = async () => {
-
-}
-
-export const del = async () => {
-
-}
-
 
 export const init_listener = async () => {
     await twitch_listener.listen();    
