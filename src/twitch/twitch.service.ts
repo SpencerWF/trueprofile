@@ -98,9 +98,13 @@ export class Twitch_Streamer {
     }
 
     public async cancel_live_subscriptions() {
-        await this._onlineSubscription.stop();
+        try {
+            await this._onlineSubscription.stop();
 
-        await this._offlineSubscription.stop();
+            await this._offlineSubscription.stop();
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     private async retrieve_twitch_id() {
