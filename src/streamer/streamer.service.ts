@@ -78,18 +78,6 @@ export const del = async () => {
     return null;
 }
 
-export const get_id = async (username: string) {
-    if(process.env.MYSQL == 'true') {
-        const queryString = "SELECT unique_id FROM streamers WHERE username=?";
-        const db = await makeDb(mysqlConfig);
-
-        const rows = await db.query(queryString, [username]);
-        console.table(rows[0]);
-
-        return rows[0][0];
-    }
-}
-
 /**
  * 
  */
