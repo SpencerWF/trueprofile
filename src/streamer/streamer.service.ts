@@ -82,8 +82,8 @@ export const del = async () => {
  * 
  */
 
-function makeDb(config) {
-    const connection = mysql.createConnection( mysqlConfig );
+async function makeDb(config) {
+    const connection = await mysql.createConnection( mysqlConfig );
 
     return {
         async query( sql, args ) {
@@ -99,12 +99,12 @@ export const add_twitch = async (username: string, twitch_name: string) => {
     const twitch_id = await retrieve_twitch_id(twitch_name);
 
     if(twitch_id) {
-        const db = makeDb(mysqlConfig);
+        const db = await makeDb(mysqlConfig);
         const checkQueryString = "SELECT unique_id FROM streamers WHERE twitch_id=?";
 
         const rows = await db.query(checkQueryString, [twitch_id]);
 
-        if(rows[0].length==0) {
+        if(Array.isArray(rows[0]) && rows[0].length==0) {
             const queryString = "UPDATE streamers SET twitch_name=?, twitch_id=? WHERE unique_id=?";
 
             try {
