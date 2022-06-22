@@ -41,7 +41,7 @@ const mysqlConfig = {
 
 export const create = async (streamer: BaseStreamer) => {
     if(process.env.MYSQL == 'true') {
-        const queryString = "INSERT INTO streamer (unique_id, username, password, account_type) VALUES (UUID_TO_BIN(UUID()), ?, ?);";
+        const queryString = "INSERT INTO streamers (unique_id, username, password, account_type) VALUES (UUID_TO_BIN(UUID()), ?, ?);";
         const db = await makeDb(mysqlConfig);
         try{
             db.query(queryString, [streamer.username, streamer.account_type]);
