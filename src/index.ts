@@ -21,6 +21,8 @@ if(!process.env.PORT) {
 
 init_listener();
 
+streamerService.setup_tracking();
+
 streamerService.create(me);
 // const me_id = await streamerService.get_id(me.username);
 streamerService.add_twitch(me.username, "trueprofile");

@@ -3,7 +3,7 @@
  */
 import { Streamer, BaseStreamer } from "./streamer.interface";
 import { Streamers } from "./streamers.interface";
-import { Twitch_Streamer, retrieve_twitch_id } from "../twitch/twitch.service";
+import { Twitch_Streamer, retrieve_twitch_id, deleteAllSubscriptions } from "../twitch/twitch.service";
 
 /**
  * Necessary Imports
@@ -38,6 +38,10 @@ const mysqlConfig = {
 
 //     return null;
 // }
+
+export const setup_tracking = async () => {
+    deleteAllSubscriptions();
+}
 
 export const create = async (streamer: BaseStreamer) => {
     if(process.env.MYSQL == 'true') {
