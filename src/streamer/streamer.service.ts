@@ -41,6 +41,8 @@ const mysqlConfig = {
 
 export const setup_tracking = async () => {
     deleteAllSubscriptions();
+
+    setup_twitch_events();
 }
 
 export const create = async (streamer: BaseStreamer) => {
@@ -124,8 +126,6 @@ export const add_twitch = async (username: string, twitch_name: string) => {
             const twitch_streamer: Twitch_Streamer = new Twitch_Streamer(twitch_name);
             twitch_streamer.twitch_id = twitch_id;
 
-            twitch_streamer.cancel_live_subscriptions();
-            // twitch_streamer.setup_live_subscriptions();
             console.log("Setup subscriptions");
             setTimeout(() => {
                 twitch_streamer.setup_live_subscriptions();
@@ -134,4 +134,20 @@ export const add_twitch = async (username: string, twitch_name: string) => {
     }
 
     return null;
+}
+
+export const setup_twitch_events = async () => {
+    const db = await makeDb(mysqlConfig);
+    const queryString = "SELECT twitch_name, twitch_id FROM streamers WHERE twitch_id IS NOT NULL";
+    var reply;
+
+    try {
+        reply = db.query(queryString, []);
+
+        console.table(reply);
+    } catch (error) {
+        console.log(error);
+    } finally {
+        db.close();
+    }
 }
