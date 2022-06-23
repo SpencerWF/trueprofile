@@ -116,7 +116,7 @@ export class Twitch_Streamer {
     }
 }
 
-export const deleteAllSubscriptions = async () {
+export const deleteAllSubscriptions = async () => {
     const subscriptions_data = await apiClient.subscriptions;
     console.table(subscriptions_data);
 }
