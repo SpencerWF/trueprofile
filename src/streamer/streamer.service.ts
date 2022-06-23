@@ -142,7 +142,7 @@ export const setup_twitch_events = async () => {
     var reply;
 
     try {
-        reply = db.query(queryString, []);
+        reply = await db.query(queryString, []);
 
         console.table(reply);
     } catch (error) {
