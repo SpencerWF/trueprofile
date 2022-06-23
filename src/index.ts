@@ -23,9 +23,9 @@ init_listener();
 
 streamerService.setup_tracking();
 
-streamerService.create(me);
+// streamerService.create(me);
 // const me_id = await streamerService.get_id(me.username);
-streamerService.add_twitch(me.username, "trueprofile");
+// streamerService.add_twitch(me.username, "trueprofile");
 
 // Will need to be in twitch service
 // Setting up event listener
