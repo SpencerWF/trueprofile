@@ -144,7 +144,14 @@ export const setup_twitch_events = async () => {
     try {
         reply = await db.query(queryString, []);
 
-        console.table(reply);
+        for (let index = 0; index < reply[0].length; index++) {
+            const twitch_name = reply[0][index].twitch_name;
+            const twitch_id = reply[0][index].twitch_id;
+
+            const twitch_streamer: Twitch_Streamer = new Twitch_Streamer(twitch_name);
+            twitch_streamer.twitch_id = twitch_id;
+            twitch_streamer.setup_live_subscriptions();
+        }
     } catch (error) {
         console.log(error);
     } finally {
