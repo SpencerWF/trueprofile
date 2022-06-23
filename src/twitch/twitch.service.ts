@@ -117,7 +117,9 @@ export class Twitch_Streamer {
 }
 
 export const deleteAllSubscriptions = async () => {
-    var subscriptions_data = await apiClient.eventSub.getSubscriptions();
+    // var subscriptions_data = await apiClient.eventSub.getSubscriptions();
+    // console.table(subscriptions_data);
+    await apiClient.eventSub.deleteAllSubscriptions();
 }
 
 /**
