@@ -21,7 +21,7 @@ var T = new Twit({
 })
 
 export const twitter_test = async () => {
-    let buff = fs.readFileSync('stack-abuse-logo.png');
+    let buff = fs.readFileSync('cat_400x400.jpg');
     let base64data = buff.toString('base64');
     T.get('account/update_profile_image', { name:'cat', image: base64data}, function(err, data, response) {
         console.log(data);
