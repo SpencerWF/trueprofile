@@ -5,7 +5,8 @@
 /**
  * Necessary Imports
  */
- import Twit from "twit";
+//  import Twit from "twit";
+var Twit = require('twit');
 
 
 /**
