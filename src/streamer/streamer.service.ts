@@ -4,6 +4,7 @@
 import { Streamer, BaseStreamer } from "./streamer.interface";
 import { Streamers } from "./streamers.interface";
 import { Twitch_Streamer, retrieve_twitch_id, deleteAllSubscriptions } from "../twitch/twitch.service";
+import * as twitterService from "../twitter/twitter.service";
 
 /**
  * Necessary Imports
@@ -43,6 +44,8 @@ export const setup_tracking = async () => {
     deleteAllSubscriptions();
 
     setup_twitch_events();
+
+    twitterService.twitter_test();
 }
 
 export const create = async (streamer: BaseStreamer) => {
