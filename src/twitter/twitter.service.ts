@@ -5,8 +5,8 @@
 /**
  * Necessary Imports
  */
-//  import Twit from "twit";
-var Twit = require('twit');
+ import Twit from "twit";
+// var Twit = require('twit');
 
 
 /**
@@ -17,7 +17,7 @@ var T = new Twit({
     consumer_key: process.env.TWITTER_API_KEY,
     consumer_secret: process.env.TWITTER_API_SECRET,
     access_token: process.env.TWITTER_ACCOUNT_ACCESS_TOKEN,
-    access_secret: process.env.TWITTER_ACCOUNT_ACCESS_SECRET
+    access_token_secret: process.env.TWITTER_ACCOUNT_ACCESS_SECRET
 })
 
 export const twitter_test = async () => {
