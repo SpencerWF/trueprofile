@@ -46,7 +46,7 @@ export const setup_tracking = async () => {
     setup_twitch_events();
 
     // twitterService.twitter_test();
-    const user_data = await twitterService.get_twitter_data("trueprofile");
+    const user_data = await twitterService.get_twitter_data("3dspencer");
     console.table(user_data);
 }
 
