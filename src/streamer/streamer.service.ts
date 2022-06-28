@@ -45,7 +45,9 @@ export const setup_tracking = async () => {
 
     setup_twitch_events();
 
-    twitterService.twitter_test();
+    // twitterService.twitter_test();
+    const user_data = await twitterService.get_twitter_data("trueprofile");
+    console.table(user_data);
 }
 
 export const create = async (streamer: BaseStreamer) => {

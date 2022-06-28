@@ -32,7 +32,8 @@
     "dotenv": "^16.0.1",
     "mysql2": "^2.3.3",
     "ts-node": "^10.8.0",
-    "twit": "^2.2.11"
+    "twit": "^2.2.11",
+    "twitter-api-sdk": "^1.0.9"
   },
   "devDependencies": {
     "@tsconfig/node16": "^1.0.2",
