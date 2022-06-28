@@ -31,18 +31,18 @@ export const twitter_test = async () => {
     });
 }
 
-export const get_twitter_profile_picture = async (unique_id: string) {
-    try{
-        const user = await twitter_client.users.findUserByUsername(twitter_username, {"user.fields":["profile_image_url"]});
-        if(!user) {
-            throw new Error("No user with username found");            
-        } else {
+// export const get_twitter_profile_picture = async (unique_id: string) {
+//     try{
+//         const user = await twitter_client.users.findUserByUsername(twitter_username, {"user.fields":["profile_image_url"]});
+//         if(!user) {
+//             throw new Error("No user with username found");            
+//         } else {
             
-        }
-    } catch (error) {
-        console.log(error);
-    }
-}
+//         }
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
 
 export const set_profile_picture = async (unique_id: string, image_data: string | Buffer) => {
     // let buff = await fs.readFileSync('cat_400x400.jpg');
