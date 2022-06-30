@@ -5,6 +5,7 @@ import { Streamer, BaseStreamer } from "./streamer.interface";
 import { Streamers } from "./streamers.interface";
 import { Twitch_Streamer, retrieve_twitch_id, deleteAllSubscriptions } from "../twitch/twitch.service";
 import * as twitterService from "../twitter/twitter.service";
+import * as canvasService from "../canvas/canvas.service";
 
 /**
  * Necessary Imports
@@ -45,9 +46,13 @@ export const setup_tracking = async () => {
 
     setup_twitch_events();
 
-    // twitterService.twitter_test();
-    const user_data = await twitterService.get_twitter_data("3dspencer");
-    console.table(user_data);
+    add_twitter("TrueProfile", "3dSpencer");
+
+    const image_url = await twitterService.get_twitter_profile_picture("3dSpencer");
+
+    canvasService.draw_circle_from_url(image_url);
+    // const user_data = await twitterService.get_twitter_data("3dspencer");
+    // console.table(user_data);
 }
 
 export const create = async (streamer: BaseStreamer) => {
@@ -103,6 +108,39 @@ async function makeDb(config) {
         },
         async close() {
             return await connection.end();
+        }
+    }
+}
+
+export const add_twitter = async (username: string, twitter_username: string) => {
+    const user_data = await twitterService.get_twitter_data(twitter_username);
+    if(user_data) {
+        if(process.env.MYSQL == "true") {
+            const queryString = "UPDATE streamers SET twitter_username=?, twitter_id=? WHERE username=?";
+            const db = await makeDb(mysqlConfig);
+            try{
+                db.query(queryString, [twitter_username, user_data.data.id, username]);
+            } catch (err) {
+                // Once a discord server is setup should report errors to a webhook on discord
+                console.log(err);
+            } finally {
+                await db.close();
+            }
+        }
+    }
+}
+
+export const add_twitter_access = async (username: string, twitter_access_token: string, twitter_access_secret: string) {
+    if(process.env.MYSQL == "true") {
+        const queryString = "UPDATE streamers SET twitter_access_token=?, twitter_access_token_secret=? WHERE username=?";
+        const db = await makeDb(mysqlConfig);
+        try{
+            db.query(queryString, [twitter_access_token, twitter_access_secret, username]);
+        } catch (err) {
+            // Once a discord server is setup should report errors to a webhook on discord
+            console.log(err);
+        } finally {
+            await db.close();
         }
     }
 }

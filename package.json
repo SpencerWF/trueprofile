@@ -29,6 +29,7 @@
     "@twurple/auth": "^5.1.6",
     "@twurple/eventsub": "^5.1.6",
     "@twurple/eventsub-ngrok": "^5.1.6",
+    "canvas": "^2.9.3",
     "dotenv": "^16.0.1",
     "mysql2": "^2.3.3",
     "ts-node": "^10.8.0",
