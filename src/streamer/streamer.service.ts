@@ -130,7 +130,7 @@ export const add_twitter = async (username: string, twitter_username: string) =>
     }
 }
 
-export const add_twitter_access = async (username: string, twitter_access_token: string, twitter_access_secret: string) {
+export const add_twitter_access = async (username: string, twitter_access_token: string, twitter_access_secret: string) => {
     if(process.env.MYSQL == "true") {
         const queryString = "UPDATE streamers SET twitter_access_token=?, twitter_access_token_secret=? WHERE username=?";
         const db = await makeDb(mysqlConfig);
