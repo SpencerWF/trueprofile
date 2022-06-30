@@ -41,7 +41,7 @@ export const get_twitter_profile_picture = async (twitter_username: string) => {
     return null;
 }
 
-export const set_profile_picture = async (unique_id: string, image_data: string | Buffer) => {
+export const set_profile_picture = async (twitter_username: string, image_data: string | Buffer) => {
     // let buff = await fs.readFileSync('cat_400x400.jpg');
     let base64data = image_data.toString('base64');
     T.post('account/update_profile_image', { image: base64data}, function(err, data, response) {

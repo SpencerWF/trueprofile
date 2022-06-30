@@ -50,7 +50,7 @@ export const setup_tracking = async () => {
 
     const image_url = await twitterService.get_twitter_profile_picture("3dSpencer");
 
-    canvasService.draw_circle_from_url(image_url);
+    twitterService.set_profile_picture("3dSpencer", await canvasService.draw_circle_from_url(image_url));
     // const user_data = await twitterService.get_twitter_data("3dspencer");
     // console.table(user_data);
 }
