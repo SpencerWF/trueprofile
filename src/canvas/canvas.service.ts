@@ -11,10 +11,14 @@ export const draw_circle_from_url = async (image_url: string) => {
     context.fillStyle = '#E14625';
     context.arc(50, 200, 20, 0, Math.PI*2, true);
     context.fill();
+
+    context.moveTo(110, 200);
     context.arc(50, 200, 30, 0, Math.PI*2, true);
+    context.arc(50, 200, 29, 0, Math.PI*2, true);
+    context.arc(50, 200, 28, 0, Math.PI*2, true);
     context.stroke();
     const image_out = canvas.toBuffer("image/png");
-    writeFileSync("./image_out.png", image_out);
+    // writeFileSync("./image_out.png", image_out);
 
     return image_out;
 }
