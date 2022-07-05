@@ -1,6 +1,7 @@
 import { loadImage, Canvas, createCanvas } from "canvas";
 import { create } from "domain";
 import { writeFileSync } from "fs";
+import path from "path";
 
 export const save_image_from_url = async (image_url: string): Promise<string> => {
     // Store the image for replacement later
@@ -12,7 +13,8 @@ export const save_image_from_url = async (image_url: string): Promise<string> =>
     const image_out = canvas.toBuffer("image/png");
 
     const filename: string = make_image_name();
-    writeFileSync(`${__dirname}/../image/${filename}.png`, image_out);
+    const filepath: string = path.join(__dirname, '..', 'images', `${filename}.png`);
+    writeFileSync(filepath, image_out);
 
     return filename;
 }
