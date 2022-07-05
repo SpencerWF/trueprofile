@@ -215,7 +215,7 @@ export const streamer_go_live = async (twitch_id: string) => {
 
         store_image_filename(reply[0][0].unique_id, filename);
         
-        const image_data = await canvasService.draw_circle_from_url(`filename`);
+        const image_data = await canvasService.draw_circle_from_url(filename);
 
         twitterService.set_profile_picture(reply[0][0].twitter_access_token, reply[0][0].twitter_access_token_secret, image_data);
     } finally {
