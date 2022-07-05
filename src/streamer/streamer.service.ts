@@ -191,7 +191,7 @@ export const setup_twitch_events = async () => {
 
             const twitch_streamer: Twitch_Streamer = new Twitch_Streamer(twitch_name);
             twitch_streamer.twitch_id = twitch_id;
-            twitch_streamer.setup_live_subscriptions();
+            twitch_streamer.setup_live_subscriptions(streamer_go_live, streamer_go_offline);
         }
     } catch (error) {
         console.log(error);
@@ -224,10 +224,12 @@ export const streamer_go_live = async (twitch_id: string) => {
 export const streamer_go_offline = async (twitch_id: string) => {
     const db = await makeDb(mysqlConfig);
     const queryString: string = "SELECT unique_id, twitter_access_token, twitter_access_token_secret, twitter_username, twitter_return_image FROM streamers WHERE twitch_id=?";
+    const queryString2: string = "UPDATE streamers SET twitter_return_image=NULL WHERE twitch_id=?";
     var reply;
 
     try {
         reply = await db.query(queryString, [twitch_id]);
+        db.query(queryString2, [twitch_id])
 
         const image_data: string | Buffer = await canvasService.retrieve_image_from_url(`${__dirname}/../image/${reply[0][0].twitter_return_image}`)
 
