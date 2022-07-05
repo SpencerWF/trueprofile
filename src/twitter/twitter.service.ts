@@ -23,6 +23,9 @@ var T = new Twit({
 // Used for twitter api v2
 const twitter_client = new Client(process.env.TWITTER_BEARER_TOKEN);
 
+/**
+ * Exported Functions
+ */
 export const twitter_test = async () => {
     let buff = await fs.readFileSync('cat_400x400.jpg');
     let base64data = buff.toString('base64');
@@ -41,7 +44,7 @@ export const get_twitter_profile_picture = async (twitter_username: string) => {
     return null;
 }
 
-export const set_profile_picture = async (twitter_username: string, image_data: string | Buffer) => {
+export const set_profile_picture = async (access_token: string, access_token_secret: string, image_data: string | Buffer) => {
     // let buff = await fs.readFileSync('cat_400x400.jpg');
     let base64data = image_data.toString('base64');
     T.post('account/update_profile_image', { image: base64data}, function(err, data, response) {
@@ -62,3 +65,10 @@ export const get_twitter_data = async (twitter_username: string) => {
         return null;
     }
 }
+
+/**
+ * Necessary Functions
+ */
+// function get_twitter_access(username: string) {
+    
+// }

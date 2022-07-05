@@ -46,11 +46,9 @@ export const setup_tracking = async () => {
 
     setup_twitch_events();
 
-    add_twitter("TrueProfile", "3dSpencer");
-
     const image_url = await twitterService.get_twitter_profile_picture("3dSpencer");
 
-    twitterService.set_profile_picture("3dSpencer", await canvasService.draw_circle_from_url(image_url));
+    // twitterService.set_profile_picture("3dSpencer", await canvasService.draw_circle_from_url(image_url));
     // const user_data = await twitterService.get_twitter_data("3dspencer");
     // console.table(user_data);
 }
@@ -197,6 +195,57 @@ export const setup_twitch_events = async () => {
         }
     } catch (error) {
         console.log(error);
+    } finally {
+        db.close();
+    }
+}
+
+export const streamer_go_live = async (twitch_id: string) => {
+    // Need to react to the streamer going live
+    const db = await makeDb(mysqlConfig);
+    const queryString:string = "SELECT unique_id, twitter_access_token, twitter_access_token_secret, twitter_username FROM streamers WHERE twitch_id=?"
+    var reply;
+
+    try {
+        reply = await db.query(queryString, [twitch_id]);
+
+        const image_url = await twitterService.get_twitter_profile_picture(reply[0][0].twitter_username);
+        const filename = await canvasService.save_image_from_url(image_url);
+
+        store_image_filename(reply[0][0].unique_id, filename);
+        const image_data = await canvasService.draw_circle_from_url(`${__dirname}/../image/${filename}.png`);
+
+        twitterService.set_profile_picture(reply[0][0].twitter_access_token, reply[0][0].twitter_access_token_secret, image_data);
+    } finally {
+        db.close();
+    }
+}
+
+export const streamer_go_offline = async (twitch_id: string) => {
+    const db = await makeDb(mysqlConfig);
+    const queryString: string = "SELECT unique_id, twitter_access_token, twitter_access_token_secret, twitter_username, twitter_return_image FROM streamers WHERE twitch_id=?";
+    var reply;
+
+    try {
+        reply = await db.query(queryString, [twitch_id]);
+
+        const image_data: string | Buffer = await canvasService.retrieve_image_from_url(`${__dirname}/../image/${reply[0][0].twitter_return_image}`)
+
+        twitterService.set_profile_picture(reply[0][0].twitter_access_token, reply[0][0].twitter_access_secret, image_data);
+    } finally {
+        db.close();
+    }
+}
+
+async function store_image_filename(unique_id: string, filename: string) {
+    const db = await makeDb(mysqlConfig);
+    const queryString = "UPDATE streamers SET twitter_return_image=? WHERE unique_id=?";
+    var reply;
+
+    try {
+        reply = await db.query(queryString, [filename, unique_id]);
+    } catch { 
+
     } finally {
         db.close();
     }
