@@ -5,6 +5,7 @@ import { ClientCredentialsAuthProvider, StaticAuthProvider } from '@twurple/auth
 import { ApiClient } from '@twurple/api';
 import { DirectConnectionAdapter, EventSubListener } from '@twurple/eventsub';
 import { NgrokAdapter } from '@twurple/eventsub-ngrok';
+import { off } from 'process';
 
 /** 
  * Necessary Defines
@@ -77,7 +78,7 @@ export class Twitch_Streamer {
         return this._name;
     }
 
-    public async setup_live_subscriptions() {
+    public async setup_live_subscriptions(online_function: Function, offline_function: Function) {
         // if(this.twitch_id == "") {
         //     await this.retrieve_twitch_id();
         // }
@@ -87,10 +88,12 @@ export class Twitch_Streamer {
         setTimeout(async () => {
             this._onlineSubscription = await twitch_listener.subscribeToStreamOnlineEvents(this.twitch_id, e => {
                 console.log(`${e.broadcasterDisplayName} just went live!`);
+                online_function(this.twitch_id);
             });
             setTimeout(async () => {
                 this._offlineSubscription = await twitch_listener.subscribeToStreamOfflineEvents(this.twitch_id, e => {
                     console.log(`${e.broadcasterDisplayName} just went offline.`);
+                    offline_function(this.twitch_id);
                 });
             }, 1000);
         }, 1000);

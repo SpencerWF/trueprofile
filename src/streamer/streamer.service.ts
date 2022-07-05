@@ -169,7 +169,7 @@ export const add_twitch = async (username: string, twitch_name: string) => {
 
             console.log("Setup subscriptions");
             setTimeout(() => {
-                twitch_streamer.setup_live_subscriptions();
+                twitch_streamer.setup_live_subscriptions(streamer_go_live, streamer_go_offline);
             }, 5000);
         }
     }
