@@ -21,7 +21,8 @@ export const save_image_from_url = async (image_url: string): Promise<string> =>
 
 export const draw_circle_from_url = async (image_url: string) => {
     // Draw circle on the image from the url
-    const profile_image = await loadImage(image_url);
+    const filepath: string = path.join(__dirname, '..', 'images', `${image_url}.png`);
+    const profile_image = await loadImage(filepath);
     const canvas = createCanvas(400, 400); //400 due to twitter image sizing
     const context = canvas.getContext('2d');
     
