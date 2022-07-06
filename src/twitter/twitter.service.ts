@@ -48,7 +48,7 @@ export const set_profile_picture = async (access_token: string, access_token_sec
     // let buff = await fs.readFileSync('cat_400x400.jpg');
     let base64data = image_data.toString('base64');
     T.post('account/update_profile_image', { image: base64data}, function(err, data, response) {
-        console.log(data);
+        // console.log(data);
     });
 }
 
