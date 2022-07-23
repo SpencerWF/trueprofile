@@ -32,15 +32,24 @@ const mysqlConfig = {
 
 // }
 
-// export const find = async (unique_id: string): Promise<Streamer> => {
-//     if(process.env.MYSQL == 'true') {
+export const find = async (unique_id: string): Promise<Streamer> => {
+    if(process.env.MYSQL == 'true') {
+        const queryString = "SELECT * FROM streamers WHERE unique_id=?";
+        const db = await makeDb(mysqlConfig);
+        try{
+            db.query(queryString, [unique_id]);
+        } catch (err) {
+            // Once a discord server is setup should report errors to a webhook on discord
+            console.log(err);
+        } finally {
+            await db.close();
+        }
+    } else {
 
-//     } else {
+    }
 
-//     }
-
-//     return null;
-// }
+    return null;
+}
 
 export const setup_tracking = async () => {
     deleteAllSubscriptions();
@@ -59,7 +68,7 @@ export const create = async (streamer: BaseStreamer) => {
         const queryString = "INSERT INTO streamers (unique_id, username, password, account_type) VALUES (UUID_TO_BIN(UUID()), ?, ?, ?);";
         const db = await makeDb(mysqlConfig);
         try{
-            db.query(queryString, [streamer.username, streamer.password_hash, streamer.account_type]);
+            const rows = db.query(queryString, [streamer.username, streamer.password_hash, streamer.account_type]);
         } catch (err) {
             // Once a discord server is setup should report errors to a webhook on discord
             console.log(err);

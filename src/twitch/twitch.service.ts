@@ -5,7 +5,6 @@ import { ClientCredentialsAuthProvider, StaticAuthProvider } from '@twurple/auth
 import { ApiClient } from '@twurple/api';
 import { DirectConnectionAdapter, EventSubListener } from '@twurple/eventsub';
 import { NgrokAdapter } from '@twurple/eventsub-ngrok';
-import { off } from 'process';
 
 /** 
  * Necessary Defines
