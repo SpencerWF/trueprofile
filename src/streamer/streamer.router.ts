@@ -5,6 +5,7 @@
 import express, { Request, Response } from "express";
 import * as StreamerService from "./streamer.service";
 import { Streamer, BaseStreamer } from "./streamer.interface";
+import { Stream } from "stream";
 
 /**
  * Router Definition
@@ -32,18 +33,18 @@ export const streamerRouter = express.Router();
 //     }
 // });
 
-// GET games/:gameid
+// GET streamer/id/:streamerid
 
-streamerRouter.get("/:streamerid", async(req: Request, res: Response) => {
+streamerRouter.get("/id/:streamerid", async(req: Request, res: Response) => {
     //Not using any authentication or authorization, but may implement a timer
-    const streamerid: string = req.params.streamerid;
-    console.log(`Looking for information about ${streamerid}`);
+    const streamer_id: string = req.params.streamerid;
+    console.log(`Looking for information about ${streamer_id}`);
 
     try{
-        const streamer: Streamer = await StreamerService.find(streamerid);
+        const streamer: Streamer = await StreamerService.find(streamer_id);
 
-        if(game) {
-            return res.status(200).send(game);
+        if(streamer) {
+            return res.status(200).send(streamer);
         }
 
         res.status(404).send("Game not found");
@@ -53,5 +54,33 @@ streamerRouter.get("/:streamerid", async(req: Request, res: Response) => {
             errorMessage = e.message;
         }
         res.status(500).send(errorMessage);
+    }
+});
+
+// GET streamer/id/:streamerid
+
+streamerRouter.getByTwitchName("/twitch/:twitchname", async(req: Request, res: Response) => {
+    const twitch_name: string = req.params.twitchid;
+
+    // Insert Auth here
+
+    try {
+        const streamer_id: string = await StreamerService.findIdByTwitchName(twitch_name);
+
+        if(streamer_id) {
+            return streamerRouter.get(streamer_id);
+        }
+    } catch (e) {
+
+    }
+});
+
+streamerRouter.post("/", async(req: Request, res: Response) => {
+    // Insert Auth here
+
+    try {
+        const streamer: BaseStreamer = req.body;
+
+        const newStreamer = await StreamerService.create(streamer);
     }
 });

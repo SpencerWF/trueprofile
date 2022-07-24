@@ -4,7 +4,7 @@ export interface BaseStreamer {
     create_date?: Date;
     modification_date?: Date;
     email: string;
-    password_hash: string;
+    password_hash?: string;
     twitch_id?: string;
     twitch_name?: string;
     youtube_id?: string;
