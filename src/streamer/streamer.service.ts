@@ -12,6 +12,7 @@ import * as canvasService from "../canvas/canvas.service";
  */
 import mysql from "mysql2/promise";
 import path from "path";
+import { stream } from "twitter-api-sdk/dist/request";
 
 /**
  * Necessary Defines
@@ -22,7 +23,11 @@ const mysqlConfig = {
     user: process.env.SQL_USER,
     password: process.env.SQL_PASSWORD,
     database: process.env.SQL_DATABASE
-};
+}
+
+// if(process.env.MYSQL != 'true') {
+    // let streamers: Streamers = [];
+// }
 
 /**
  * Service Functions
@@ -45,7 +50,25 @@ export const find = async (unique_id: string): Promise<Streamer> => {
             await db.close();
         }
     } else {
+        // Handle test case
+    }
 
+    return null;
+}
+
+export const findIdByTwitchName = async(twitch_name): Promise<string | null> => {
+    if(process.env.MYSQL == 'true') {
+        const queryString = "SELECT unique_id FROM streamers WHERE twitch_name=?";
+        const db = await makeDb(mysqlConfig);
+        try{
+            const rows = db.query(queryString, [twitch_name]);
+        } catch (e) {
+            console.log(e);
+        } finally {
+            await db.close();
+        }
+    } else {
+        // Handle test case
     }
 
     return null;
@@ -77,15 +100,23 @@ export const create = async (streamer: BaseStreamer) => {
         }
 
     } else {
-
+        
     }
 
     return null;
 }
 
-export const update = async () => {
+export const update = async(unique_id: string, streamer: BaseStreamer) => {
     if(process.env.MYSQL == 'true') {
-
+        const queryString = "UPDATE streamers SET account_type=?, twitch_id=?, twitch_name=?, youtube_id=?, youtube_name=?, reddit_id=?, reddit_name=? WHERE email=? AND unique_id=?";
+        const db = await makeDb(mysqlConfig);
+        try{
+            const rows = db.query(queryString, [streamer.account_type, streamer.twitch_id, streamer.twitch_name, streamer.youtube_id, streamer.youtube_name, streamer.reddit_id, streamer.reddit_name, streamer.email, unique_id]);
+        } catch (err) {
+            console.log(err);
+        } finally {
+            await db.close();
+        }
     } else {
 
     }
@@ -93,9 +124,18 @@ export const update = async () => {
     return null;
 }
 
-export const del = async () => {
+export const del = async(streamer: Streamer) => {
     if(process.env.MYSQL == 'true') {
+        const queryString = "DELETE FROM streamers WHERE unique_id=?";
+        const db = await makeDb(mysqlConfig);
 
+        try {
+            db.query(queryString, [streamer.unique_id]);
+        } catch (err) {
+            console.log(err);
+        } finally {
+            await db.close();
+        }
     } else {
 
     }
