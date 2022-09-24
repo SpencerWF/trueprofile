@@ -6,6 +6,7 @@ import express, { Request, Response } from "express";
 import * as StreamerService from "./streamer.service";
 import { Streamer, BaseStreamer } from "./streamer.interface";
 import { Stream } from "stream";
+import { Profile } from "../profile/profile.interface";
 
 /**
  * Router Definition
@@ -31,7 +32,7 @@ streamerRouter.get("/id/:streamerid", async(req: Request, res: Response) => {
             return res.status(200).send(streamer);
         }
 
-        res.status(404).send("Game not found");
+        res.status(404).send("Streamer not found");
     } catch (e) {
         let errorMessage = "Failed without Error instance";
         if (e instanceof Error) {
