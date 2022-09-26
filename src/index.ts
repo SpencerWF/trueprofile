@@ -1,9 +1,16 @@
+
+import express from 'express';
 import * as dotenv from "dotenv";
+import { appendFile } from "fs";
+// import { profileRouter } from "./profile/profile.router";
 dotenv.config();
 
 import { BaseStreamer } from "./streamer/streamer.interface";
 
 import * as streamerService from "./streamer/streamer.service";
+import { streamerRouter } from "./streamer/streamer.router";
+import * as profileService from "./profile/profile.service";
+import { profileRouter } from "./profile/profile.router";
 import { init_listener } from "./twitch/twitch.service";
 
 const me: BaseStreamer = {
@@ -18,11 +25,15 @@ const me: BaseStreamer = {
 if(!process.env.PORT) {
     process.exit(1);
 }
+const app = express();
 
 init_listener();
 
 streamerService.setup_tracking();
 
+app.use("/api/streamer", streamerRouter);
+
+app.listen(process.env.PORT);
 // streamerService.create(me);
 // const me_id = await streamerService.get_id(me.username);
 // streamerService.add_twitch(me.username, "trueprofile");

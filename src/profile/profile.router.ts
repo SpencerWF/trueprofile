@@ -68,7 +68,7 @@ profileRouter.post("/id/:streamerid/profile/:profileid", async(req: Request, res
 
 // PUT streamer/id/:streamerid/profile/:profileid
 
-profileRouter.putProfile("/id/:streamerid/profile/:profileid", async (req: Request, res: Response) => {
+profileRouter.put("/id/:streamerid/profile/:profileid", async (req: Request, res: Response) => {
     const unique_id: string = req.params.id;
   
     try {
