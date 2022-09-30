@@ -79,7 +79,7 @@ export const setup_tracking = async () => {
 
     setup_twitch_events();
 
-    const image_url = await twitterService.get_twitter_profile_picture("3dSpencer");
+    // const image_url = await twitterService.get_twitter_profile_picture("3dSpencer");
 
     // twitterService.set_profile_picture("3dSpencer", await canvasService.draw_circle_from_url(image_url));
     // const user_data = await twitterService.get_twitter_data("3dspencer");

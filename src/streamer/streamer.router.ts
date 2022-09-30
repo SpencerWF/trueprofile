@@ -44,25 +44,25 @@ streamerRouter.get("/id/:streamerid", async(req: Request, res: Response) => {
 
 // GET streamer/id/:streamerid
 
-streamerRouter.getByTwitchName("/twitch/:twitchname", async(req: Request, res: Response) => {
-    const twitch_name: string = req.params.twitchid;
+// streamerRouter.getByTwitchName("/twitch/:twitchname", async(req: Request, res: Response) => {
+//     const twitch_name: string = req.params.twitchid;
 
-    // Insert Auth here
+//     // Insert Auth here
 
-    try {
-        const streamer_id: string = await StreamerService.findIdByTwitchName(twitch_name);
+//     try {
+//         const streamer_id: string = await StreamerService.findIdByTwitchName(twitch_name);
 
-        if(streamer_id) {
-            return streamerRouter.get(streamer_id);
-        }
-    } catch (e) {
-        let errorMessage = "Failed without error instance";
-        if(e instanceof Error) {
-            errorMessage = e.message;
-        }
-        res.status(500).send(errorMessage); 
-    }
-});
+//         if(streamer_id) {
+//             return streamerRouter.get(streamer_id);
+//         }
+//     } catch (e) {
+//         let errorMessage = "Failed without error instance";
+//         if(e instanceof Error) {
+//             errorMessage = e.message;
+//         }
+//         res.status(500).send(errorMessage); 
+//     }
+// });
 
 // POST streamer/id/:streamerid
 
