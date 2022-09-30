@@ -1,5 +1,5 @@
 
-import express from 'express';
+import express from "express";
 import * as dotenv from "dotenv";
 import { appendFile } from "fs";
 // import { profileRouter } from "./profile/profile.router";
@@ -26,6 +26,7 @@ if(!process.env.PORT) {
     process.exit(1);
 }
 const app = express();
+app.use(express.json());
 
 init_listener();
 
