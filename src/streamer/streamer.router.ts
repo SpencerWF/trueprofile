@@ -13,7 +13,7 @@ import { Profile } from "../profile/profile.interface";
  */
  
 export const streamerRouter = express.Router();
- 
+
  /**
   * Controller Definitions
   */
@@ -44,7 +44,7 @@ streamerRouter.get("/id/:streamerid", async(req: Request, res: Response) => {
 
 // GET streamer/id/:streamerid
 
-streamerRouter.getByTwitchName("/twitch/:twitchname", async(req: Request, res: Response) => {
+streamerRouter.get("/twitch/:twitchname", async(req: Request, res: Response) => {
     const twitch_name: string = req.params.twitchid;
 
     // Insert Auth here
@@ -107,7 +107,7 @@ streamerRouter.put("/id/:streamerid", async (req: Request, res: Response) => {
     }
 });
 
-streamerRouter.remove("/id/:streamerid", async(req: Request, res: Response) => {
+streamerRouter.delete("/id/:streamerid", async(req: Request, res: Response) => {
     const unique_id: string = req.params.id;
 
     try {
