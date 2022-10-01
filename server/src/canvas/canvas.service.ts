@@ -42,7 +42,7 @@ export const draw_circle_from_url = async (image_url: string) => {
     return image_out;
 }
 
-export const retrieve_image_from_url = async (image_url: string) => {
+export const retrieve_image_from_url = async (image_url: string): Promise<Buffer | null> => {
     if(image_url != null) {
         const profile_image = await loadImage(image_url);
         const canvas = createCanvas(400, 400);
@@ -52,6 +52,8 @@ export const retrieve_image_from_url = async (image_url: string) => {
 
         return canvas.toBuffer("image/png");
     }
+    
+    return null;
 }
 
 /**

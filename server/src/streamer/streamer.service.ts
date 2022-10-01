@@ -286,7 +286,7 @@ export const streamer_go_offline = async (twitch_id: string) => {
         reply = await db.query(queryString, [twitch_id]);
         db.query(queryString2, [twitch_id])
         const filepath: string = path.join(__dirname, '..', 'images', `${reply[0][0].twitter_return_image}.png`);
-        const image_data: string | Buffer = await canvasService.retrieve_image_from_url(filepath);
+        const image_data: Buffer | null = await canvasService.retrieve_image_from_url(filepath);
 
         twitterService.set_profile_picture(reply[0][0].twitter_access_token, reply[0][0].twitter_access_secret, image_data);
     } finally {
