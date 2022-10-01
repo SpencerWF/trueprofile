@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "test": "mocha -r ts-node/register --no-color 'tests/**/*.ts' --exit",
-    "dev": "nodemon ./server.js"
+    "dev": "nodemon ./server.ts"
   },
   "repository": {
     "type": "git",
