@@ -261,12 +261,16 @@ export const streamer_go_live = async (twitch_id: string) => {
 
         const image_url = await twitterService.get_twitter_profile_picture(reply[0][0].twitter_username);
         const filename = await canvasService.save_image_from_url(image_url);
+        if(filename !== null) {
+            store_image_filename(reply[0][0].unique_id, filename);
+            
+            const image_data = await canvasService.draw_circle_from_url(filename);
 
-        store_image_filename(reply[0][0].unique_id, filename);
-        
-        const image_data = await canvasService.draw_circle_from_url(filename);
+            twitterService.set_profile_picture(reply[0][0].twitter_access_token, reply[0][0].twitter_access_token_secret, image_data);
+        } else {
+            console.log("No image returned, need to update discord once created.")
+        }
 
-        twitterService.set_profile_picture(reply[0][0].twitter_access_token, reply[0][0].twitter_access_token_secret, image_data);
     } finally {
         db.close();
     }

@@ -24,7 +24,9 @@ if(!process.env.PORT) {
 }
 const app = express();
 app.use(session({
-    secret: process.env.SESSION_SECRET
+    secret: process.env.SESSION_SECRET,
+    saveUninitialized: false,
+    resave: true
 }));
 
 app.use(express.json());
