@@ -30,7 +30,9 @@ if(!process.env.PORT) {
     process.exit(1);
 }
 const app = express();
-app.use(session)
+app.use(session({
+    secret: process.env.SESSION_SECRET
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
