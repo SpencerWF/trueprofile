@@ -4,9 +4,9 @@
   "description": "Service to update social media profile pictures",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/server.ts",
+    "start": "ts-node src/index.ts",
     "test": "mocha -r ts-node/register --no-color 'tests/**/*.ts' --exit",
-    "dev": "nodemon ./server.ts"
+    "dev": "nodemon ./index.ts"
   },
   "repository": {
     "type": "git",
