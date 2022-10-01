@@ -16,3 +16,6 @@ var MySQLStore = require('express-mysql-session')(session);
     password: process.env.SQL_PASSWORD,
     database: process.env.SQL_DATABASE
 }
+
+var connection = mysql.createPool(mysqlConfig);
+var sessionStore = new MySQLStore({}, connection);

@@ -1,0 +1,70 @@
+<div *ngIf="profile" class="profile-div">
+    <div class="profile-split-div">
+        <!-- <label><h4>{{profile.name}} Profile</h4></label> -->
+        <div class="image-div">
+            <div class="radio-div">
+                <mat-radio-group id="{{profile.name}}_image_radio_group" aria-label="Select an option" [(ngModel)]="profile.img_change_type">
+                    <mat-radio-button class="centered" value="Edit">Edit Image</mat-radio-button>
+                    <mat-radio-button class="centered" value="Replace">Replace Image</mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <div>
+                <div class="centered">
+                    <img class="profile-img" src="assets/twitter-egg.png">
+                </div>
+                <div class="centered">
+                    <label for="img">Select Image:</label>
+                    <input class="centered" type="file" id="OnlineImage" name="OnlineImage" accept=".png">
+                </div>
+            </div>
+        </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="profile-split-div">
+        <div class="text-div">
+            <div class="radio-div">
+                <mat-radio-group id="{{profile.name}}_text_radio_group" aria-label="Select an option" [(ngModel)]="profile.text_change_type">
+                    <mat-radio-button class="centered" value="Edit">Edit Text</mat-radio-button>
+                    <mat-radio-button class="centered" value="Replace">Replace Text</mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <div class="centered">
+                <label for="img">Selected Text:</label>
+                <input type="text" id="{{profile.name}}_input_text" name="OfflineText" class="centered custom-text" value="{{profile.custom_text}}">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="profile-div">
+    <label><h4>{{profile.name}} Profile</h4></label>
+    <div class="image-div">
+        <div class="radio-div">
+            <label for="radio">REt Image:</label>
+            <input type="radio" name="OfflineImageRadio" value="OfflineEditImage">
+            <label for="radio">Custom Image:</label>
+            <input type="radio" name="OfflineImageRadio" value="OfflineChangeImage">
+        </div>
+        <div>
+            <label for="img">Select Image:</label>
+            <input type="file" id="OfflineImage" name="OfflineImage" accept=".png">
+            <img src="assets/twitter-egg.png">
+        </div>
+    </div>
+    <div class="text-div">
+        <div class="options-div">
+            <div class="radio-div float-left">
+                <label for="radio">Append Text:</label>
+                <input type="radio" name="OfflineTextRadio" value="OfflineAppendText">
+            </div>
+            <div class="radio-div float-right">
+                <label for="radio">Custom Text:</label>
+                <input type="radio" name="OfflineTextRadio" value="OfflineCustomText">
+            </div>
+        </div>
+        <div>
+            <label for="img">Selected Text:</label>
+            <input type="text" id="OfflineText" name="OfflineText">
+        </div>
+    </div>
+</div> -->

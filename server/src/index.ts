@@ -17,13 +17,6 @@ import { init_listener } from "./twitch/twitch.service";
 // const session = require('express-session');
 var session = require('express-session');
 
-const me: BaseStreamer = {
-    username: "TrueProfile",
-    account_type: "free",
-    email: "swalkerfooks@gmail.com",
-    password_hash: "098poilkjmnb"
-}
-
 // import * as streamerService from "./streamer/streamer.service";
 
 if(!process.env.PORT) {
