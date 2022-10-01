@@ -89,7 +89,7 @@ profileRouter.put("/id/:streamerid/profile/:profileid", async (req: Request, res
     }
 });
 
-profileRouter.remove("/id/:streamerid/profile/:profileid", async(req: Request, res: Response) => {
+profileRouter.delete("/id/:streamerid/profile/:profileid", async(req: Request, res: Response) => {
     const unique_id: string = req.params.id;
 
     try {

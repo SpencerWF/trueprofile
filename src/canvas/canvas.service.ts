@@ -43,13 +43,15 @@ export const draw_circle_from_url = async (image_url: string) => {
 }
 
 export const retrieve_image_from_url = async (image_url: string) => {
-    const profile_image = await loadImage(image_url);
-    const canvas = createCanvas(400, 400);
-    const context = canvas.getContext('2d');
+    if(image_url != null) {
+        const profile_image = await loadImage(image_url);
+        const canvas = createCanvas(400, 400);
+        const context = canvas.getContext('2d');
 
-    context.drawImage(profile_image, 0, 0);
+        context.drawImage(profile_image, 0, 0);
 
-    return canvas.toBuffer("image/png");
+        return canvas.toBuffer("image/png");
+    }
 }
 
 /**
