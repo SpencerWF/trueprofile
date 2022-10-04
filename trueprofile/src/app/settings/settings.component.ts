@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { PROFILES } from '../mock-profiles';
 import { Profile } from '../profile';
+import { environment } from '../../environments/environment';
 
 
 @Component({
@@ -10,6 +11,7 @@ import { Profile } from '../profile';
 })
 
 export class SettingsComponent implements OnInit {
+  @Input() callback_address: string = environment.CALLBACK_ADDRESS;
 
   profiles:Profile[] = PROFILES;
   profile_titles:string[] = [];
@@ -22,6 +24,10 @@ export class SettingsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  twitter_signin(event?: MouseEvent) {
+    console.log("Twitter Signin Attempt");
   }
 
   changeAccountType(event?: MouseEvent) {

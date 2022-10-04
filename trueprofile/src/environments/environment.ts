@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   api_address: "192.168.1.102",
+  CALLBACK_ADDRESS: "http://192.168.1.237:4200/settings-component/"
 };
 
 /*
