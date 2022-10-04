@@ -107,6 +107,28 @@ streamerRouter.put("/id/:streamerid", async (req: Request, res: Response) => {
     }
 });
 
+//TODO: Need a function to push twitter access tokens to mysql database
+// streamerRouter.put("/id/:streamerid/twitter_access", async (req: Request, res: Response) => {
+//     const unique_id: string = req.params.id;
+  
+//     try {
+//       const StreamerUpdate: Streamer = req.body;
+  
+//       const existingStreamer: Streamer = await StreamerService.find(unique_id);
+  
+//       if (existingStreamer) {
+//         const updatedStreamer = await StreamerService.update(unique_id, StreamerUpdate);
+//         return res.status(200).json(updatedStreamer);
+//       }
+  
+//       const newStreamer = await StreamerService.create(StreamerUpdate);
+  
+//       res.status(201).json(newStreamer);
+//     } catch (e) {
+//       res.status(500).send(e.message);
+//     }
+// });
+
 streamerRouter.delete("/id/:streamerid", async(req: Request, res: Response) => {
     const unique_id: string = req.params.id;
 
