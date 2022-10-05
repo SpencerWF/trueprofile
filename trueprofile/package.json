@@ -1,5 +1,5 @@
 {
-  "name": "trueprofile-frontend",
+  "name": "trueprofile",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
