@@ -23,21 +23,23 @@ if(!process.env.PORT) {
     process.exit(1);
 }
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(__dirname + '../trueprofile/dist/trueprofile'));
+
 app.use(session({
     secret: process.env.SESSION_SECRET,
     saveUninitialized: false,
-    resave: true
+    resave: false
 }));
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-// app.use(express.static(path.join(__dirname, 'static')));
 
 init_listener();
 
 streamerService.setup_tracking();
 
 app.use("/api/streamer", streamerRouter);
+
+console.log(`Listening on port ${process.env.PORT}`);
 
 app.listen(process.env.PORT);
 // streamerService.create(me);

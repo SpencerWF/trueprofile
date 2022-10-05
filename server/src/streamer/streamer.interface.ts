@@ -1,5 +1,6 @@
 export interface BaseStreamer {
     email: string;
+    username: string;
     account_type: string;
     create_date?: Date;
     modification_date?: Date;
