@@ -25,7 +25,7 @@ if(!process.env.PORT) {
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname + 'dist/trueprofile/'));
+app.use(express.static(__dirname + '../../trueprofile/dist/trueprofile/'));
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -41,7 +41,7 @@ app.use("/api/streamer", streamerRouter);
 
 app.get('/*', (req, res) => {
     // res.sendFile(path.join(__dirname))
-    res.sendFile('index.html',{root:path.join(__dirname, "dist/trueprofile/")});
+    res.sendFile('index.html',{root:path.join(__dirname, "../../trueprofile/dist/trueprofile/")});
 });
 
 console.log(`Listening on port ${process.env.PORT}`);
