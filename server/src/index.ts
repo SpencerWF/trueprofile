@@ -2,7 +2,7 @@
 import express from "express";
 // import session from "express-session";
 import * as dotenv from "dotenv";
-import { appendFile } from "fs";
+const path = require('path');
 // import { profileRouter } from "./profile/profile.router";
 dotenv.config();
 
@@ -38,6 +38,8 @@ init_listener();
 streamerService.setup_tracking();
 
 app.use("/api/streamer", streamerRouter);
+
+app.get('/*', (req, res) => res.sendFile(path.join(__dirname)));
 
 console.log(`Listening on port ${process.env.PORT}`);
 
