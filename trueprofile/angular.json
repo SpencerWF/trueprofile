@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "trueprofile_frontend": {
+    "trueprofile": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/trueprofile_frontend",
+            "outputPath": "dist/trueprofile",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -70,10 +70,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "trueprofile_frontend:build:production"
+              "browserTarget": "trueprofile:build:production"
             },
             "development": {
-              "browserTarget": "trueprofile_frontend:build:development"
+              "browserTarget": "trueprofile:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -81,7 +81,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "trueprofile_frontend:build"
+            "browserTarget": "trueprofile:build"
           }
         },
         "test": {
