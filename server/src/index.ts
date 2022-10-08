@@ -52,7 +52,15 @@ streamerService.setup_tracking();
 
 app.use("/api/streamer", streamerRouter);
 
-app.get('/');
+app.get('/settings-component/', (req, res) => {
+    res.send('Settings Page');
+});
+
+app.get('/*', (req, res) => {
+    // res.sendFile(path.join(__dirname))
+    // res.sendFile('index.html',{root:path.join(__dirname, "../../trueprofile/dist/")});
+    res.send("General Page");
+});
 
 console.log(`Listening on port ${process.env.PORT}`);
 
