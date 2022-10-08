@@ -50,7 +50,7 @@ app.get('/api/public', (req, res) => {
     });
 });
 
-app.get('/api/public', checkJwt, (req, res) => {
+app.get('/api/private', checkJwt, (req, res) => {
     res.json({
         message: "Hello from a private endpoint"
     });
