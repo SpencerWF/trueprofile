@@ -55,6 +55,8 @@ streamerRouter.get("/twitch/:twitchname", async(req: Request, res: Response) => 
         if(streamer_id) {
             return streamerRouter.get(streamer_id);
         }
+        res.status(404).send("Streamer not found");
+        
     } catch (e) {
         let errorMessage = "Failed without error instance";
         if(e instanceof Error) {
@@ -62,6 +64,7 @@ streamerRouter.get("/twitch/:twitchname", async(req: Request, res: Response) => 
         }
         res.status(500).send(errorMessage); 
     }
+
 });
 
 // POST streamer/id/:streamerid

@@ -14,18 +14,7 @@ import * as profileService from "./profile/profile.service";
 import { profileRouter } from "./profile/profile.router";
 import { init_listener } from "./twitch/twitch.service";
 
-// const { auth } = require('express-openid-connect');
-
-// const auth_config = {
-//     authRequired: false,
-//     auth0logout: true,
-//     secret: "2A8F0DB4CE0408B3174D1C2B5D2EF93E94E0706E26E73C05C773B7C161426362",
-//     baseURL: "http://192.168.1.237:4200/settings-component/",
-//     clientID: "6fx5x7nOozGVzssb23NjG6LWIWleihf4",
-//     issuerBaseURL: "dev-f5zxf23m.eu.auth0.com"
-// }
-// const session = require('express-session');
-// var session = require('express-session');
+import { auth, requiredScopes } from "express-oauth2-jwt-bearer";
 
 // import * as streamerService from "./streamer/streamer.service";
 
@@ -33,6 +22,11 @@ if(!process.env.PORT) {
     process.exit(1);
 }
 const app = express();
+
+const checkJwt = auth({
+    audience: 'trueprofile.com',
+    issuerBaseURL: 'https://dev-f5zxf23m.eu.auth0.com/'
+});
 
 // app.use(auth(auth_config));
 
@@ -49,6 +43,18 @@ app.use(express.json());
 init_listener();
 
 streamerService.setup_tracking();
+
+app.get('/api/public', (req, res) => {
+    res.json({
+        message: 'Hello from a public endpoint'
+    });
+});
+
+app.get('/api/public', checkJwt, (req, res) => {
+    res.json({
+        message: "Hello from a private endpoint"
+    });
+});
 
 app.use("/api/streamer", streamerRouter);
 
