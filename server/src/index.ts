@@ -37,8 +37,8 @@ const app = express();
 // app.use(auth(auth_config));
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname + '../../trueprofile/dist/'));
+// app.use(express.urlencoded({ extended: true }));
+// app.use(express.static(__dirname + '../../trueprofile/dist/'));
 
 // app.use(session({
 //     secret: process.env.SESSION_SECRET,
