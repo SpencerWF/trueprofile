@@ -3,6 +3,7 @@ import { PROFILES } from '../mock-profiles';
 import { Profile } from '../profile';
 import { environment } from '../../environments/environment';
 
+import { AuthService } from '@auth0/auth0-angular';
 
 @Component({
   selector: 'app-settings',
@@ -17,7 +18,7 @@ export class SettingsComponent implements OnInit {
   profile_titles:string[] = [];
   
 
-  constructor() {
+  constructor(public auth: AuthService) {
     for(let index = 0; index < this.profiles.length; index++) {
       this.profile_titles.push(this.profiles[index].name);
     }
