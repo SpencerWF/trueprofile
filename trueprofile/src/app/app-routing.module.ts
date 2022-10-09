@@ -4,8 +4,8 @@ import { SettingsComponent } from './settings/settings.component';
 import { HomeComponent } from './home/home.component';
 
 const routes: Routes = [
-  { path: 'settings-component', component: SettingsComponent },
   { path: 'home-component', component: HomeComponent }, //Second Requirement for Angular Routing
+  { path: 'settings-component', component: SettingsComponent }
 ];
 
 @NgModule({
