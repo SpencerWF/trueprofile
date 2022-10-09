@@ -14,13 +14,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
 import { AuthModule } from '@auth0/auth0-angular';
+import { LoginButtonComponent } from './login-button/login-button.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SettingsComponent,
     HomeComponent,
-    ProfileComponent
+    ProfileComponent,
+    LoginButtonComponent
   ],
   imports: [
     BrowserModule,
