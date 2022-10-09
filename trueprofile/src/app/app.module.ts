@@ -13,6 +13,8 @@ import { ProfileComponent } from './profile/profile.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
+import { AuthModule } from '@auth0/auth0-angular';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,7 +30,13 @@ import { FormsModule } from '@angular/forms';
     MatRadioModule,
     MatDividerModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+
+    //Import Auth0 authentication module 
+    AuthModule.forRoot({
+      domain: 'dev-f5zxf23m.eu.auth0.com',
+      clientId: '6fx5x7nOozGVzssb23NjG6LWIWleihf4'
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]
