@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { concatMap, tap, pluck } from 'rxjs/operators';
+import { concatMap, tap, map } from 'rxjs/operators';
 
 import { HttpClient } from '@angular/common/http';
 
@@ -14,21 +14,18 @@ import { AuthService } from '@auth0/auth0-angular';
 })
 export class AppMetadataComponent implements OnInit {
   metadata = {};
-  constructor(public auth: AuthService, private http: HttpClient) { }
+  constructor(public auth: AuthService, private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.auth.user$
+    // this.auth.user$
     // .pipe(
-    //   concatMap((user) => {
-    //     if(user!==null && user!==undefined) {
+    //   concatMap((user) =>
     //       this.http.get(
     //         encodeURI(`https://dev-f5zxf23m.eu.auth0.com/api/v2/users/${user.sub}`)
     //       )
-        
-    //     }
-    //   }),
-    //   pluck('app_metadata'),
-    //   tap((meta) => (this.metadata = meta as Object))
+    //     ),
+    //   map((user) => user['app_metadata']),
+    //   tap((meta) => (this.metadata = meta))
     // )
     // .subscribe();
   }

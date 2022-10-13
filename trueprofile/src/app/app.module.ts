@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
 import { LoginButtonComponent } from './login-button/login-button.component';
 import { AppMetadataComponent } from './app-metadata/app-metadata.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { AppMetadataComponent } from './app-metadata/app-metadata.component';
     HomeComponent,
     ProfileComponent,
     LoginButtonComponent,
-    AppMetadataComponent
+    AppMetadataComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +50,9 @@ import { AppMetadataComponent } from './app-metadata/app-metadata.component';
       // Request this scope at user authentication time
       scope: 'read:current_user',
       httpInterceptor: {
-        allowedList: [
+        allowedList: [ //TODO: Need to add an item with admin scope for testing
+          '/api',
+          '/api/*',
           {
             // Match any request that starts 'https://dev-f5zxf23m.eu.auth0.com/api/v2/' (Note asterisk)
             uri: 'https://dev-f5zxf23m.eu.auth0.com/api/v2/*',

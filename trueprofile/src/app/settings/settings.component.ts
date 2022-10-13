@@ -25,6 +25,10 @@ export class SettingsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if(environment.production==false) {
+      console.log("Printing this now")
+      console.table(this.auth.getUser())
+    }
   }
 
   twitter_signin(event?: MouseEvent) {
