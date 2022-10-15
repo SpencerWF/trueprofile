@@ -16,6 +16,8 @@ import { init_listener } from "./twitch/twitch.service";
 
 import { auth, requiredScopes } from "express-oauth2-jwt-bearer";
 
+import cors from 'cors';
+
 // import * as streamerService from "./streamer/streamer.service";
 
 if(!process.env.PORT) {
@@ -28,7 +30,14 @@ const checkJwt = auth({
     issuerBaseURL: 'https://dev-f5zxf23m.eu.auth0.com/'
 });
 
+
+const allowedOrigins = [process.env.CORS_ORIGIN];
+const options: cors.CorsOptions = {
+    origin: allowedOrigins
+};
 // app.use(auth(auth_config));
+app.use(cors(options));
+
 
 app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));

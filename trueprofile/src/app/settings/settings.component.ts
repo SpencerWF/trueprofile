@@ -4,6 +4,7 @@ import { Profile } from '../profile';
 import { environment } from '../../environments/environment';
 
 import { AuthService } from '@auth0/auth0-angular';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-settings',
@@ -18,7 +19,7 @@ export class SettingsComponent implements OnInit {
   profile_titles:string[] = [];
   
 
-  constructor(public auth: AuthService) {
+  constructor(public auth: AuthService, private http: HttpClient) {
     for(let index = 0; index < this.profiles.length; index++) {
       this.profile_titles.push(this.profiles[index].name);
     }
@@ -27,7 +28,8 @@ export class SettingsComponent implements OnInit {
   ngOnInit(): void {
     if(environment.production==false) {
       console.log("Printing this now")
-      console.table(this.auth.getUser())
+      this.createUser();
+      // console.table(this.auth.getUser())
     }
   }
 
@@ -39,6 +41,15 @@ export class SettingsComponent implements OnInit {
     const evtMsg = event ? ' Event target is ' + (event.target as HTMLElement).textContent : '';
     alert('Changed Account Type ' + evtMsg);
     if (event) { event.stopPropagation(); }
+  }
+
+  createUser() {
+    if(this.auth.isAuthenticated$) {
+
+      console.log(`User is authenticated and about to do API call`)
+
+      this.http.get('http://localhost:8080/api/private/').subscribe(result => console.log(result));
+    }
   }
 }
 

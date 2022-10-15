@@ -55,14 +55,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
           '/api/*',
           {
             // Match any request that starts 'https://dev-f5zxf23m.eu.auth0.com/api/v2/' (Note asterisk)
-            uri: 'https://dev-f5zxf23m.eu.auth0.com/api/v2/*',
-            tokenOptions: {
-              //Attached token should target this audience
-              audience: 'https://dev-f5zxf23m.eu.auth0.com/api/v2/',
-
-              // The attached token should have these scopes
-              scope: 'read:current_user'
-            }
+            uri: 'http://localhost:8080/api/*'
           }
         ]
       }
