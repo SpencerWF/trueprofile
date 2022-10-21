@@ -21,17 +21,16 @@ export const profileRouter = express.Router();
 
 // GET streamer/id/:streamerid/profile/:profileid
 
-profileRouter.get("/id/:streamerid/profile/:profileid", async(req: Request, res: Response) => {
-    //Not using any authentication or authorization, but may implement a timer
-    const streamer_id: string = req.params.streamerid;
-    const profile_id: string = req.params.profileid;
-    console.log(`Looking for information about streamer: ${streamer_id} and profile: ${profile_id}`);
+profileRouter.get("/id/", async(req: Request, res: Response) => {
+    const streamer_id: string = req.auth.payload.sub;
+    // const profile_id: string = req.params.profileid;
+    console.log(`Looking for profiles for streamer: ${streamer_id}`);
 
     try{
-        const profile: Profile = await ProfileService.find(streamer_id, profile_id);
+        const profiles: BaseProfile[] = await ProfileService.findProfileList(streamer_id);
 
-        if(profile) {
-            return res.status(200).send(profile);
+        if(profiles) {
+            return res.status(200).send(profiles);
         }
 
         res.status(404).send("Profile not found");
@@ -46,15 +45,13 @@ profileRouter.get("/id/:streamerid/profile/:profileid", async(req: Request, res:
 
 // POST streamer/id/:streamerid/profile/:profileid
 
-profileRouter.post("/id/:streamerid/profile/:profileid", async(req: Request, res: Response) => {
-    // Insert Auth here
+profileRouter.post("/id/profile", async(req: Request, res: Response) => {
+    const streamer_id: string = req.auth.payload.sub;
 
     try {
-        const streamer: Streamer = await StreamerService.find(req.params.streamerid);
-
         const profile: BaseProfile = req.body;
 
-        const newProfile = await ProfileService.create(streamer.unique_id, profile);
+        const newProfile = await ProfileService.create(streamer_id, profile);
 
         res.status(201).json(newProfile);
     } catch (e) {
@@ -89,14 +86,15 @@ profileRouter.put("/id/:streamerid/profile/:profileid", async (req: Request, res
     }
 });
 
-profileRouter.delete("/id/:streamerid/profile/:profileid", async(req: Request, res: Response) => {
-    const unique_id: string = req.params.id;
+profileRouter.delete("/id/profile", async(req: Request, res: Response) => {
+    const streamer_id: string = req.auth.payload.sub;
 
     try {
-        const existingStreamer: Streamer = await StreamerService.find(unique_id);
+        const existingStreamer: BaseStreamer = await StreamerService.find(streamer_id);
 
         if (existingStreamer) {
-            await StreamerService.del(existingStreamer);
+            await StreamerService.del(streamer_id);
+
         }
     } catch (e) {
 

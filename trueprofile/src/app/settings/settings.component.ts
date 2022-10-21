@@ -15,14 +15,16 @@ import { HttpClient } from '@angular/common/http';
 export class SettingsComponent implements OnInit {
   @Input() callback_address: string = environment.CALLBACK_ADDRESS;
 
-  profiles:Profile[] = PROFILES;
+  profiles:Profile[];
+  mock_profiles:Profile[] = PROFILES;
   profile_titles:string[] = [];
   
 
   constructor(public auth: AuthService, private http: HttpClient) {
-    for(let index = 0; index < this.profiles.length; index++) {
-      this.profile_titles.push(this.profiles[index].name);
+    for(let index = 0; index < this.mock_profiles.length; index++) {
+      this.profile_titles.push(this.mock_profiles[index].name);
     }
+    this.profiles=this.mock_profiles;
   }
 
   ngOnInit(): void {
@@ -49,6 +51,27 @@ export class SettingsComponent implements OnInit {
       console.log(`User is authenticated and about to do API call`)
 
       this.http.get('http://localhost:8080/api/private/').subscribe(result => console.log(result));
+
+      this.http.get(`${environment.API_ADDRESS}/api/streamer/id/`).subscribe(streamer_result => {
+        if(streamer_result) {
+          // console.log(streamer_result);
+          this.http.get(`${environment.API_ADDRESS}/api/profile/id`).subscribe(profiles_result => {
+            // console.table(profiles_result);
+            // this.profiles = profiles_result;
+            for(const [key, value] of Object.entries(profiles_result)) {
+              this.profile_titles.push(value.name);
+              // console.log(`Key has value: ${key}`);
+              this.profiles[parseInt(key)] = {
+                name: value.name,
+                img_change_type: value.img_change_type,
+                custom_img: value.custom_img,
+                text_change_type: value.text_change_type,
+                custom_text: value.custom_text
+              }
+            }
+          });
+        }
+      });
     }
   }
 }

@@ -5,7 +5,9 @@
 export const environment = {
   production: false,
   api_address: "192.168.1.102",
-  CALLBACK_ADDRESS: "http://localhost:4200"
+  CALLBACK_ADDRESS: "http://localhost:4200",
+  AUDIENCE: "trueprofile.com",
+  API_ADDRESS: "http://localhost:8080"
 };
 
 /*

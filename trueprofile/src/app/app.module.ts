@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module'; //First Requirement for Angular Routing
@@ -45,10 +46,10 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
       clientId: 'Awb7qfm27im6F0I0p79iHMTMORzI0oag',
 
       // Request this audience at user authentication time
-      audience: 'https://dev-f5zxf23m.eu.auth0.com/api/v2/',
+      audience: environment.AUDIENCE,
 
       // Request this scope at user authentication time
-      scope: 'read:current_user',
+      // scope: 'read:current_user',
       httpInterceptor: {
         allowedList: [ //TODO: Need to add an item with admin scope for testing
           '/api',

@@ -26,10 +26,9 @@ if(!process.env.PORT) {
 const app = express();
 
 const checkJwt = auth({
-    audience: 'trueprofile.com',
-    issuerBaseURL: 'https://dev-f5zxf23m.eu.auth0.com/'
+    audience: process.env.AUDIENCE,
+    issuerBaseURL: process.env.ISSUER_BASE_URL,
 });
-
 
 const allowedOrigins = [process.env.CORS_ORIGIN];
 const options: cors.CorsOptions = {
@@ -40,14 +39,6 @@ app.use(cors(options));
 
 
 app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
-// app.use(express.static(__dirname + '../../trueprofile/dist/'));
-
-// app.use(session({
-//     secret: process.env.SESSION_SECRET,
-//     saveUninitialized: false,
-//     resave: false
-// }));
 
 init_listener();
 
@@ -59,13 +50,16 @@ app.get('/api/public', (req, res) => {
     });
 });
 
-app.get('/api/private', checkJwt, (req, res) => {
+app.use(checkJwt);
+
+app.get('/api/private', (req, res) => {
     res.json({
         message: "Hello from a private endpoint"
     });
 });
 
 app.use("/api/streamer", streamerRouter);
+app.use("/api/profile", profileRouter);
 
 app.get('/settings-component/', (req, res) => {
     res.send('Settings Page');

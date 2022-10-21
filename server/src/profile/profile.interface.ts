@@ -1,5 +1,4 @@
 export interface BaseProfile {
-    unique_id: string;
     name: string;
     img_change_type: string;
     custom_img: string;
@@ -8,5 +7,6 @@ export interface BaseProfile {
 }
 
 export interface Profile extends BaseProfile {
+    unique_id: string;
     profile_id: string;
 }

@@ -20,13 +20,14 @@ export const streamerRouter = express.Router();
 
 // GET streamer/id/:streamerid
 
-streamerRouter.get("/id/:streamerid", async(req: Request, res: Response) => {
+streamerRouter.get("/id", async(req: Request, res: Response) => {
     //Not using any authentication or authorization, but may implement a timer
-    const streamer_id: string = req.params.streamerid;
+    const streamer_id: string = req.auth.payload.sub;
+    console.table(req.auth.payload); 
     console.log(`Looking for information about ${streamer_id}`);
 
     try{
-        const streamer: Streamer = await StreamerService.find(streamer_id);
+        const streamer: BaseStreamer = await StreamerService.find(streamer_id);
 
         if(streamer) {
             return res.status(200).send(streamer);
@@ -69,13 +70,13 @@ streamerRouter.get("/twitch/:twitchname", async(req: Request, res: Response) => 
 
 // POST streamer/id/:streamerid
 
-streamerRouter.post("/id/:streamerid", async(req: Request, res: Response) => {
-    // Insert Auth here
+streamerRouter.post("/id", async(req: Request, res: Response) => {
+    const streamer_id: string = req.auth.payload.sub;
 
     try {
         const streamer: BaseStreamer = req.body;
 
-        const newStreamer = await StreamerService.create(streamer);
+        const newStreamer = await StreamerService.create(streamer_id, streamer);
 
         res.status(201).json(newStreamer);
     } catch (e) {
@@ -89,20 +90,20 @@ streamerRouter.post("/id/:streamerid", async(req: Request, res: Response) => {
 
 // PUT streamer/id/:streamerid
 
-streamerRouter.put("/id/:streamerid", async (req: Request, res: Response) => {
-    const unique_id: string = req.params.id;
-  
+streamerRouter.put("/id", async (req: Request, res: Response) => {
+    const streamer_id: string = req.auth.payload.sub;
+
     try {
       const StreamerUpdate: Streamer = req.body;
   
-      const existingStreamer: Streamer = await StreamerService.find(unique_id);
+      const existingStreamer: BaseStreamer = await StreamerService.find(streamer_id);
   
       if (existingStreamer) {
-        const updatedStreamer = await StreamerService.update(unique_id, StreamerUpdate);
+        const updatedStreamer = await StreamerService.update(streamer_id, StreamerUpdate);
         return res.status(200).json(updatedStreamer);
       }
   
-      const newStreamer = await StreamerService.create(StreamerUpdate);
+      const newStreamer = await StreamerService.create(streamer_id, StreamerUpdate);
   
       res.status(201).json(newStreamer);
     } catch (e) {
@@ -132,14 +133,14 @@ streamerRouter.put("/id/:streamerid", async (req: Request, res: Response) => {
 //     }
 // });
 
-streamerRouter.delete("/id/:streamerid", async(req: Request, res: Response) => {
-    const unique_id: string = req.params.id;
+streamerRouter.delete("/id", async(req: Request, res: Response) => {
+    const streamer_id: string = req.auth.payload.sub;
 
     try {
-        const existingStreamer: Streamer = await StreamerService.find(unique_id);
+        const existingStreamer: BaseStreamer = await StreamerService.find(streamer_id);
 
         if (existingStreamer) {
-            await StreamerService.del(existingStreamer);
+            await StreamerService.del(streamer_id);
         }
     } catch (e) {
 

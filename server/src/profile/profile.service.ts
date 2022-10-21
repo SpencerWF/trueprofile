@@ -34,16 +34,48 @@ const mysqlConfig = {
  * Service Functions
  */
 
-// export const findall = async (): Promise<Streamer[]> => {
-
 // }
 
 export const find = async (unique_id: string, profile_id: string): Promise<Profile> => {
     if(process.env.MYSQL == 'true') {
-        const queryString = "SELECT * FROM streamers WHERE unique_id=?";
+        const queryString = "SELECT * FROM profiles WHERE unique_id=? AND profile_id=?";
         const db = await makeDb(mysqlConfig);
         try{
-            db.query(queryString, [unique_id]);
+            const rows = await db.query(queryString, [unique_id, profile_id])[0];
+        } catch (err) {
+            // Once a discord server is setup should report errors to a webhook on discord
+            console.log(err);
+        } finally {
+            await db.close();
+        }
+    } else {
+        // Handle test case
+    }
+
+    return null;
+}
+
+export const findProfileList = async (unique_id: string): Promise<BaseProfile[]> => {
+    if(process.env.MYSQL == 'true') {
+        const queryString = "SELECT * FROM profiles WHERE unique_id=?";
+        const db = await makeDb(mysqlConfig);
+        try{
+            const rows: any = await db.query(queryString, [unique_id]);
+            console.table(rows[0]);
+            let profiles = [];
+            for (let index = 0; index < rows[0].length; index++) {
+                const element = rows[0][index];
+                profiles.push({
+                    name: element["name"],
+                    img_change_type: element["img_change_type"],
+                    custom_img: element["custom_img"],
+                    text_change_type: element["text_change_type"],
+                    custom_text: element["custom_text"],
+                });
+            }
+
+            return profiles;
+
         } catch (err) {
             // Once a discord server is setup should report errors to a webhook on discord
             console.log(err);
