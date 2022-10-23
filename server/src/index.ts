@@ -50,6 +50,9 @@ app.get('/api/public', (req, res) => {
     });
 });
 
+app.use(express.static('public'));
+app.use('/images', express.static('images'));
+
 app.use(checkJwt);
 
 app.get('/api/private', (req, res) => {
@@ -60,6 +63,8 @@ app.get('/api/private', (req, res) => {
 
 app.use("/api/streamer", streamerRouter);
 app.use("/api/profile", profileRouter);
+
+
 
 app.get('/settings-component/', (req, res) => {
     res.send('Settings Page');

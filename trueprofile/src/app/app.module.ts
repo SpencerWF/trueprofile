@@ -54,9 +54,13 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
         allowedList: [ //TODO: Need to add an item with admin scope for testing
           '/api',
           '/api/*',
+          // '/public/*',
           {
-            // Match any request that starts 'https://dev-f5zxf23m.eu.auth0.com/api/v2/' (Note asterisk)
-            uri: 'http://localhost:8080/api/*'
+            // Match any request that starts with server address and api (Note asterisk)
+            uri: `${environment.API_ADDRESS}/api/*`
+          },
+          {
+            uri: `${environment.API_ADDRESS}/public/*`
           }
         ]
       }

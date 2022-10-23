@@ -43,6 +43,25 @@ profileRouter.get("/id/", async(req: Request, res: Response) => {
     }
 });
 
+// profileRouter.get("/id/:profile_id", async(req: Request, res: Response) => {
+//     const streamer_id: string = req.auth.payload.sub;
+//     const profile_id: string = req.params.profile_id;
+
+//     try{
+//         const profile: BaseProfile | null = await ProfileService.find(streamer_id, profile_id);
+//         if(profile) {
+
+//         }
+
+//     } catch (e) {
+//         let errorMessage = "Failed without Error instance";
+//         if (e instanceof Error) {
+//             errorMessage = e.message;
+//         }
+//         res.status(500).send(errorMessage);
+//     }
+// });
+
 // POST streamer/id/:streamerid/profile/:profileid
 
 profileRouter.post("/id/profile", async(req: Request, res: Response) => {

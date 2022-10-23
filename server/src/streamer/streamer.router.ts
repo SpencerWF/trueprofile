@@ -23,11 +23,13 @@ export const streamerRouter = express.Router();
 streamerRouter.get("/id", async(req: Request, res: Response) => {
     //Not using any authentication or authorization, but may implement a timer
     const streamer_id: string = req.auth.payload.sub;
-    console.table(req.auth.payload); 
-    console.log(`Looking for information about ${streamer_id}`);
+    // console.table(req.auth.payload); 
+    // console.log(`Looking for information about ${streamer_id}`);
 
     try{
         const streamer: BaseStreamer = await StreamerService.find(streamer_id);
+        console.log("Received streamer from service");
+        console.table(streamer);
 
         if(streamer) {
             return res.status(200).send(streamer);

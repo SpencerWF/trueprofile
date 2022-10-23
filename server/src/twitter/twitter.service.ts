@@ -35,6 +35,7 @@ export const twitter_test = async () => {
 }
 
 export const get_twitter_profile_picture = async (twitter_username: string) => {
+    // Get data from twitter such as profile picture url
     const user_data = await get_twitter_data(twitter_username);
     if(user_data) {
         const image_url = user_data.data.profile_image_url.replace("normal", "400x400");

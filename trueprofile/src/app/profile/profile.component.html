@@ -1,6 +1,15 @@
 <div *ngIf="profile" class="profile-div">
     <div class="profile-split-div">
         <!-- <label><h4>{{profile.name}} Profile</h4></label> -->
+        <div class="slider-div">
+            <label class="switch">
+                <input type="checkbox" checked="true">
+                <span class="slider round"></span>
+            </label> 
+        </div>
+        <div class="slider-label">
+            <h4 class="mini-title">Enable/Disable Profile</h4>
+        </div>
         <div class="image-div">
             <div class="radio-div">
                 <mat-radio-group id="{{profile.name}}_image_radio_group" aria-label="Select an option" [(ngModel)]="profile.img_change_type">
@@ -10,7 +19,7 @@
             </div>
             <div>
                 <div class="centered">
-                    <img class="profile-img" src="assets/twitter-egg.png">
+                    <img id="{{profile.name}}_img" class="profile-img" src="assets/twitter-egg.png">
                 </div>
                 <div class="centered">
                     <label for="img">Select Image:</label>

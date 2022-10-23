@@ -42,18 +42,21 @@ export const find = async (unique_id: string): Promise<BaseStreamer> => {
         const queryString = "SELECT * FROM streamers WHERE unique_id=?";
         const db = await makeDb(mysqlConfig);
         try{
-            const rows = await db.query(queryString, [unique_id]);
-            console.table(rows[0]);
-            // console.table(rows[1]);
-            // console.log(rows.length);
+            const rows = (await db.query(queryString, [unique_id]))[0];
+            console.log(`Received streamer ${rows[0]["unique_id"]} from mysql`);
+
+            // Converting output from service into BaseStreamer format, stripping any hidden information
             const streamer: BaseStreamer = {
                 email: rows[0][`email`],
-                account_type: rows["account_type"],
-                youtube_name: rows["youtube_name"],
-                reddit_name: rows["reddit_name"],
-                twitch_name: rows["twitch_name"],
-                twitter_username: rows["twitter_username"],
+                account_type: rows[0]["account_type"],
+                youtube_name: rows[0]["youtube_name"],
+                reddit_name: rows[0]["reddit_name"],
+                twitch_name: rows[0]["twitch_name"],
+                twitter_username: rows[0]["twitter_username"],
             }
+
+            console.log("Sending to router");
+            console.table(streamer);
 
             return streamer;
         } catch (err) {
