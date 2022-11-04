@@ -23,13 +23,13 @@ export const streamerRouter = express.Router();
 streamerRouter.get("/id", async(req: Request, res: Response) => {
     //Not using any authentication or authorization, but may implement a timer
     const streamer_id: string = req.auth.payload.sub;
-    // console.table(req.auth.payload); 
+    // console.table(req.auth.payload[process.env.EMAIL_INDEX]); 
     // console.log(`Looking for information about ${streamer_id}`);
 
     try{
         const streamer: BaseStreamer = await StreamerService.find(streamer_id);
-        console.log("Received streamer from service");
-        console.table(streamer);
+        // console.log("Received streamer from service");
+        // console.table(streamer);
 
         if(streamer) {
             return res.status(200).send(streamer);
@@ -70,13 +70,19 @@ streamerRouter.get("/twitch/:twitchname", async(req: Request, res: Response) => 
 
 });
 
-// POST streamer/id/:streamerid
-
+// POST streamer/id
 streamerRouter.post("/id", async(req: Request, res: Response) => {
     const streamer_id: string = req.auth.payload.sub;
+    const streamer_email: string = req.auth.payload[process.env.EMAIL_INDEX];
 
     try {
         const streamer: BaseStreamer = req.body;
+            // Creating streamer
+            const freshStreamer: BaseStreamer = {
+                email: streamer_email,
+                account_type: "free",
+                status: "active",
+            }
 
         const newStreamer = await StreamerService.create(streamer_id, streamer);
 

@@ -84,16 +84,28 @@ export class Twitch_Streamer {
         // if(!this.twitch_id) {
         //     return false;
         // }
+        console.log(`Setting up live subscriptions for ${this.name}`);
         setTimeout(async () => {
-            this._onlineSubscription = await twitch_listener.subscribeToStreamOnlineEvents(this.twitch_id, e => {
-                console.log(`${e.broadcasterDisplayName} just went live!`);
-                online_function(this.twitch_id);
-            });
-            setTimeout(async () => {
-                this._offlineSubscription = await twitch_listener.subscribeToStreamOfflineEvents(this.twitch_id, e => {
-                    console.log(`${e.broadcasterDisplayName} just went offline.`);
-                    offline_function(this.twitch_id);
+            try {
+                console.log("Got to online events");
+                this._onlineSubscription = await twitch_listener.subscribeToStreamOnlineEvents(this.twitch_id, e => {
+                    console.log(`${e.broadcasterDisplayName} just went live!`);
+                    online_function(this.twitch_id);
                 });
+            } catch (error) {
+                console.log(`Error: ${error}`);
+            }
+            setTimeout(async () => {
+                try {
+                    console.log("Got to offline events");
+                    this._offlineSubscription = await twitch_listener.subscribeToStreamOfflineEvents(this.twitch_id, e => {
+                        console.log(`${e.broadcasterDisplayName} just went offline.`);
+                        offline_function(this.twitch_id);
+                    });
+                } catch (error) {
+                    console.log(`Error: ${error}`);
+                }
+
             }, 1000);
         }, 1000);
 

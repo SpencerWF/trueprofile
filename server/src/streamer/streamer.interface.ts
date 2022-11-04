@@ -7,6 +7,7 @@ export interface BaseStreamer {
     youtube_name?: string;
     reddit_name?: string;
     twitter_username?: string;
+    status: string;
 }
 
 export interface Streamer extends BaseStreamer {

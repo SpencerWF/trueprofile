@@ -5,5 +5,5 @@ export interface Streamer {
     twitch_name: string;
     twitter_name: string;
     reddit_name: string;
-    active: boolean;
+    status: string;
 }

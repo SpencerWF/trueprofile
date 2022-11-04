@@ -7,5 +7,5 @@ export const EMPTY_STREAMER: Streamer = {
     twitter_name: '',
     youtube_name: '',
     reddit_name: '',
-    active: true,
+    status: 'active',
 }

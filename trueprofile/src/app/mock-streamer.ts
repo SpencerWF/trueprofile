@@ -7,5 +7,5 @@ export const STREAMER: Streamer = {
     twitch_name: "MysteriousKitsune",
     twitter_name: "MKReal",
     reddit_name: "MKReal",
-    active: true,
+    status: 'active',
 }

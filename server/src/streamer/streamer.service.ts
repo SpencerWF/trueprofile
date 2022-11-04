@@ -17,6 +17,7 @@ import { stream } from "twitter-api-sdk/dist/request";
 /**
  * Necessary Defines
  */
+console.log(`SQL Host is ${process.env.SQL_HOST}`);
 const mysqlConfig = {
     host: process.env.SQL_HOST,
     port: parseInt(process.env.SQL_PORT),
@@ -53,6 +54,7 @@ export const find = async (unique_id: string): Promise<BaseStreamer> => {
                 reddit_name: rows[0]["reddit_name"],
                 twitch_name: rows[0]["twitch_name"],
                 twitter_username: rows[0]["twitter_username"],
+                status: rows[0]["status"],
             }
 
             console.log("Sending to router");
@@ -104,16 +106,22 @@ export const setup_tracking = async () => {
 
 export const create = async (unique_id: string, streamer: BaseStreamer) => {
     if(process.env.MYSQL == 'true') {
-        const queryString = "INSERT INTO streamers (unique_id, account_type) VALUES (UUID_TO_BIN(UUID()), ?, ?, ?);";
+        const queryString = "INSERT INTO streamers (unique_id, email, account_type, status) VALUES (?, ?, ?, ?);";
         const db = await makeDb(mysqlConfig);
         try{
-            const rows = db.query(queryString, [unique_id, streamer.account_type]);
+            //Assume a new streamer is creating a free account and has set their account to active (the default)
+            const result = db.query(queryString, [unique_id, streamer.email, streamer.account_type, 'active']);
+
+            if(result) {
+                return streamer;
+            }
         } catch (err) {
             // Once a discord server is setup should report errors to a webhook on discord
             console.log(err);
         } finally {
             await db.close();
         }
+        return false;
 
     } else {
         
@@ -231,6 +239,7 @@ export const add_twitch = async (username: string, twitch_name: string) => {
 
             // Setup Twitch Streamer and Subscribe to online/offline events
             const twitch_streamer: Twitch_Streamer = new Twitch_Streamer(twitch_name);
+            console.log("Twitch Streamer created");
             twitch_streamer.twitch_id = twitch_id;
 
             console.log("Setup subscriptions");
@@ -264,6 +273,8 @@ export const setup_twitch_events = async () => {
     } finally {
         db.close();
     }
+
+    console.log("Setup twitch events completed");
 }
 
 export const streamer_go_live = async (twitch_id: string) => {
