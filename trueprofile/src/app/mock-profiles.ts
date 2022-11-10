@@ -3,23 +3,17 @@ import { Profile } from "./profile";
 export const PROFILES: Profile[] = [
     {
         name: 'Online',
-        img_change_type: "Edit",
         custom_img: '',
-        text_change_type: "Edit",
-        custom_text: "| LIVE NOW"
+        custom_text: "Robotics Engineer messing with Saas | LIVE NOW"
     },
     {
-        name: 'League of Legends',
-        img_change_type: "Replace",
+        name: 'Offline',
         custom_img: '',
-        text_change_type: "Replace",
-        custom_text: "NOW PLAYING LEAGUE!"
+        custom_text: "Robotics Engineer messing with Saas"
     },
     {
         name: 'Binding of Isaac',
-        img_change_type: "Replace",
         custom_img: '',
-        text_change_type: "Edit",
-        custom_text: "| NOW PLAYING THE BINDING OF ISAAC"
+        custom_text: "Robotics Engineer messing with Saas | NOW PLAYING THE BINDING OF ISAAC"
     }
 ];

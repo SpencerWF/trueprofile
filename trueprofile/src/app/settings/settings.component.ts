@@ -65,11 +65,13 @@ export class SettingsComponent implements OnInit {
 
   getStreamer() {
     this.http.get<Streamer>(`${environment.API_ADDRESS}/api/streamer/id/`, {observe:'body', responseType:'json'}).subscribe((streamer_result) => {
-      console.log(`Status code is: ${streamer_result.status}`)
+      console.log(`Status code is: ${streamer_result.status}`);
       if(streamer_result) {
         console.table(streamer_result);
         this.streamer = streamer_result;
         this.getProfiles();
+      } else {
+        console.log("Streamer not found");
       }
     });
   }

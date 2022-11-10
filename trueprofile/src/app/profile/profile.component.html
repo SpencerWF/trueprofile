@@ -11,12 +11,6 @@
             <h4 class="mini-title">Enable/Disable Profile</h4>
         </div>
         <div class="image-div">
-            <div class="radio-div">
-                <mat-radio-group id="{{profile.name}}_image_radio_group" aria-label="Select an option" [(ngModel)]="profile.img_change_type">
-                    <mat-radio-button class="centered" value="Edit">Edit Image</mat-radio-button>
-                    <mat-radio-button class="centered" value="Replace">Replace Image</mat-radio-button>
-                </mat-radio-group>
-            </div>
             <div>
                 <div class="centered">
                     <img id="{{profile.name}}_img" class="profile-img" src="assets/twitter-egg.png">
@@ -31,12 +25,6 @@
     <mat-divider></mat-divider>
     <div class="profile-split-div">
         <div class="text-div">
-            <div class="radio-div">
-                <mat-radio-group id="{{profile.name}}_text_radio_group" aria-label="Select an option" [(ngModel)]="profile.text_change_type">
-                    <mat-radio-button class="centered" value="Edit">Edit Text</mat-radio-button>
-                    <mat-radio-button class="centered" value="Replace">Replace Text</mat-radio-button>
-                </mat-radio-group>
-            </div>
             <div class="centered">
                 <label for="img">Selected Text:</label>
                 <input type="text" id="{{profile.name}}_input_text" name="OfflineText" class="centered custom-text" value="{{profile.custom_text}}">
