@@ -4,9 +4,11 @@
 
 import express, { Request, Response } from "express";
 import * as StreamerService from "./streamer.service";
+import * as ProfileService from "../profile/profile.service";
+import * as CanvasService from "../canvas/canvas.service";
 import { Streamer, BaseStreamer } from "./streamer.interface";
 import { Stream } from "stream";
-import { Profile } from "../profile/profile.interface";
+import { BaseProfile, Profile } from "../profile/profile.interface";
 
 /**
  * Router Definition
@@ -27,12 +29,19 @@ streamerRouter.get("/id", async(req: Request, res: Response) => {
     // console.log(`Looking for information about ${streamer_id}`);
 
     try{
-        const streamer: BaseStreamer = await StreamerService.find(streamer_id);
+        var streamer: BaseStreamer | false = await StreamerService.find(streamer_id);
         // console.log("Received streamer from service");
         // console.table(streamer);
 
         if(streamer) {
             return res.status(200).send(streamer);
+        } else {
+            const new_streamer: BaseStreamer = {
+                email: req.auth.payload[process.env.EMAIL_INDEX],
+                account_type: "free",
+                status: "active"
+            }
+            streamer = await StreamerService.create(streamer_id, new_streamer);
         }
 
         res.status(404).send("Streamer not found");
@@ -104,7 +113,7 @@ streamerRouter.put("/id", async (req: Request, res: Response) => {
     try {
       const StreamerUpdate: Streamer = req.body;
   
-      const existingStreamer: BaseStreamer = await StreamerService.find(streamer_id);
+      const existingStreamer: BaseStreamer | false = await StreamerService.find(streamer_id);
   
       if (existingStreamer) {
         const updatedStreamer = await StreamerService.update(streamer_id, StreamerUpdate);
@@ -145,7 +154,7 @@ streamerRouter.delete("/id", async(req: Request, res: Response) => {
     const streamer_id: string = req.auth.payload.sub;
 
     try {
-        const existingStreamer: BaseStreamer = await StreamerService.find(streamer_id);
+        const existingStreamer: BaseStreamer | false = await StreamerService.find(streamer_id);
 
         if (existingStreamer) {
             await StreamerService.del(streamer_id);

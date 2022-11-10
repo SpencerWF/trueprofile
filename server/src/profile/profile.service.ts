@@ -94,7 +94,7 @@ export const create = async (unique_id: string, profile: BaseProfile): Promise<B
         const queryString = "INSERT INTO profiles (unique_id, profile_id, name, img_change_type, custom_img, text_change_type, custom_text) VALUES (?, UUID_TO_BIN(UUID()), ?, ?, ?, ?, ?);";
         const db = await makeDb(mysqlConfig);
         try{
-            const rows = db.query(queryString, [unique_id, profile.name, profile.img_change_type, profile.custom_img, profile.text_change_type, profile.custom_text]);
+            const rows = db.query(queryString, [unique_id, profile.name, profile.custom_img, profile.custom_text]);
         } catch (err) {
             // Once a discord server is setup should report errors to a webhook on discord
             console.log(err);
@@ -115,7 +115,7 @@ export const update = async(unique_id: string, profile_id: string, profile: Base
         const queryString = "UPDATE profiles SET name=?, img_change_type=?, custom_img=?, text_change_type=?, custom_text=? WHERE unique_id=? AND profile_id=?";
         const db = await makeDb(mysqlConfig);
         try{
-            const rows = db.query(queryString, [profile.name, profile.img_change_type, profile.custom_img, profile.text_change_type, profile.custom_text, unique_id, profile_id]);
+            const rows = db.query(queryString, [profile.name, profile.custom_img, profile.custom_text, unique_id, profile_id]);
         } catch (err) {
             console.log(err);
         } finally {

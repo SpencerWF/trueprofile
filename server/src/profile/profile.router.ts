@@ -109,7 +109,7 @@ profileRouter.delete("/id/profile", async(req: Request, res: Response) => {
     const streamer_id: string = req.auth.payload.sub;
 
     try {
-        const existingStreamer: BaseStreamer = await StreamerService.find(streamer_id);
+        const existingStreamer: BaseStreamer | false = await StreamerService.find(streamer_id);
 
         if (existingStreamer) {
             await StreamerService.del(streamer_id);

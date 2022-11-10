@@ -73,3 +73,15 @@ export const get_twitter_data = async (twitter_username: string) => {
 // function get_twitter_access(username: string) {
     
 // }
+
+/**
+ * Needed for creation of twitter images
+const offline_image_name: string = await CanvasService.
+
+const online_profile: BaseProfile = {
+    name: "Online",
+    custom_img: "",
+    custom_text: 
+}
+await ProfileService.create(streamer_id, online_profile);
+ */

@@ -38,29 +38,34 @@ const mysqlConfig = {
 
 // }
 
-export const find = async (unique_id: string): Promise<BaseStreamer> => {
+export const find = async (unique_id: string): Promise<BaseStreamer | false> => {
     if(process.env.MYSQL == 'true') {
-        const queryString = "SELECT * FROM streamers WHERE unique_id=?";
+        var queryString: string = "SELECT * FROM streamers WHERE unique_id=?";
+        var streamer: BaseStreamer;
         const db = await makeDb(mysqlConfig);
         try{
             const rows = (await db.query(queryString, [unique_id]))[0];
-            console.log(`Received streamer ${rows[0]["unique_id"]} from mysql`);
 
             // Converting output from service into BaseStreamer format, stripping any hidden information
-            const streamer: BaseStreamer = {
-                email: rows[0][`email`],
-                account_type: rows[0]["account_type"],
-                youtube_name: rows[0]["youtube_name"],
-                reddit_name: rows[0]["reddit_name"],
-                twitch_name: rows[0]["twitch_name"],
-                twitter_username: rows[0]["twitter_username"],
-                status: rows[0]["status"],
+            if(Array.isArray(rows) && rows.length>0) {
+               console.log(`Received streamer ${rows[0]["unique_id"]} from mysql`);
+                streamer = {
+                    email: rows[0][`email`],
+                    account_type: rows[0]["account_type"],
+                    youtube_name: rows[0]["youtube_name"],
+                    reddit_name: rows[0]["reddit_name"],
+                    twitch_name: rows[0]["twitch_name"],
+                    twitter_username: rows[0]["twitter_username"],
+                    status: rows[0]["status"],
+                }
+
+                console.log("Sending to router");
+                console.table(streamer);
+
+                return streamer;
             }
-
-            console.log("Sending to router");
-            console.table(streamer);
-
-            return streamer;
+            
+            return false;
         } catch (err) {
             // Once a discord server is setup should report errors to a webhook on discord
             console.log(err);
