@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   api_address: "192.168.1.102",
-  CALLBACK_ADDRESS: "http://localhost:4200",
+  TWITCH_CALLBACK: "http://localhost:4200/twitch-login",
+  TWITTER_CALLBACK: "http://localhost:4200/twitter-login",
   AUDIENCE: "trueprofile.com",
   API_ADDRESS: "http://localhost:8080",
   MYSQL: true,

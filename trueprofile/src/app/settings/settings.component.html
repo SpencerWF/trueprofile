@@ -19,14 +19,15 @@
 <div class="page-div">
     <h1>Settings Page</h1>
     <div class="sign-in-div">
-        <div class="sign-in-img">
-            <a href='https://api.twitch.tv/kraken/oauth2/authorize?response_type=code&client_id=cls3vf9nmbjl1wxm28u8j1tiasoyo9&redirect_uri=callback_address&scope=user_read'>Login to Twitch</a>
-        </div>
-        <div class="sign-in-img">
-            <button type="button" (click)="twitter_signin($event)">
-                <img src="assets/sign-in-with-twitter-gray.png">
-            </button>
-        </div>
+        <h3>Please Login</h3>
+        <a class="twitch btn" href='https://api.twitch.tv/kraken/oauth2/authorize?response_type=code&client_id=cls3vf9nmbjl1wxm28u8j1tiasoyo9&redirect_uri={{ twitch_callback }}&scope=user_read'>
+            <div class="twitch-icon btn-icon"></div>
+            Login to Twitch
+        </a>
+        <a class="twitter btn" href="">
+            <div class="twitter-icon btn-icon"></div>
+            Login to Twitter
+        </a>
     </div>
     <!-- <button (click)="changeAccountType()">Change Account Type</button> -->
 

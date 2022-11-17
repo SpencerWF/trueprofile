@@ -19,7 +19,7 @@ import { HttpClient } from '@angular/common/http';
 })
 
 export class SettingsComponent implements OnInit {
-  @Input() callback_address: string = environment.CALLBACK_ADDRESS;
+  @Input() twitch_callback: string = environment.TWITCH_CALLBACK;
 
   profiles:Profile[];
   mock_profiles:Profile[] = PROFILES;
@@ -28,8 +28,6 @@ export class SettingsComponent implements OnInit {
   mock_streamer:Streamer = STREAMER;
   empty_streamer:Streamer = EMPTY_STREAMER;
   streamer:Streamer;
-  
-
   constructor(public auth: AuthService, private http: HttpClient) {
     this.streamer = this.empty_streamer;
     for(let index = 0; index < this.empty_profiles.length; index++) {

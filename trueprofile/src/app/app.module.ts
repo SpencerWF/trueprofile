@@ -18,6 +18,8 @@ import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
 import { LoginButtonComponent } from './login-button/login-button.component';
 import { AppMetadataComponent } from './app-metadata/app-metadata.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { TwitchLoginComponent } from './twitch-login/twitch-login.component';
+import { TwitterLoginComponent } from './twitter-login/twitter-login.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     ProfileComponent,
     LoginButtonComponent,
     AppMetadataComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    TwitchLoginComponent,
+    TwitterLoginComponent
   ],
   imports: [
     BrowserModule,
