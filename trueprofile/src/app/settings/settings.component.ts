@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Profile } from '../profile';
 import { PROFILES } from '../mock-profiles';
 import { EMPTY_PROFILES } from '../empty-profiles';
@@ -11,6 +11,9 @@ import { environment } from '../../environments/environment';
 
 import { AuthService } from '@auth0/auth0-angular';
 import { HttpClient } from '@angular/common/http';
+
+import { TwitchService } from '../twitch-service.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-settings',
@@ -28,7 +31,13 @@ export class SettingsComponent implements OnInit {
   mock_streamer:Streamer = STREAMER;
   empty_streamer:Streamer = EMPTY_STREAMER;
   streamer:Streamer;
+
+  twitch_token: string = '';
+
   constructor(public auth: AuthService, private http: HttpClient) {
+    // this.subscription = this.twitchService.currentToken.subscribe(token => this.twitch_token = token);
+    // this.twitch_token = this.twitchService.tokenSource.complete();
+
     this.streamer = this.empty_streamer;
     for(let index = 0; index < this.empty_profiles.length; index++) {
       this.profile_titles.push(this.empty_profiles[index].name);
@@ -67,6 +76,11 @@ export class SettingsComponent implements OnInit {
       if(streamer_result) {
         console.table(streamer_result);
         this.streamer = streamer_result;
+        if(streamer_result.twitch_name === null  && localStorage.getItem !== null) {
+          // console.log(this.twitchService.getTwitchToken());
+          // console.log(this.twitchService.tokenSource.getValue());
+          console.log(localStorage.getItem("twitch_code"));
+        }
         this.getProfiles();
       } else {
         console.log("Streamer not found");
