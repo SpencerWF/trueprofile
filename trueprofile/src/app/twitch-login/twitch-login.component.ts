@@ -34,8 +34,8 @@ export class TwitchLoginComponent implements OnInit {
           // this.twitchService.setTwitchToken(this.paramsObject.params.code);
           // console.log(this.paramsObject.code);
 
-          localStorage.setItem('twitch_code', this.paramsObject.params.code);
-          this.auth.loginWithRedirect()
+          sessionStorage.setItem('twitch_code', this.paramsObject.params.code);
+          this.auth.loginWithRedirect();
         }
       });
   }

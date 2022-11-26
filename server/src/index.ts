@@ -12,7 +12,6 @@ import * as streamerService from "./streamer/streamer.service";
 import { streamerRouter } from "./streamer/streamer.router";
 import * as profileService from "./profile/profile.service";
 import { profileRouter } from "./profile/profile.router";
-import { init_listener } from "./twitch/twitch.service";
 
 import { auth, requiredScopes } from "express-oauth2-jwt-bearer";
 
@@ -39,8 +38,6 @@ app.use(cors(options));
 
 
 app.use(express.json());
-
-init_listener();
 
 streamerService.setup_tracking();
 

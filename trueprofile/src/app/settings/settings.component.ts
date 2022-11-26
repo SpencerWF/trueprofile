@@ -32,7 +32,7 @@ export class SettingsComponent implements OnInit {
   empty_streamer:Streamer = EMPTY_STREAMER;
   streamer:Streamer;
 
-  twitch_token: string = '';
+  twitch_token: string | null = '';
 
   constructor(public auth: AuthService, private http: HttpClient) {
     // this.subscription = this.twitchService.currentToken.subscribe(token => this.twitch_token = token);
@@ -76,10 +76,11 @@ export class SettingsComponent implements OnInit {
       if(streamer_result) {
         console.table(streamer_result);
         this.streamer = streamer_result;
-        if(streamer_result.twitch_name === null  && localStorage.getItem !== null) {
-          // console.log(this.twitchService.getTwitchToken());
-          // console.log(this.twitchService.tokenSource.getValue());
-          console.log(localStorage.getItem("twitch_code"));
+        this.twitch_token = sessionStorage.getItem('twitch_code');
+        if(streamer_result.twitch_name === null && this.twitch_token) {
+          // this.twitch_token = sessionStorage.getItem("twitch_code");
+          sessionStorage.removeItem("twitch_code");
+          this.http.put(`${environment.API_ADDRESS}/api/streamer/twitch_code/`, {code:this.twitch_token}).subscribe();
         }
         this.getProfiles();
       } else {

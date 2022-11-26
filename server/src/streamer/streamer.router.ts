@@ -78,6 +78,7 @@ streamerRouter.get("/twitch/:twitchname", async(req: Request, res: Response) => 
     }
 
 });
+// /api/streamer/twitch_code/
 
 // POST streamer/id
 streamerRouter.post("/id", async(req: Request, res: Response) => {
@@ -125,6 +126,20 @@ streamerRouter.put("/id", async (req: Request, res: Response) => {
       res.status(201).json(newStreamer);
     } catch (e) {
       res.status(500).send(e.message);
+    }
+});
+
+streamerRouter.put("/twitch_code", async (req: Request, res: Response) => {
+    console.log("Received request to twitch_code");
+    const streamer_id: string = req.auth.payload.sub;
+
+    try {
+        const twitch_code: string = req.body.code;
+        console.table(req.body);
+
+        StreamerService.add_twitch(streamer_id, twitch_code);
+    } catch (e) {
+        res.status(500).send
     }
 });
 
