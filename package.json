@@ -6,7 +6,8 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "test": "mocha -r ts-node/register --no-color 'tests/**/*.ts' --exit",
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon src/index.ts",
+    "serve": "tsc src/index.ts -w & pm2 start dist/app.js --watch"
   },
   "repository": {
     "type": "git",
@@ -39,6 +40,7 @@
     "mocha": "^10.0.0",
     "mysql2": "^2.3.3",
     "ts-node": "^10.8.0",
+    "tsc": "^2.0.4",
     "twit": "^2.2.11",
     "twitter-api-sdk": "^1.0.9"
   },
