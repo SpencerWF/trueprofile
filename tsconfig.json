@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "ES2017",
-    "moduleResolution": "Node",
     "esModuleInterop": true,
+    "target": "es6",
+    "moduleResolution": "Node",
     "outDir": "dist"
   },
+  "lib": ["es2015"],
   "ts-node": {
     "esm": true
   },
