@@ -86,26 +86,29 @@ export const findProfileList = async (unique_id: string): Promise<BaseProfile[]>
     return null;
 }
 
-// export const create = async (unique_id: string, profile: BaseProfile): Promise<BaseProfile | null> => {
-//     if(process.env.MYSQL == 'true') {
-//         const queryString = "INSERT INTO profiles (unique_id, profile_id, name, img_change_type, custom_img, text_change_type, custom_text) VALUES (?, UUID_TO_BIN(UUID()), ?, ?, ?, ?, ?);";
-//         const db = await makeDb(mysqlConfig);
-//         try{
-//             const rows = db.query(queryString, [unique_id, profile.name, profile.custom_img, profile.custom_text]);
-//         } catch (err) {
-//             // Once a discord server is setup should report errors to a webhook on discord
-//             console.log(err);
-//             return null;
-//         } finally {
-//             await db.close();
-//         }
+export const create = async (unique_id: string, profile: BaseProfile): Promise<BaseProfile | null> => {
+    if(process.env.MYSQL == 'true') {
+        const queryString = "INSERT INTO profiles (unique_id, profile_id, name, img_change_type, custom_img, text_change_type, custom_text) VALUES (?, UUID_TO_BIN(UUID()), ?, ?, ?, ?, ?);";
+        const db = await makeDb();
+        try{
+            const rows = db.query(queryString, [unique_id, profile.name, profile.custom_img, profile.custom_text]);
+            if(Array.isArray(rows[0])) {
+                console.log("Need to complete profile create functionality");
+            }
+        } catch (err) {
+            // Once a discord server is setup should report errors to a webhook on discord
+            console.log(err);
+            return null;
+        } finally {
+            await db.close();
+        }
 
-//     } else {
+    }// else {
         
-//     }
+    // }
 
-//     return profile;
-// }
+    return profile;
+}
 
 // export const update = async(unique_id: string, profile_id: string, profile: BaseProfile) => {
 //     if(process.env.MYSQL == 'true') {
