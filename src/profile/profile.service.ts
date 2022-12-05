@@ -110,23 +110,26 @@ export const create = async (unique_id: string, profile: BaseProfile): Promise<B
     return profile;
 }
 
-// export const update = async(unique_id: string, profile_id: string, profile: BaseProfile) => {
-//     if(process.env.MYSQL == 'true') {
-//         const queryString = "UPDATE profiles SET name=?, img_change_type=?, custom_img=?, text_change_type=?, custom_text=? WHERE unique_id=? AND profile_id=?";
-//         const db = await makeDb(mysqlConfig);
-//         try{
-//             const rows = db.query(queryString, [profile.name, profile.custom_img, profile.custom_text, unique_id, profile_id]);
-//         } catch (err) {
-//             console.log(err);
-//         } finally {
-//             await db.close();
-//         }
-//     } else {
+export const update = async(unique_id: string, profile_id: string, profile: BaseProfile) => {
+    if(process.env.MYSQL == 'true') {
+        const queryString = "UPDATE profiles SET name=?, img_change_type=?, custom_img=?, text_change_type=?, custom_text=? WHERE unique_id=? AND profile_id=?";
+        const db = await makeDb();
+        try{
+            const rows = db.query(queryString, [profile.name, profile.custom_img, profile.custom_text, unique_id, profile_id]);
+            if(Array.isArray(rows[0])) {
+                console.log()
+            }
+        } catch (err) {
+            console.log(err);
+        } finally {
+            await db.close();
+        }
+    } //else {
 
-//     }
+    // }
 
-//     return null;
-// }
+    return null;
+}
 
 // export const del = async(unique_id: string, profile_id: string) => {
 //     if(process.env.MYSQL == 'true') {
