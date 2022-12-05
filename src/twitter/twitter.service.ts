@@ -7,13 +7,13 @@
  */
 import Twit from "twit";
 import { Client } from "twitter-api-sdk";
-var fs = require('fs');
+const fs = require('fs');
 
 /**
  * Necessary Defines
  */
 // Used for twitter api v1.1
-var T = new Twit({
+const T = new Twit({
     consumer_key: process.env.TWITTER_API_KEY,
     consumer_secret: process.env.TWITTER_API_SECRET,
     access_token: process.env.TWITTER_ACCOUNT_ACCESS_TOKEN,
@@ -27,9 +27,9 @@ const twitter_client = new Client(process.env.TWITTER_BEARER_TOKEN);
  * Exported Functions
  */
 export const twitter_test = async () => {
-    let buff = await fs.readFileSync('cat_400x400.jpg');
-    let base64data = buff.toString('base64');
-    T.post('account/update_profile_image', { name:'cat', image: base64data}, function(err, data, response) {
+    const buff = await fs.readFileSync('cat_400x400.jpg');
+    const base64data = buff.toString('base64');
+    T.post('account/update_profile_image', { name:'cat', image: base64data}, function(err, data) {
         console.log(data);
     });
 }
@@ -47,8 +47,8 @@ export const get_twitter_profile_picture = async (twitter_username: string) => {
 
 export const set_profile_picture = async (access_token: string, access_token_secret: string, image_data: string | Buffer) => {
     // let buff = await fs.readFileSync('cat_400x400.jpg');
-    let base64data = image_data.toString('base64');
-    T.post('account/update_profile_image', { image: base64data}, function(err, data, response) {
+    const base64data = image_data.toString('base64');
+    T.post('account/update_profile_image', { image: base64data}, function() {
         // console.log(data);
     });
 }

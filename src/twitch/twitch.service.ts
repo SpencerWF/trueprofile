@@ -30,8 +30,7 @@ const twitch_listener = new EventSubListener({
     adapter: new NgrokAdapter(),
     secret: listenerSecret
 });
-
-let refreshingAuths = {}
+// let refreshingAuths = {}
 
 /**
  * Exported Functions
@@ -69,7 +68,7 @@ export const auth_twitch = async (twitch_code: string): Promise<AccessToken | fa
  */
 
 export class Twitch_Streamer {
-    twitch_service: boolean = true;
+    twitch_service = true;
     private _unique_id: string;
     private _twitch_id: string = null;
     private _name: string = null;
@@ -154,7 +153,7 @@ export class Twitch_Streamer {
         this._store_data_callback(this._unique_id, this._access_token);
     }
 
-    public async setup_live_subscriptions(state_functions: Array<Function>) {
+    public async setup_live_subscriptions(state_functions: Array<any>) {
         // if(this.twitch_id == "") {
         //     await this.retrieve_twitch_id();
         // }
@@ -244,10 +243,10 @@ export class Twitch_Streamer {
  */
 
 function make_reference_number(): string {
-    let output_string: string = "";
-    let options: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+    let output_string = "";
+    const options = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
 
-    for(var i=0; i<11; i++) {
+    for(let i=0; i<11; i++) {
         output_string += options.charAt(Math.floor(Math.random()*options.length))
     }
 
@@ -255,10 +254,8 @@ function make_reference_number(): string {
 }
 
 function get_unique_reference_number(): string {
-    let id_unfound: boolean = true;
-    let reference_id: string;
-
-    reference_id = make_reference_number();
+    // let id_unfound: boolean = true;
+    const reference_id: string = make_reference_number();
 
     return reference_id;
 }

@@ -1,5 +1,5 @@
-import { loadImage, Canvas, createCanvas } from "canvas";
-import { create } from "domain";
+import { loadImage, createCanvas } from "canvas";
+// import { create } from "domain";
 import { writeFileSync } from "fs";
 import path from "path";
 
@@ -61,10 +61,10 @@ export const retrieve_image_from_url = async (image_url: string): Promise<Buffer
  */
 
  function make_image_name():string {
-    let output_string: string = "";
-    let options: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let output_string = "";
+    const options = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-    for(var i=0; i<24; i++) {
+    for(let i=0; i<24; i++) {
         output_string += options.charAt(Math.floor(Math.random()*options.length))
     }
 

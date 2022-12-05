@@ -1,8 +1,8 @@
 /**
  * Datamodel Interfaces
  */
-import { Streamer, BaseStreamer } from "./streamer.interface";
-import { Streamers } from "./streamers.interface";
+import { BaseStreamer } from "./streamer.interface";
+// import { Streamers } from "./streamers.interface";
 import { Twitch_Streamer, auth_twitch } from "../twitch/twitch.service";
 import * as twitterService from "../twitter/twitter.service";
 import * as canvasService from "../canvas/canvas.service";
@@ -13,7 +13,7 @@ import { AccessToken } from "@twurple/auth/lib";
  */
 import mysql from "mysql2/promise";
 import path from "path";
-import { stream } from "twitter-api-sdk/dist/request";
+// import { stream } from "twitter-api-sdk/dist/request";
 import { HelixPrivilegedUser } from "@twurple/api/lib";
 
 /**
@@ -42,9 +42,9 @@ const mysqlConfig = {
 
 export const find = async (unique_id: string): Promise<BaseStreamer | false> => {
     if(process.env.MYSQL == 'true') {
-        var queryString: string = "SELECT * FROM streamers WHERE unique_id=?";
-        var streamer: BaseStreamer;
-        const db = await makeDb(mysqlConfig);
+        const queryString = "SELECT * FROM streamers WHERE unique_id=?";
+        let streamer: BaseStreamer;
+        const db = await makeDb();
         try{
             const rows = (await db.query(queryString, [unique_id]))[0];
 
@@ -81,23 +81,23 @@ export const find = async (unique_id: string): Promise<BaseStreamer | false> => 
     return null;
 }
 
-export const findIdByTwitchName = async(twitch_name): Promise<string | null> => {
-    if(process.env.MYSQL == 'true') {
-        const queryString = "SELECT unique_id FROM streamers WHERE twitch_name=?";
-        const db = await makeDb(mysqlConfig);
-        try{
-            const rows = await db.query(queryString, [twitch_name]);
-        } catch (e) {
-            console.log(e);
-        } finally {
-            await db.close();
-        }
-    } else {
-        // Handle test case
-    }
+// export const findIdByTwitchName = async(twitch_name): Promise<string | null> => {
+//     if(process.env.MYSQL == 'true') {
+//         // const queryString = "SELECT unique_id FROM streamers WHERE twitch_name=?";
+//         const db = await makeDb();
+//         try{
+//             // const rows = await db.query(queryString, [twitch_name]);
+//         } catch (e) {
+//             console.log(e);
+//         } finally {
+//             await db.close();
+//         }
+//     } else {
+//         // Handle test case
+//     }
 
-    return null;
-}
+//     return null;
+// }
 
 export const setup_tracking = async () => {
 
@@ -113,7 +113,7 @@ export const setup_tracking = async () => {
 export const create = async (unique_id: string, streamer: BaseStreamer) => {
     if(process.env.MYSQL == 'true') {
         const queryString = "INSERT INTO streamers (unique_id, email, account_type, status) VALUES (?, ?, ?, ?);";
-        const db = await makeDb(mysqlConfig);
+        const db = await makeDb();
         try{
             //Assume a new streamer is creating a free account and has set their account to active (the default)
             const result = db.query(queryString, [unique_id, streamer.email, streamer.account_type, 'active']);
@@ -129,35 +129,32 @@ export const create = async (unique_id: string, streamer: BaseStreamer) => {
         }
         return false;
 
-    } else {
-        
-    }
+    } //TODO: Add else if needed
 
     return null;
 }
 
-export const update = async(unique_id: string, streamer: BaseStreamer) => {
-    if(process.env.MYSQL == 'true') {
-        const queryString = "UPDATE streamers SET account_type=?, twitch_id=?, twitch_name=?, youtube_id=?, youtube_name=?, reddit_id=?, reddit_name=? WHERE email=? AND unique_id=?";
-        const db = await makeDb(mysqlConfig);
-        try{
-            const rows = db.query(queryString, [streamer.account_type, streamer.twitch_name, streamer.youtube_name, streamer.reddit_name, streamer.email, unique_id]);
-        } catch (err) {
-            console.log(err);
-        } finally {
-            await db.close();
-        }
-    } else {
+//TODO: Add update function if needed
+// export const update = async(unique_id: string, streamer: BaseStreamer) => {
+//     if(process.env.MYSQL == 'true') {
+//         const queryString = "UPDATE streamers SET account_type=?, twitch_id=?, twitch_name=?, youtube_id=?, youtube_name=?, reddit_id=?, reddit_name=? WHERE email=? AND unique_id=?";
+//         const db = await makeDb();
+//         try{
+//             // const rows = db.query(queryString, [streamer.account_type, streamer.twitch_name, streamer.youtube_name, streamer.reddit_name, streamer.email, unique_id]);
+//         } catch (err) {
+//             console.log(err);
+//         } finally {
+//             await db.close();
+//         }
+//     } //TODO: Add else if needed
 
-    }
-
-    return null;
-}
+//     return null;
+// }
 
 export const del = async(streamer_id: string) => {
     if(process.env.MYSQL == 'true') {
         const queryString = "DELETE FROM streamers WHERE unique_id=?";
-        const db = await makeDb(mysqlConfig);
+        const db = await makeDb();
 
         try {
             db.query(queryString, [streamer_id]);
@@ -166,9 +163,7 @@ export const del = async(streamer_id: string) => {
         } finally {
             await db.close();
         }
-    } else {
-
-    }
+    } //TODO: Add else if needed
 
     return null;
 }
@@ -177,7 +172,7 @@ export const del = async(streamer_id: string) => {
  * 
  */
 
-async function makeDb(config) {
+async function makeDb() {
     const connection = await mysql.createConnection( mysqlConfig );
 
     return {
@@ -195,7 +190,7 @@ export const add_twitter = async (username: string, twitter_username: string) =>
     if(user_data) {
         if(process.env.MYSQL == "true") {
             const queryString = "UPDATE streamers SET twitter_username=?, twitter_id=? WHERE username=?";
-            const db = await makeDb(mysqlConfig);
+            const db = await makeDb();
             try{
                 db.query(queryString, [twitter_username, user_data.data.id, username]);
             } catch (err) {
@@ -211,7 +206,7 @@ export const add_twitter = async (username: string, twitter_username: string) =>
 export const add_twitter_access = async (username: string, twitter_access_token: string, twitter_access_secret: string) => {
     if(process.env.MYSQL == "true") {
         const queryString = "UPDATE streamers SET twitter_access_token=?, twitter_access_token_secret=? WHERE username=?";
-        const db = await makeDb(mysqlConfig);
+        const db = await makeDb();
         try{
             db.query(queryString, [twitter_access_token, twitter_access_secret, username]);
         } catch (err) {
@@ -232,7 +227,7 @@ export const add_twitch = async (unique_id: string, twitch_code: string) => {
         StreamersList[unique_id]["Twitch_Streamer"] = await new Twitch_Streamer(unique_id, {accessToken: accessToken}); //TODO: Replicate this for each member of database
 
         const twitch_data: HelixPrivilegedUser = await StreamersList[unique_id]["Twitch_Streamer"].retreive_twitch_data(store_twitch_access_token);
-        const db = await makeDb(mysqlConfig);
+        const db = await makeDb();
         const checkQueryString = "SELECT unique_id FROM streamers WHERE twitch_id=?";
 
         const rows = await db.query(checkQueryString, [StreamersList[unique_id]["Twitch_Streamer"].twitch_id]);
@@ -261,9 +256,9 @@ export const add_twitch = async (unique_id: string, twitch_code: string) => {
 }
 
 export const setup_twitch_events = async () => {
-    const db = await makeDb(mysqlConfig);
+    const db = await makeDb();
     const queryString = "SELECT unique_id, twitch_id FROM streamers WHERE status='active'";
-    var reply;
+    let reply;
 
     try {
         reply = await db.query(queryString, []);
@@ -271,7 +266,7 @@ export const setup_twitch_events = async () => {
         for (let index = 0; index < reply[0].length; index++) {
             if(reply[0][index].twitch_id!==null) {
                 // const access_token = reply[0][index].twitch_accessToken;
-                const refresh_token = reply[0][index].twitch_refreshToken;
+                // const refresh_token = reply[0][index].twitch_refreshToken;
 
                 const twitch_streamer: Twitch_Streamer = await new Twitch_Streamer(reply[0][index].unique_id, {twitch_id: reply[0][index].twitch_id});
                 twitch_streamer.setup_live_subscriptions([streamer_go_live, streamer_go_offline]);
@@ -288,9 +283,9 @@ export const setup_twitch_events = async () => {
 
 export const streamer_go_live = async (twitch_id: string) => {
     // Need to react to the streamer going live
-    const db = await makeDb(mysqlConfig);
-    const queryString:string = "SELECT unique_id, twitter_access_token, twitter_access_token_secret, twitter_username FROM streamers WHERE twitch_id=?"
-    var reply;
+    const db = await makeDb();
+    const queryString = "SELECT unique_id, twitter_access_token, twitter_access_token_secret, twitter_username FROM streamers WHERE twitch_id=?"
+    let reply;
 
     try {
         reply = await db.query(queryString, [twitch_id]);
@@ -313,10 +308,10 @@ export const streamer_go_live = async (twitch_id: string) => {
 }
 
 export const streamer_go_offline = async (twitch_id: string) => {
-    const db = await makeDb(mysqlConfig);
-    const queryString: string = "SELECT unique_id, twitter_access_token, twitter_access_token_secret, twitter_username, twitter_return_image FROM streamers WHERE twitch_id=?";
-    const queryString2: string = "UPDATE streamers SET twitter_return_image=NULL WHERE twitch_id=?";
-    var reply;
+    const db = await makeDb();
+    const queryString = "SELECT unique_id, twitter_access_token, twitter_access_token_secret, twitter_username, twitter_return_image FROM streamers WHERE twitch_id=?";
+    const queryString2 = "UPDATE streamers SET twitter_return_image=NULL WHERE twitch_id=?";
+    let reply;
 
     try {
         reply = await db.query(queryString, [twitch_id]);
@@ -334,58 +329,29 @@ export const streamer_go_offline = async (twitch_id: string) => {
 }
 
 async function store_image_filename(unique_id: string, filename: string) {
-    const db = await makeDb(mysqlConfig);
+    const db = await makeDb();
     const queryString = "UPDATE streamers SET twitter_return_image=? WHERE unique_id=?";
-    var reply;
+    // let reply;
 
     try {
-        reply = await db.query(queryString, [filename, unique_id]);
-    } catch { 
-
+        db.query(queryString, [filename, unique_id]); //TODO: await if needed
     } finally {
         db.close();
     }
 }
 
 async function store_twitch_access_token(unique_id: string, access_token: AccessToken) {
-    const db = await makeDb(mysqlConfig);
+    const db = await makeDb();
     const queryString = "UPDATE streamers SET twitch_accessToken=?, twitch_refreshToken=?, twitch_expiresIn=? WHERE unique_id=?";
-    var reply;
+    // let reply;
 
     try {
-        reply = await db.query(queryString, [access_token.accessToken, access_token.refreshToken, access_token.expiresIn, unique_id]);
+        db.query(queryString, [access_token.accessToken, access_token.refreshToken, access_token.expiresIn, unique_id]); //TODO: await if needed
     } catch {
         // TODO: Need a functional catch here in the scenario that the connection to the database cannot be established
     } finally {
         db.close();
     }
-    // Store twitch data here -
-    // Remove unnecessary code
-    // Test new twitch streamer implementation
-    // Finish streamer router for twitch code
-    // Ensure that both first time and repeat activity works
-    // Confirm that refreshing auth provider is working
-    // Confirm that start up with old token retreives new token
-    // Add Angular instance to DigitalOcean
-    // Add Backend instance to DigitalOcean
-    // Return positive to front end to confirm twitch data received
 }
 
 const StreamersList = {};
-
-// export class StoreFunctions {
-//     public unique_id: string;
-//     private _twitter_account;
-//     private _twitch_streamer: Twitch_Streamer;
-
-//     constructor(unique_id: string) {
-//         this.unique_id = unique_id;
-//     }
-
-//     // public set twitchStreamer(v: Twitch_Streamer) {
-//     //     this._twitch_streamer = v;
-//     // }
-//     public store_twitch_access_token(access_token: AccessToken) {
-
-//     }
-// }

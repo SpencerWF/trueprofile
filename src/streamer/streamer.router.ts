@@ -4,11 +4,7 @@
 
 import express, { Request, Response } from "express";
 import * as StreamerService from "./streamer.service";
-import * as ProfileService from "../profile/profile.service";
-import * as CanvasService from "../canvas/canvas.service";
-import { Streamer, BaseStreamer } from "./streamer.interface";
-import { Stream } from "stream";
-import { BaseProfile, Profile } from "../profile/profile.interface";
+import { BaseStreamer } from "./streamer.interface";
 
 /**
  * Router Definition
@@ -29,7 +25,7 @@ streamerRouter.get("/id", async(req: Request, res: Response) => {
     // console.log(`Looking for information about ${streamer_id}`);
 
     try{
-        var streamer: BaseStreamer | false = await StreamerService.find(streamer_id);
+        let streamer: BaseStreamer | false = await StreamerService.find(streamer_id);
         // console.log("Received streamer from service");
         // console.table(streamer);
 
@@ -56,43 +52,43 @@ streamerRouter.get("/id", async(req: Request, res: Response) => {
 
 // GET streamer/id/:streamerid
 
-streamerRouter.get("/twitch/:twitchname", async(req: Request, res: Response) => {
-    const twitch_name: string = req.params.twitchid;
+// streamerRouter.get("/twitch/:twitchname", async(req: Request, res: Response) => {
+//     const twitch_name: string = req.params.twitchid;
 
-    // Insert Auth here
+//     // Insert Auth here
 
-    try {
-        const streamer_id: string = await StreamerService.findIdByTwitchName(twitch_name);
+//     try {
+//         const streamer_id: string = await StreamerService.findIdByTwitchName(twitch_name);
 
-        if(streamer_id) {
-            return streamerRouter.get(streamer_id);
-        }
-        res.status(404).send("Streamer not found");
+//         if(streamer_id) {
+//             return streamerRouter.get(streamer_id);
+//         }
+//         res.status(404).send("Streamer not found");
         
-    } catch (e) {
-        let errorMessage = "Failed without error instance";
-        if(e instanceof Error) {
-            errorMessage = e.message;
-        }
-        res.status(500).send(errorMessage); 
-    }
+//     } catch (e) {
+//         let errorMessage = "Failed without error instance";
+//         if(e instanceof Error) {
+//             errorMessage = e.message;
+//         }
+//         res.status(500).send(errorMessage); 
+//     }
 
-});
+// });
 // /api/streamer/twitch_code/
 
 // POST streamer/id
 streamerRouter.post("/id", async(req: Request, res: Response) => {
     const streamer_id: string = req.auth.payload.sub;
-    const streamer_email: string = req.auth.payload[process.env.EMAIL_INDEX];
+    // const streamer_email: string = req.auth.payload[process.env.EMAIL_INDEX];
 
     try {
         const streamer: BaseStreamer = req.body;
             // Creating streamer
-            const freshStreamer: BaseStreamer = {
-                email: streamer_email,
-                account_type: "free",
-                status: "active",
-            }
+            // const freshStreamer: BaseStreamer = {
+            //     email: streamer_email,
+            //     account_type: "free",
+            //     status: "active",
+            // }
 
         const newStreamer = await StreamerService.create(streamer_id, streamer);
 
@@ -102,32 +98,32 @@ streamerRouter.post("/id", async(req: Request, res: Response) => {
         if(e instanceof Error) {
             errorMessage = e.message;
         }
-        res.status(500).send(e.message);
+        res.status(500).send(errorMessage);
     }
 });
 
 // PUT streamer/id/:streamerid
 
-streamerRouter.put("/id", async (req: Request, res: Response) => {
-    const streamer_id: string = req.auth.payload.sub;
+// streamerRouter.put("/id", async (req: Request, res: Response) => {
+//     const streamer_id: string = req.auth.payload.sub;
 
-    try {
-      const StreamerUpdate: Streamer = req.body;
+//     try {
+//       const StreamerUpdate: Streamer = req.body;
   
-      const existingStreamer: BaseStreamer | false = await StreamerService.find(streamer_id);
+//       const existingStreamer: BaseStreamer | false = await StreamerService.find(streamer_id);
   
-      if (existingStreamer) {
-        const updatedStreamer = await StreamerService.update(streamer_id, StreamerUpdate);
-        return res.status(200).json(updatedStreamer);
-      }
+//       if (existingStreamer) {
+//         const updatedStreamer = await StreamerService.update(streamer_id, StreamerUpdate);
+//         return res.status(200).json(updatedStreamer);
+//       }
   
-      const newStreamer = await StreamerService.create(streamer_id, StreamerUpdate);
+//       const newStreamer = await StreamerService.create(streamer_id, StreamerUpdate);
   
-      res.status(201).json(newStreamer);
-    } catch (e) {
-      res.status(500).send(e.message);
-    }
-});
+//       res.status(201).json(newStreamer);
+//     } catch (e) {
+//       res.status(500).send(e.message);
+//     }
+// });
 
 streamerRouter.put("/twitch_code", async (req: Request, res: Response) => {
     console.log("Received request to twitch_code");
@@ -165,16 +161,13 @@ streamerRouter.put("/twitch_code", async (req: Request, res: Response) => {
 //     }
 // });
 
-streamerRouter.delete("/id", async(req: Request, res: Response) => {
+streamerRouter.delete("/id", async(req: Request) => {
     const streamer_id: string = req.auth.payload.sub;
 
-    try {
-        const existingStreamer: BaseStreamer | false = await StreamerService.find(streamer_id);
+    const existingStreamer: BaseStreamer | false = await StreamerService.find(streamer_id);
 
-        if (existingStreamer) {
-            await StreamerService.del(streamer_id);
-        }
-    } catch (e) {
-
+    if (existingStreamer) {
+        await StreamerService.del(streamer_id);
     }
+
 });
