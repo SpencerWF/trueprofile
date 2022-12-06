@@ -7,7 +7,7 @@
     "start": "ts-node src/index.ts",
     "test": "mocha -r ts-node/register --no-color 'tests/**/*.ts' --exit",
     "dev": "nodemon src/index.ts",
-    "serve": "tsc src/index.ts -w & pm2 start dist/app.js --watch"
+    "serve": "tsc src/index.ts -w & pm2 start dist/index.js --watch"
   },
   "repository": {
     "type": "git",
