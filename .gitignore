@@ -128,3 +128,4 @@ arcade/games/*/build/*
 arcade/games/*/.internal/*
 
 **/images/*.png
+**/images/*.jpg
