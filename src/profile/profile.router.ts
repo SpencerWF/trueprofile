@@ -9,6 +9,9 @@ import { BaseStreamer } from "../streamer/streamer.interface";
 // import { Stream } from "stream";
 import { Profile, BaseProfile } from "./profile.interface";
 
+const fs = require('fs');
+const path = require('path');
+
 /**
  * Router Definition
  */
@@ -34,6 +37,28 @@ profileRouter.get("/id/", async(req: Request, res: Response) => {
         }
 
         res.status(404).send("Profile not found");
+    } catch (e) {
+        let errorMessage = "Failed without Error instance";
+        if (e instanceof Error) {
+            errorMessage = e.message;
+        }
+        res.status(500).send(errorMessage);
+    }
+});
+
+profileRouter.get("/id/image/:image", async(req: Request, res: Response) => {
+    const streamer_id: string = req.auth.payload.sub;
+    const image_url: string = req.params.image;
+
+    console.log(`Looking for image for streamer: ${streamer_id} with ${image_url}`);
+
+    try{
+        if(fs.existsSync(`${__dirname}/../images/${image_url}.jpg`)) {
+            return res.sendFile(path.resolve(`${__dirname}/../images/${image_url}.jpg`));
+        } else {
+            console.log(__dirname);
+        }
+        res.status(404).send("Image not found");
     } catch (e) {
         let errorMessage = "Failed without Error instance";
         if (e instanceof Error) {

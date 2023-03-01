@@ -39,7 +39,6 @@ app.get('/api/public', (req, res) => {
 });
 
 app.use('/public', express.static('./public'));
-app.use('/images', express.static('./images'));
 
 app.use(checkJwt);
 
