@@ -129,3 +129,6 @@ arcade/games/*/.internal/*
 
 **/images/*.png
 **/images/*.jpg
+
+# Remove js files from git
+**/*.js
