@@ -5,12 +5,28 @@
 import express, { Request, Response } from "express";
 import * as StreamerService from "./streamer.service";
 import { BaseStreamer } from "./streamer.interface";
+import axios from "axios";
+import { sign } from "crypto";
 
 /**
  * Router Definition
  */
  
 export const streamerRouter = express.Router();
+
+const oauth = require('oauth');
+const oauthConsumer = new oauth.OAuth(
+    'https://twitter.com/oauth/request_token', 
+    'https://twitter.com/oauth/access_token',
+    process.env.TWITTER_CONSUMER_KEY,
+    process.env.TWITTER_CONSUMER_SECRET,
+    '1.0a',
+    process.env.TWITTER_CALLBACK,
+    'HMAC-SHA1'
+)
+const https = require('https');
+
+var hmacsha1 = require('hmacsha1');
 
  /**
   * Controller Definitions
@@ -49,6 +65,38 @@ streamerRouter.get("/id", async(req: Request, res: Response) => {
         res.status(500).send(errorMessage);
     }
 });
+
+streamerRouter.get("/twitter/request_token", async(req: Request, res: Response) => {
+    // Perform the first step in the Twitter OAuth process
+    const streamer_id: string = req.auth.payload.sub;
+
+    try{
+        // Confirm user exists in the database
+        let streamer: BaseStreamer | false = await StreamerService.find(streamer_id);
+
+        if(streamer) {
+            try {
+                const reply = await getOAuthRequestToken();
+                if(typeof reply == 'string' && reply["results"]["oauth_callback_confirmed"] != 'true') {
+                    res.status(500);
+                }
+                console.log(`OAuth Tokens `);
+                console.log(reply);
+                StreamerService.add_twitter_oauth(streamer_id, reply["oauthRequestToken"], reply["oauthRequestTokenSecret"]);
+                res.status(200).send(`https://api.twitter.com/oauth/authorize?oauth_token=${reply["oauthRequestToken"]}`);
+            } catch (error) {
+                console.error(error);
+                res.status(401);
+            }
+        }
+    } catch (e) {
+        let errorMessage = "Failed without Error instance";
+        if (e instanceof Error) {
+            errorMessage = e.message;
+        }
+        res.status(500).send(errorMessage);
+    }
+})
 
 // GET streamer/id/:streamerid
 
@@ -140,26 +188,26 @@ streamerRouter.put("/twitch_code", async (req: Request, res: Response) => {
 });
 
 //TODO: Need a function to push twitter access tokens to mysql database
-// streamerRouter.put("/id/:streamerid/twitter_access", async (req: Request, res: Response) => {
-//     const unique_id: string = req.params.id;
+streamerRouter.put("/twitter_access", async (req: Request, res: Response) => {
+    const streamer_id: string = req.auth.payload.sub;
   
-//     try {
-//       const StreamerUpdate: Streamer = req.body;
-  
-//       const existingStreamer: Streamer = await StreamerService.find(unique_id);
-  
-//       if (existingStreamer) {
-//         const updatedStreamer = await StreamerService.update(unique_id, StreamerUpdate);
-//         return res.status(200).json(updatedStreamer);
-//       }
-  
-//       const newStreamer = await StreamerService.create(StreamerUpdate);
-  
-//       res.status(201).json(newStreamer);
-//     } catch (e) {
-//       res.status(500).send(e.message);
-//     }
-// });
+    try {
+        const twitter_oauth_token: string = req.body.oauth_token;
+        const twitter_oauth_verifier: string = req.body.oauth_verifier;
+        const twitter_oauth_token_secret: string = await StreamerService.get_twitter_temp_oauth_secret(streamer_id);
+
+        console.table(req.body);
+
+        const reply = getOAuthAccessTokenWith(twitter_oauth_token, twitter_oauth_token_secret, twitter_oauth_verifier);
+
+        console.log(`OAuth Tokens `);
+        console.log(reply);
+
+        StreamerService.add_twitter_access(streamer_id, reply["oauthAccessToken"], reply["oauthAccessTokenSecret"]);
+    } catch (e) {
+        res.status(500).send(e.message);
+    }
+});
 
 streamerRouter.delete("/id", async(req: Request) => {
     const streamer_id: string = req.auth.payload.sub;
@@ -171,3 +219,41 @@ streamerRouter.delete("/id", async(req: Request) => {
     }
 
 });
+
+async function getOAuthAccessTokenWith (oauthRequestToken, oauthRequestTokenSecret, oauthVerifier) {
+    return new Promise((resolve, reject) => {
+      oauthConsumer.getOAuthAccessToken(oauthRequestToken, oauthRequestTokenSecret, oauthVerifier, function (error, oauthAccessToken, oauthAccessTokenSecret, results) {
+        return error
+          ? reject(new Error('Error getting OAuth access token'))
+          : resolve({ oauthAccessToken, oauthAccessTokenSecret, results })
+      })
+    })
+}
+async function getOAuthRequestToken () {
+    return new Promise((resolve, reject) => {
+        oauthConsumer.getOAuthRequestToken(function (error, oauthRequestToken, oauthRequestTokenSecret, results) {
+        return error
+            ? reject(new Error('Error getting OAuth request token'))
+            : resolve({ oauthRequestToken, oauthRequestTokenSecret, results })
+        })
+    })
+}
+
+function make_nonce():string {
+    let output_string = "";
+    const options = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    for(let i=0; i<42; i++) {
+        output_string += options.charAt(Math.floor(Math.random()*options.length))
+    }
+
+    return output_string;
+}
+
+function make_signature():string {
+    let signature_string = "";
+    const http_method = "POST";
+    const base_url = "https://api.twitter.com/oauth/request_token"
+
+    return signature_string;
+}

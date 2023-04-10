@@ -60,7 +60,7 @@ export const retrieve_image_from_url = async (image_url: string): Promise<Buffer
  * Needed functions
  */
 
- function make_image_name():string {
+function make_image_name():string {
     let output_string = "";
     const options = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 

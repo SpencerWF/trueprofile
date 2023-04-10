@@ -203,12 +203,12 @@ export const add_twitter = async (username: string, twitter_username: string) =>
     }
 }
 
-export const add_twitter_access = async (username: string, twitter_access_token: string, twitter_access_secret: string) => {
+export const add_twitter_access = async (unique_id: string, twitter_access_token: string, twitter_access_secret: string) => {
     if(process.env.MYSQL == "true") {
-        const queryString = "UPDATE streamers SET twitter_access_token=?, twitter_access_token_secret=? WHERE username=?";
+        const queryString = "UPDATE streamers SET twitter_access_token=?, twitter_access_token_secret=? WHERE unique_id=?";
         const db = await makeDb();
         try{
-            db.query(queryString, [twitter_access_token, twitter_access_secret, username]);
+            db.query(queryString, [twitter_access_token, twitter_access_secret, unique_id]);
         } catch (err) {
             // Once a discord server is setup should report errors to a webhook on discord
             console.log(err);
@@ -216,6 +216,42 @@ export const add_twitter_access = async (username: string, twitter_access_token:
             await db.close();
         }
     } 
+}
+
+export const get_twitter_temp_oauth_secret = async (unique_id: string) => {
+    if(process.env.MYSQL == "true") {
+        const queryString = "SELECT twitter_oauth_token_secret FROM streamers WHERE unique_id=?";
+        const db = await makeDb();
+
+        try{
+            const rows = await db.query(queryString, [unique_id]);
+
+            if(Array.isArray(rows[0]) && rows[0].length==0) {
+                return rows[0]['twitter_oauth_token_secret'];
+            } else {
+                return false;
+            }
+        } catch (err) {
+            console.log(err);
+        } finally {
+            await db.close();
+        }
+    }
+}
+
+export const add_twitter_oauth = async (unique_id: string, twitter_oauth_token: string, twitter_oauth_token_secret: string) => {
+    if(process.env.MYSQL == "true") {
+        const queryString = "UPDATE streamers SET twitter_oauth_token=?, twitter_oauth_token_secret=? WHERE unique_id=?";
+        const db = await makeDb();
+
+        try{
+            db.query(queryString, [twitter_oauth_token, twitter_oauth_token_secret, unique_id]);
+        } catch (err) {
+            console.log(err);
+        } finally {
+            await db.close();
+        }
+    }
 }
 
 export const add_twitch = async (unique_id: string, twitch_code: string) => {

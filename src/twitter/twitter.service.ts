@@ -14,8 +14,8 @@ const fs = require('fs');
  */
 // Used for twitter api v1.1
 const T = new Twit({
-    consumer_key: process.env.TWITTER_API_KEY,
-    consumer_secret: process.env.TWITTER_API_SECRET,
+    consumer_key: process.env.TWITTER_CONSUMER_KEY,
+    consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
     access_token: process.env.TWITTER_ACCOUNT_ACCESS_TOKEN,
     access_token_secret: process.env.TWITTER_ACCOUNT_ACCESS_SECRET
 })
@@ -65,6 +65,12 @@ export const get_twitter_data = async (twitter_username: string) => {
         console.log(error);
         return null;
     }
+}
+
+export const get_twitter_request_token = async () => {
+    T.post('oauth/request_token', {
+        oauth_callback: "https%3A%2F%2Fgeniecreator.com%2Ftwitter-login"
+    });
 }
 
 /**
