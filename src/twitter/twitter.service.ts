@@ -13,12 +13,15 @@ const fs = require('fs');
  * Necessary Defines
  */
 // Used for twitter api v1.1
-const T = new Twit({
-    consumer_key: process.env.TWITTER_CONSUMER_KEY,
-    consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
-    access_token: process.env.TWITTER_ACCOUNT_ACCESS_TOKEN,
-    access_token_secret: process.env.TWITTER_ACCOUNT_ACCESS_SECRET
-})
+var twit_dict = {};
+
+// const T = new Twit({
+//     consumer_key: process.env.TWITTER_CONSUMER_KEY,
+//     consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+//     access_token: process.env.TWITTER_ACCOUNT_ACCESS_TOKEN,
+//     access_token_secret: process.env.TWITTER_ACCOUNT_ACCESS_SECRET
+// })
+
 
 // Used for twitter api v2
 const twitter_client = new Client(process.env.TWITTER_BEARER_TOKEN);
@@ -26,9 +29,10 @@ const twitter_client = new Client(process.env.TWITTER_BEARER_TOKEN);
 /**
  * Exported Functions
  */
-export const twitter_test = async () => {
+export const twitter_test = async (access_token: string, access_token_secret: string) => {
     const buff = await fs.readFileSync('cat_400x400.jpg');
     const base64data = buff.toString('base64');
+    const twit = 
     T.post('account/update_profile_image', { name:'cat', image: base64data}, function(err, data) {
         console.log(data);
     });
@@ -76,9 +80,22 @@ export const get_twitter_request_token = async () => {
 /**
  * Necessary Functions
  */
-// function get_twitter_access(username: string) {
-    
-// }
+function get_twit(unique_id: string, access_token: string, access_token_secret: string) {
+    if(!twit_dict[unique_id]) {
+        try{
+            twit_dict[unique_id]= new Twit({
+                consumer_key: process.env.TWITTER_CONSUMER_KEY,
+                consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+                access_token: access_token,
+                access_token_secret: access_token_secret
+            })
+        } catch (err) {
+            console.log(`Could not create twit with access token and access token secret, Error ${err}`);
+        }
+    }
+
+    return twit_dict[unique_id];
+}
 
 /**
  * Needed for creation of twitter images

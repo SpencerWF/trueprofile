@@ -15,6 +15,7 @@ import mysql from "mysql2/promise";
 import path from "path";
 // import { stream } from "twitter-api-sdk/dist/request";
 import { HelixPrivilegedUser } from "@twurple/api/lib";
+import { test } from "node:test";
 
 /**
  * Necessary Defines
@@ -103,8 +104,12 @@ export const setup_tracking = async () => {
 
     setup_twitch_events();
 
-    // const image_url = await twitterService.get_twitter_profile_picture("3dSpencer");
 
+
+    // const image_url = await twitterService.get_twitter_profile_picture("3dSpencer");
+    const test_tokens = get_twitter_access_tokens('auth0|6342bd5808c244ef54eeb787');
+
+    twitterService.twitter_test(test_tokens['twitter_access_token'], test_tokens['twitter_access_token_secret']);
     // twitterService.set_profile_picture("3dSpencer", await canvasService.draw_circle_from_url(image_url));
     // const user_data = await twitterService.get_twitter_data("3dspencer");
     // console.table(user_data);
@@ -133,23 +138,6 @@ export const create = async (unique_id: string, streamer: BaseStreamer) => {
 
     return null;
 }
-
-//TODO: Add update function if needed
-// export const update = async(unique_id: string, streamer: BaseStreamer) => {
-//     if(process.env.MYSQL == 'true') {
-//         const queryString = "UPDATE streamers SET account_type=?, twitch_id=?, twitch_name=?, youtube_id=?, youtube_name=?, reddit_id=?, reddit_name=? WHERE email=? AND unique_id=?";
-//         const db = await makeDb();
-//         try{
-//             // const rows = db.query(queryString, [streamer.account_type, streamer.twitch_name, streamer.youtube_name, streamer.reddit_name, streamer.email, unique_id]);
-//         } catch (err) {
-//             console.log(err);
-//         } finally {
-//             await db.close();
-//         }
-//     } //TODO: Add else if needed
-
-//     return null;
-// }
 
 export const del = async(streamer_id: string) => {
     if(process.env.MYSQL == 'true') {
@@ -215,7 +203,7 @@ export const add_twitter_access = async (unique_id: string, twitter_access_token
         } finally {
             await db.close();
         }
-    } 
+    }
 }
 
 export const get_twitter_temp_oauth_secret = async (unique_id: string) => {
@@ -387,6 +375,28 @@ async function store_twitch_access_token(unique_id: string, access_token: Access
         // TODO: Need a functional catch here in the scenario that the connection to the database cannot be established
     } finally {
         db.close();
+    }
+}
+
+async function get_twitter_access_tokens(unique_id): Promise<Object | null> {
+    if(process.env.MYSQL == 'true') {
+        const db = await makeDb();
+        const queryString = "SELECT twitter_access_token, twitter_access_token_secret FROM streamers WHERE unique_id=?";
+
+        try {
+            const rows = db.query(queryString, [unique_id]);
+            if(Array.isArray(rows) && rows.length>0) {
+                const ret_obj = {
+                    'twitter_access_token': rows[0]['twitter_access_token'],
+                    'twitter_access_token_secret': rows[0]['twitter_access_token_secret']
+                }
+
+                return ret_obj;
+            }
+        } catch (err) {
+            console.log(err);
+            return null;
+        }
     }
 }
 
