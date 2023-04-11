@@ -387,8 +387,7 @@ async function get_twitter_access_tokens(unique_id): Promise<Object | null> {
         const queryString = "SELECT twitter_access_token, twitter_access_token_secret FROM streamers WHERE unique_id=?";
 
         try {
-            const rows = db.query(queryString, [unique_id]);
-            console.log(rows);
+            const rows = await db.query(queryString, [unique_id]);
             if(Array.isArray(rows) && rows.length>0) {
                 console.log(rows);
                 const ret_obj = {
