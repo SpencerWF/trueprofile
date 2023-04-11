@@ -86,7 +86,7 @@ export const get_twitter_data = async (twitter_username: string) => {
  * Necessary Functions
  */
 function get_twit(unique_id: string, access_token: string, access_token_secret: string) {
-    if(!twit_dict[unique_id]) {
+    if(twit_dict[unique_id] === undefined) {
         try{
             twit_dict[unique_id]= new Twit({
                 consumer_key: process.env.TWITTER_CONSUMER_KEY,
@@ -95,7 +95,7 @@ function get_twit(unique_id: string, access_token: string, access_token_secret: 
                 access_token_secret: access_token_secret
             })
         } catch (err) {
-            console.log(`Could not create twit with access token and access token secret, Error ${err}`);
+            console.error(`Could not create twit with access token and access token secret, Error ${err}`);
             return false;
         }
     }
