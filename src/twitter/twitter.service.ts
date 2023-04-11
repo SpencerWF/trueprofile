@@ -76,7 +76,7 @@ export const get_twitter_data = async (twitter_username: string) => {
 //     T.post('oauth/request_token', {
 //         oauth_callback: "https%3A%2F%2Fgeniecreator.com%2Ftwitter-login"
 //     });
-}
+//}
 
 /**
  * Necessary Functions
