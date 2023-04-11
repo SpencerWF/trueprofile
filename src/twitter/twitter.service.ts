@@ -49,9 +49,10 @@ export const get_twitter_profile_picture = async (twitter_username: string) => {
     return null;
 }
 
-export const set_profile_picture = async (access_token: string, access_token_secret: string, image_data: string | Buffer) => {
+export const set_profile_picture = async (unique_id: string, access_token: string, access_token_secret: string, image_data: string | Buffer) => {
     // let buff = await fs.readFileSync('cat_400x400.jpg');
     const base64data = image_data.toString('base64');
+    const T = get_twit(unique_id, access_token, access_token_secret);
     T.post('account/update_profile_image', { image: base64data}, function() {
         // console.log(data);
     });
@@ -71,10 +72,10 @@ export const get_twitter_data = async (twitter_username: string) => {
     }
 }
 
-export const get_twitter_request_token = async () => {
-    T.post('oauth/request_token', {
-        oauth_callback: "https%3A%2F%2Fgeniecreator.com%2Ftwitter-login"
-    });
+// export const get_twitter_request_token = async () => {
+//     T.post('oauth/request_token', {
+//         oauth_callback: "https%3A%2F%2Fgeniecreator.com%2Ftwitter-login"
+//     });
 }
 
 /**
