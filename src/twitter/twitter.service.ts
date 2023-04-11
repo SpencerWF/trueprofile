@@ -33,7 +33,7 @@ export const twitter_test = async (unique_id: string, access_token: string, acce
     const buff = await fs.readFileSync('cat_400x400.jpg');
     const base64data = buff.toString('base64');
     const T = get_twit(unique_id, access_token, access_token_secret);
-    if(T !== undefined) {
+    if(T) {
         T.post('account/update_profile_image', { name:'cat', image: base64data}, function(err, data) {
             console.log(data);
         });
@@ -95,7 +95,7 @@ function get_twit(unique_id: string, access_token: string, access_token_secret: 
                 access_token_secret: access_token_secret
             })
         } catch (err) {
-            console.error(`Could not create twit with access token and access token secret, Error ${err}`);
+            console.error(`Could not create twit with access token and access token secret, ${err}`);
             return false;
         }
     }
