@@ -321,7 +321,7 @@ export const streamer_go_live = async (twitch_id: string) => {
             
             const image_data = await canvasService.draw_circle_from_url(filename);
 
-            twitterService.set_profile_picture(reply[0][0].twitter_access_token, reply[0][0].twitter_access_token_secret, image_data);
+            twitterService.set_profile_picture(reply[0][0].unique_id, reply[0][0].twitter_access_token, reply[0][0].twitter_access_token_secret, image_data);
         } else {
             console.log("No image returned, need to update discord once created.")
         }
@@ -343,7 +343,7 @@ export const streamer_go_offline = async (twitch_id: string) => {
         const filepath: string = path.join(__dirname, '..', 'images', `${reply[0][0].twitter_return_image}.png`);
         if(filepath != "null.png") {
             const image_data: Buffer | null = await canvasService.retrieve_image_from_url(filepath);
-            twitterService.set_profile_picture(reply[0][0].twitter_access_token, reply[0][0].twitter_access_secret, image_data);
+            twitterService.set_profile_picture(reply[0][0].unique_id, reply[0][0].twitter_access_token, reply[0][0].twitter_access_secret, image_data);
         } else {
             console.log("Image string is null");
         }
