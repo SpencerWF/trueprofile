@@ -109,7 +109,7 @@ export const setup_tracking = async () => {
     // const image_url = await twitterService.get_twitter_profile_picture("3dSpencer");
     const test_tokens = get_twitter_access_tokens('auth0|6342bd5808c244ef54eeb787');
 
-    twitterService.twitter_test(test_tokens['twitter_access_token'], test_tokens['twitter_access_token_secret']);
+    twitterService.twitter_test('auth0|6342bd5808c244ef54eeb787', test_tokens['twitter_access_token'], test_tokens['twitter_access_token_secret']);
     // twitterService.set_profile_picture("3dSpencer", await canvasService.draw_circle_from_url(image_url));
     // const user_data = await twitterService.get_twitter_data("3dspencer");
     // console.table(user_data);

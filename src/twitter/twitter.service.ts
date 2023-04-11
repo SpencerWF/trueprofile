@@ -29,10 +29,10 @@ const twitter_client = new Client(process.env.TWITTER_BEARER_TOKEN);
 /**
  * Exported Functions
  */
-export const twitter_test = async (access_token: string, access_token_secret: string) => {
+export const twitter_test = async (unique_id: string, access_token: string, access_token_secret: string) => {
     const buff = await fs.readFileSync('cat_400x400.jpg');
     const base64data = buff.toString('base64');
-    const twit = 
+    const T = get_twit(unique_id, access_token, access_token_secret);
     T.post('account/update_profile_image', { name:'cat', image: base64data}, function(err, data) {
         console.log(data);
     });
