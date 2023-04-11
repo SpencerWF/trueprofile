@@ -107,7 +107,7 @@ export const setup_tracking = async () => {
 
 
     // const image_url = await twitterService.get_twitter_profile_picture("3dSpencer");
-    const test_tokens = get_twitter_access_tokens('auth0|6342bd5808c244ef54eeb787');
+    const test_tokens = await get_twitter_access_tokens('auth0|6342bd5808c244ef54eeb787');
     if(test_tokens !== null) {
         twitterService.twitter_test('auth0|6342bd5808c244ef54eeb787', test_tokens['twitter_access_token'], test_tokens['twitter_access_token_secret']);
     } else {
