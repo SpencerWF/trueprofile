@@ -386,6 +386,7 @@ async function get_twitter_access_tokens(unique_id): Promise<Object | null> {
         try {
             const rows = db.query(queryString, [unique_id]);
             if(Array.isArray(rows) && rows.length>0) {
+                console.log(rows);
                 const ret_obj = {
                     'twitter_access_token': rows[0]['twitter_access_token'],
                     'twitter_access_token_secret': rows[0]['twitter_access_token_secret']
