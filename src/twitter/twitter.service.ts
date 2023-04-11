@@ -86,9 +86,10 @@ export const get_twitter_data = async (twitter_username: string) => {
  * Necessary Functions
  */
 function get_twit(unique_id: string, access_token: string, access_token_secret: string) {
+    console.log(`Unique_id: ${unique_id}, access token ${access_token}, access token secret ${access_token_secret}`);
     if(twit_dict[unique_id] === undefined) {
         try{
-            twit_dict[unique_id]= new Twit({
+            twit_dict[unique_id] = new Twit({
                 consumer_key: process.env.TWITTER_CONSUMER_KEY,
                 consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
                 access_token: access_token,

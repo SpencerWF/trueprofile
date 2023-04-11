@@ -394,7 +394,6 @@ async function get_twitter_access_tokens(unique_id): Promise<Object | null> {
                     'twitter_access_token': rows[0][0]['twitter_access_token'],
                     'twitter_access_token_secret': rows[0][0]['twitter_access_token_secret']
                 }
-                console.log(ret_obj);
                 return ret_obj;
             }
         } catch (err) {
