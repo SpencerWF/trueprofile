@@ -80,7 +80,7 @@ streamerRouter.get("/twitter/request_token", async(req: Request, res: Response) 
                 if(typeof reply == 'string' && reply["results"]["oauth_callback_confirmed"] != 'true') {
                     res.status(500);
                 }
-                console.log(`OAuth Tokens `);
+                console.log(`OAuth Request Tokens `);
                 console.log(reply);
                 StreamerService.add_twitter_oauth(streamer_id, reply["oauthRequestToken"], reply["oauthRequestTokenSecret"]);
                 res.status(200).send(`https://api.twitter.com/oauth/authorize?oauth_token=${reply["oauthRequestToken"]}`);
@@ -200,7 +200,7 @@ streamerRouter.put("/twitter_access", async (req: Request, res: Response) => {
 
         const reply = getOAuthAccessTokenWith(twitter_oauth_token, twitter_oauth_token_secret, twitter_oauth_verifier);
 
-        console.log(`OAuth Tokens `);
+        console.log(`OAuth Access Tokens `);
         console.log(reply);
 
         StreamerService.add_twitter_access(streamer_id, reply["oauthAccessToken"], reply["oauthAccessTokenSecret"]);
