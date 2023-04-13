@@ -6,7 +6,7 @@ export interface BaseStreamer {
     twitch_name?: string;
     youtube_name?: string;
     reddit_name?: string;
-    twitter_username?: string;
+    twitter_name?: string;
     status: string;
 }
 

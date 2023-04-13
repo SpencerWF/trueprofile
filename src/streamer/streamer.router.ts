@@ -183,7 +183,7 @@ streamerRouter.put("/twitch_code", async (req: Request, res: Response) => {
 
         StreamerService.add_twitch(streamer_id, twitch_code);
     } catch (e) {
-        res.status(500).send
+        res.status(500).send(e);
     }
 });
 
@@ -218,6 +218,26 @@ streamerRouter.delete("/id", async(req: Request) => {
         await StreamerService.del(streamer_id);
     }
 
+});
+
+streamerRouter.delete("/twitch", async(req: Request) => {
+    const streamer_id: string = req.auth.payload.sub;
+
+    const existingStreamer: BaseStreamer | false = await StreamerService.find(streamer_id);
+
+    if (existingStreamer && existingStreamer.twitch_name) {
+        StreamerService.del_twitch(streamer_id);
+    }
+});
+
+streamerRouter.delete("/twitter", async(req: Request) => {
+    const streamer_id: string = req.auth.payload.sub;
+
+    const existingStreamer: BaseStreamer | false = await StreamerService.find(streamer_id);
+
+    if (existingStreamer && existingStreamer.twitter_name) {
+        StreamerService.del_twitter(streamer_id);
+    }
 });
 
 async function getOAuthAccessTokenWith (oauthRequestToken, oauthRequestTokenSecret, oauthVerifier) {

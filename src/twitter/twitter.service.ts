@@ -42,9 +42,9 @@ export const twitter_test = async (unique_id: string, access_token: string, acce
     }
 }
 
-export const get_twitter_profile_picture = async (twitter_username: string) => {
+export const get_twitter_profile_picture = async (twitter_name: string) => {
     // Get data from twitter such as profile picture url
-    const user_data = await get_twitter_data(twitter_username);
+    const user_data = await get_twitter_data(twitter_name);
     if(user_data) {
         const image_url = user_data.data.profile_image_url.replace("normal", "400x400");
         return image_url;
@@ -62,11 +62,11 @@ export const set_profile_picture = async (unique_id: string, access_token: strin
     });
 }
 
-export const get_twitter_data = async (twitter_username: string) => {
+export const get_twitter_data = async (twitter_name: string) => {
     try{
-        const user = await twitter_client.users.findUserByUsername(twitter_username, {"user.fields":["profile_image_url"]});
+        const user = await twitter_client.users.findUserByUsername(twitter_name, {"user.fields":["profile_image_url"]});
         if(!user) {
-            throw new Error("No user with username found");            
+            throw new Error("No user with name found");            
         } else {
             return user;
         }

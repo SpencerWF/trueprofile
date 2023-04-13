@@ -58,7 +58,7 @@ export const find = async (unique_id: string): Promise<BaseStreamer | false> => 
                     youtube_name: rows[0]["youtube_name"],
                     reddit_name: rows[0]["reddit_name"],
                     twitch_name: rows[0]["twitch_name"],
-                    twitter_username: rows[0]["twitter_username"],
+                    twitter_name: rows[0]["twitter_name"],
                     status: rows[0]["status"],
                 }
 
@@ -176,14 +176,14 @@ async function makeDb() {
     }
 }
 
-export const add_twitter = async (username: string, twitter_username: string) => {
-    const user_data = await twitterService.get_twitter_data(twitter_username);
+export const add_twitter = async (unique_id: string, twitter_name: string) => {
+    const user_data = await twitterService.get_twitter_data(twitter_name);
     if(user_data) {
         if(process.env.MYSQL == "true") {
-            const queryString = "UPDATE streamers SET twitter_username=?, twitter_id=? WHERE username=?";
+            const queryString = "UPDATE streamers SET twitter_name=?, twitter_id=? WHERE unique_id=?";
             const db = await makeDb();
             try{
-                db.query(queryString, [twitter_username, user_data.data.id, username]);
+                db.query(queryString, [twitter_name, user_data.data.id, unique_id]);
             } catch (err) {
                 // Once a discord server is setup should report errors to a webhook on discord
                 console.log(err);
@@ -311,13 +311,13 @@ export const setup_twitch_events = async () => {
 export const streamer_go_live = async (twitch_id: string) => {
     // Need to react to the streamer going live
     const db = await makeDb();
-    const queryString = "SELECT unique_id, twitter_access_token, twitter_access_token_secret, twitter_username FROM streamers WHERE twitch_id=?"
+    const queryString = "SELECT unique_id, twitter_access_token, twitter_access_token_secret, twitter_name FROM streamers WHERE twitch_id=?"
     let reply;
 
     try {
         reply = await db.query(queryString, [twitch_id]);
 
-        const image_url = await twitterService.get_twitter_profile_picture(reply[0][0].twitter_username);
+        const image_url = await twitterService.get_twitter_profile_picture(reply[0][0].twitter_name);
         const filename = await canvasService.save_image_from_url(image_url);
         if(filename !== null) {
             store_image_filename(reply[0][0].unique_id, filename);
@@ -336,7 +336,7 @@ export const streamer_go_live = async (twitch_id: string) => {
 
 export const streamer_go_offline = async (twitch_id: string) => {
     const db = await makeDb();
-    const queryString = "SELECT unique_id, twitter_access_token, twitter_access_token_secret, twitter_username, twitter_return_image FROM streamers WHERE twitch_id=?";
+    const queryString = "SELECT unique_id, twitter_access_token, twitter_access_token_secret, twitter_name, twitter_return_image FROM streamers WHERE twitch_id=?";
     const queryString2 = "UPDATE streamers SET twitter_return_image=NULL WHERE twitch_id=?";
     let reply;
 
@@ -350,6 +350,32 @@ export const streamer_go_offline = async (twitch_id: string) => {
         } else {
             console.log("Image string is null");
         }
+    } finally {
+        db.close();
+    }
+}
+
+export const del_twitter = async (unique_id: string) => {
+    const db = await makeDb();
+    const queryString = "UPDATE streamers SET twitter_name=NULL, twitter_oauth_token=NULL, twitter_oauth_secret";
+
+    try {
+        db.query(queryString, [unique_id]);
+    } catch (e) {
+        console.error(e);
+    } finally {
+        db.close();
+    }
+}
+
+export const del_twitch = async (unique_id: string) => {
+    const db = await makeDb();
+    const queryString = "UPDATE streamers SET twitter_name=NULL, twitch_id=NULL, twitch_accessToken=NULL WHERE unique_id=?";
+
+    try {
+        db.query(queryString, [unique_id]);
+    } catch (e) {
+        console.error(e);
     } finally {
         db.close();
     }
