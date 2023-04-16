@@ -43,7 +43,7 @@ const mysqlConfig = {
 
 export const find = async (unique_id: string): Promise<BaseStreamer | false> => {
     if(process.env.MYSQL == 'true') {
-        const queryString = "SELECT email, account_type, youtube_name, reddit_name, twitch_name, twitter_name, status FROM streamers WHERE unique_id=?";
+        const queryString = "SELECT unique_id, email, account_type, youtube_name, reddit_name, twitch_name, twitter_name, status FROM streamers WHERE unique_id=?";
         let streamer: BaseStreamer;
         const db = await makeDb();
         try{
@@ -358,6 +358,7 @@ export const streamer_go_offline = async (twitch_id: string) => {
 export const del_twitter = async (unique_id: string) => {
     const db = await makeDb();
     const queryString = "UPDATE streamers SET twitter_name=NULL, twitter_oauth_token=NULL, twitter_oauth_secret";
+    console.log(`Delete Twitter ${unique_id}`);
 
     try {
         db.query(queryString, [unique_id]);
@@ -371,6 +372,7 @@ export const del_twitter = async (unique_id: string) => {
 export const del_twitch = async (unique_id: string) => {
     const db = await makeDb();
     const queryString = "UPDATE streamers SET twitter_name=NULL, twitch_id=NULL, twitch_accessToken=NULL WHERE unique_id=?";
+    console.log(`Delete Twitch ${unique_id}`);
 
     try {
         db.query(queryString, [unique_id]);
