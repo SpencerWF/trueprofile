@@ -42,8 +42,8 @@ streamerRouter.get("/id", async(req: Request, res: Response) => {
 
     try{
         let streamer: BaseStreamer | false = await StreamerService.find(streamer_id);
-        // console.log("Received streamer from service");
-        // console.table(streamer);
+        console.log("Received streamer from service");
+        console.table(streamer);
 
         if(streamer) {
             return res.status(200).send(streamer);
