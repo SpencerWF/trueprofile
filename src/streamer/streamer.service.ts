@@ -43,7 +43,7 @@ const mysqlConfig = {
 
 export const find = async (unique_id: string): Promise<BaseStreamer | false> => {
     if(process.env.MYSQL == 'true') {
-        const queryString = "SELECT * FROM streamers WHERE unique_id=?";
+        const queryString = "SELECT email, account_type, youtube_name, reddit_name, twitch_name, twitter_name, status FROM streamers WHERE unique_id=?";
         let streamer: BaseStreamer;
         const db = await makeDb();
         try{
