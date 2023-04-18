@@ -357,7 +357,7 @@ export const streamer_go_offline = async (twitch_id: string) => {
 
 export const del_twitter = async (unique_id: string) => {
     const db = await makeDb();
-    const queryString = "UPDATE streamers SET twitter_name=NULL, twitter_oauth_token=NULL, twitter_oauth_secret";
+    const queryString = "UPDATE streamers SET twitter_name=NULL, twitter_oauth_token=NULL, twitter_oauth_secret WHERE unique_id=?";
     console.log(`Delete Twitter ${unique_id} - service`);
 
     try {
