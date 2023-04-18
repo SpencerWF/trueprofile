@@ -222,6 +222,8 @@ streamerRouter.delete("/id", async(req: Request) => {
 
 streamerRouter.delete("/twitch", async(req: Request) => {
     const streamer_id: string = req.auth.payload.sub;
+    console.log(`Delete Twitch ${streamer_id} - router`);
+
 
     const existingStreamer: BaseStreamer | false = await StreamerService.find(streamer_id);
 
@@ -232,6 +234,8 @@ streamerRouter.delete("/twitch", async(req: Request) => {
 
 streamerRouter.delete("/twitter", async(req: Request) => {
     const streamer_id: string = req.auth.payload.sub;
+
+    console.log(`Delete Twitter ${streamer_id} - router`);
 
     const existingStreamer: BaseStreamer | false = await StreamerService.find(streamer_id);
 

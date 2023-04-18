@@ -358,7 +358,7 @@ export const streamer_go_offline = async (twitch_id: string) => {
 export const del_twitter = async (unique_id: string) => {
     const db = await makeDb();
     const queryString = "UPDATE streamers SET twitter_name=NULL, twitter_oauth_token=NULL, twitter_oauth_secret";
-    console.log(`Delete Twitter ${unique_id}`);
+    console.log(`Delete Twitter ${unique_id} - service`);
 
     try {
         db.query(queryString, [unique_id]);
@@ -372,7 +372,7 @@ export const del_twitter = async (unique_id: string) => {
 export const del_twitch = async (unique_id: string) => {
     const db = await makeDb();
     const queryString = "UPDATE streamers SET twitter_name=NULL, twitch_id=NULL, twitch_accessToken=NULL WHERE unique_id=?";
-    console.log(`Delete Twitch ${unique_id}`);
+    console.log(`Delete Twitch ${unique_id} - service`);
 
     try {
         db.query(queryString, [unique_id]);
