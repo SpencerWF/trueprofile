@@ -218,7 +218,7 @@ streamerRouter.delete("/id", async(req: Request, res: Response) => {
         await StreamerService.del(streamer_id);
     }
 
-    res.status(200);
+    res.status(200).send();
 });
 
 streamerRouter.delete("/twitch", async(req: Request, res: Response) => {
@@ -232,7 +232,7 @@ streamerRouter.delete("/twitch", async(req: Request, res: Response) => {
         StreamerService.del_twitch(streamer_id);
     }
 
-    res.status(200);
+    res.status(200).send();
 });
 
 streamerRouter.delete("/twitter", async(req: Request) => {
