@@ -209,7 +209,7 @@ streamerRouter.put("/twitter_access", async (req: Request, res: Response) => {
     }
 });
 
-streamerRouter.delete("/id", async(req: Request) => {
+streamerRouter.delete("/id", async(req: Request, res: Response) => {
     const streamer_id: string = req.auth.payload.sub;
 
     const existingStreamer: BaseStreamer | false = await StreamerService.find(streamer_id);
@@ -218,9 +218,10 @@ streamerRouter.delete("/id", async(req: Request) => {
         await StreamerService.del(streamer_id);
     }
 
+    res.status(200);
 });
 
-streamerRouter.delete("/twitch", async(req: Request) => {
+streamerRouter.delete("/twitch", async(req: Request, res: Response) => {
     const streamer_id: string = req.auth.payload.sub;
     console.log(`Delete Twitch ${streamer_id} - router`);
 
@@ -230,6 +231,8 @@ streamerRouter.delete("/twitch", async(req: Request) => {
     if (existingStreamer && existingStreamer.twitch_name) {
         StreamerService.del_twitch(streamer_id);
     }
+
+    res.status(200);
 });
 
 streamerRouter.delete("/twitter", async(req: Request) => {

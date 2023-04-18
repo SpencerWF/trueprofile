@@ -371,7 +371,7 @@ export const del_twitter = async (unique_id: string) => {
 
 export const del_twitch = async (unique_id: string) => {
     const db = await makeDb();
-    const queryString = "UPDATE streamers SET twitter_name=NULL, twitch_id=NULL, twitch_accessToken=NULL WHERE unique_id=?";
+    const queryString = "UPDATE streamers SET twitch_name=NULL, twitch_id=NULL, twitch_accessToken=NULL WHERE unique_id=?";
     console.log(`Delete Twitch ${unique_id} - service`);
 
     try {
