@@ -82,24 +82,6 @@ export const find = async (unique_id: string): Promise<BaseStreamer | false> => 
     return null;
 }
 
-// export const findIdByTwitchName = async(twitch_name): Promise<string | null> => {
-//     if(process.env.MYSQL == 'true') {
-//         // const queryString = "SELECT unique_id FROM streamers WHERE twitch_name=?";
-//         const db = await makeDb();
-//         try{
-//             // const rows = await db.query(queryString, [twitch_name]);
-//         } catch (e) {
-//             console.log(e);
-//         } finally {
-//             await db.close();
-//         }
-//     } else {
-//         // Handle test case
-//     }
-
-//     return null;
-// }
-
 export const setup_tracking = async () => {
 
     setup_twitch_events();
@@ -255,28 +237,27 @@ export const add_twitch = async (unique_id: string, twitch_code: string) => {
 
         const twitch_data: HelixPrivilegedUser = await StreamersList[unique_id]["Twitch_Streamer"].retreive_twitch_data(store_twitch_access_token);
         const db = await makeDb();
-        const checkQueryString = "SELECT unique_id FROM streamers WHERE twitch_id=?";
+        // const checkQueryString = "SELECT unique_id FROM streamers WHERE twitch_id=?";
 
-        const rows = await db.query(checkQueryString, [StreamersList[unique_id]["Twitch_Streamer"].twitch_id]);
+        // const rows = await db.query(checkQueryString, [StreamersList[unique_id]["Twitch_Streamer"].twitch_id]);
 
-        if(Array.isArray(rows[0]) && rows[0].length==0) {
-            const queryString = "UPDATE streamers SET twitch_name=?, twitch_id=?, twitch_accessToken=?, twitch_refreshToken=?, twitch_obtainmentTimestamp=? WHERE unique_id=?";
+        // if(Array.isArray(rows[0]) && rows[0].length==0) {
+        const queryString = "UPDATE streamers SET twitch_name=?, twitch_id=?, twitch_accessToken=?, twitch_refreshToken=?, twitch_obtainmentTimestamp=? WHERE unique_id=?";
 
-            try {
-                db.query(queryString, [twitch_data.name, twitch_data.id, accessToken.accessToken, accessToken.refreshToken, accessToken.obtainmentTimestamp, unique_id]);
-            } catch (error) {
-                console.log(error);
-            } finally {
-                db.close();
-            }
-
-            console.log("Setup subscriptions");
-
-            //TODO: Setup proper timing on signups
-            // setTimeout(() => {
-            StreamersList[unique_id]["Twitch_Streamer"].setup_live_subscriptions([streamer_go_live, streamer_go_offline]);
-            // }, 5000);
+        try {
+            db.query(queryString, [twitch_data.name, twitch_data.id, accessToken.accessToken, accessToken.refreshToken, accessToken.obtainmentTimestamp, unique_id]);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            db.close();
         }
+
+        console.log("Setup subscriptions");
+
+        //TODO: Setup proper timing on signups
+        // setTimeout(() => {
+        StreamersList[unique_id]["Twitch_Streamer"].setup_live_subscriptions([streamer_go_live, streamer_go_offline]);
+        // }, 5000);
     }
 
     return null;
@@ -395,15 +376,29 @@ async function store_image_filename(unique_id: string, filename: string) {
     }
 }
 
-async function store_twitch_access_token(unique_id: string, access_token: AccessToken) {
+async function store_twitch_access_token(user_id: string, access_token: AccessToken) {
     const db = await makeDb();
-    const queryString = "UPDATE streamers SET twitch_accessToken=?, twitch_refreshToken=?, twitch_expiresIn=? WHERE unique_id=?";
+    const queryString = "UPDATE streamers SET twitch_accessToken=?, twitch_refreshToken=?, twitch_expiresIn=? WHERE twitch_id=?";
     // let reply;
 
     try {
-        db.query(queryString, [access_token.accessToken, access_token.refreshToken, access_token.expiresIn, unique_id]); //TODO: await if needed
+        db.query(queryString, [access_token.accessToken, access_token.refreshToken, access_token.expiresIn, user_id]); //TODO: await if needed
     } catch {
         // TODO: Need a functional catch here in the scenario that the connection to the database cannot be established
+    } finally {
+        db.close();
+    }
+}
+
+async function store_twitch_data_first_time(unique_id: string, access_token: AccessToken, twitch_id: string, twitch_name: string) {
+    const db = await makeDb();
+    const queryString = "UPDATE streamers SET twitch_id=?, twitch_name=?, twitch_accessToken=?, twitch_refreshToken=?, twitch_expiresIn=? WHERE unique_id=?";
+
+    try {
+        db.query(queryString, [twitch_id, twitch_name, access_token.accessToken, access_token.refreshToken, access_token.expiresIn, unique_id]);
+    } catch (e) {
+        console.log(e);
+        //TODO: Add proper catch functionality
     } finally {
         db.close();
     }
