@@ -51,7 +51,7 @@ export const init_listener = async () => {
 
 export const auth_twitch = async (twitch_code: string): Promise<AccessToken | false> => {
     try {
-        const response = await exchangeCode(twitchClientAuth.clientId, twitchClientAuth.clientSecret, twitch_code, 'http://localhost:4200/twitch-login');
+        const response = await exchangeCode(twitchClientAuth.clientId, twitchClientAuth.clientSecret, twitch_code, process.env.TWITCH_CALLBACK);
         console.table(response);
         return response;
     }
