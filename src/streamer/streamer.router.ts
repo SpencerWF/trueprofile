@@ -181,7 +181,8 @@ streamerRouter.put("/twitch_code", async (req: Request, res: Response) => {
         const twitch_code: string = req.body.code;
         console.table(req.body);
 
-        StreamerService.add_twitch(streamer_id, twitch_code);
+        await StreamerService.add_twitch(streamer_id, twitch_code);
+        res.status(200).send();
     } catch (e) {
         res.status(500).send(e);
     }
@@ -204,6 +205,8 @@ streamerRouter.put("/twitter_access", async (req: Request, res: Response) => {
         console.log(reply);
 
         StreamerService.add_twitter_access(streamer_id, reply["oauthAccessToken"], reply["oauthAccessTokenSecret"]);
+
+        res.status(200).send();
     } catch (e) {
         res.status(500).send(e.message);
     }
