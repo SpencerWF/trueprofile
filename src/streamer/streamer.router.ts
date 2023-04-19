@@ -235,7 +235,7 @@ streamerRouter.delete("/twitch", async(req: Request, res: Response) => {
     res.status(200).send();
 });
 
-streamerRouter.delete("/twitter", async(req: Request) => {
+streamerRouter.delete("/twitter", async(req: Request, res: Response) => {
     const streamer_id: string = req.auth.payload.sub;
 
     console.log(`Delete Twitter ${streamer_id} - router`);
@@ -245,6 +245,8 @@ streamerRouter.delete("/twitter", async(req: Request) => {
     if (existingStreamer && existingStreamer.twitter_name) {
         StreamerService.del_twitter(streamer_id);
     }
+
+    res.status(200).send();
 });
 
 async function getOAuthAccessTokenWith (oauthRequestToken, oauthRequestTokenSecret, oauthVerifier) {
