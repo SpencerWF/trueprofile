@@ -9,7 +9,7 @@
     "dev": "nodemon src/index.ts",
     "serve": "tsc -w & pm2 start dist/index.js --watch",
     "build": "tsc -p tsconfig.json",
-    "prodServe": "npm run build & pm2 start ecosystem.config.js --env production --name='EggyTools'"
+    "prodServe": "npm run build && pm2 start ecosystem.config.js --env production --name='EggyTools'"
   },
   "repository": {
     "type": "git",
