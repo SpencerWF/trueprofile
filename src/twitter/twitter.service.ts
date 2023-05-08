@@ -6,6 +6,7 @@
  * Necessary Imports
  */
 import Twit from "twit";
+import { Twits } from "./twitter.interface";
 import { Client } from "twitter-api-sdk";
 const fs = require('fs');
 
@@ -13,7 +14,7 @@ const fs = require('fs');
  * Necessary Defines
  */
 // Used for twitter api v1.1
-var twit_dict = {};
+var twit_dict: Twits = {};
 
 // const T = new Twit({
 //     consumer_key: process.env.TWITTER_CONSUMER_KEY,
@@ -24,30 +25,50 @@ var twit_dict = {};
 
 
 // Used for twitter api v2
-const twitter_client = new Client(process.env.TWITTER_BEARER_TOKEN);
+var twitter_client: Client;
+var twitter_consumer_key: string;
+var twitter_consumer_secret: string;
+if(typeof process.env.TWITTER_BEARER_TOKEN == 'string') {
+    twitter_client = new Client(process.env.TWITTER_BEARER_TOKEN);
+} else {
+    process.exit(1);
+}
 
+if(typeof process.env.TWITTER_CONSUMER_KEY == 'string') {
+    twitter_consumer_key = process.env.TWITTER_CONSUMER_KEY;
+} else {
+    process.exit(1);
+}
+
+if(typeof process.env.TWITTER_CONSUMER_SECRET == 'string') {
+    twitter_consumer_secret = process.env.TWITTER_CONSUMER_SECRET;
+} else {
+    process.exit(1);
+}
 /**
  * Exported Functions
  */
-export const twitter_test = async (unique_id: string, access_token: string, access_token_secret: string) => {
-    const buff = await fs.readFileSync('cat_400x400.jpg');
-    const base64data = buff.toString('base64');
-    const T = get_twit(unique_id, access_token, access_token_secret);
-    if(T) {
-        T.post('account/update_profile_image', { name:'cat', image: base64data}, function(err, data) {
-            console.log(data);
-        });
-    } else {
-        console.error("get_twit not working");
-    }
-}
+// export const twitter_test = async (unique_id: string, access_token: string, access_token_secret: string) => {
+//     const buff = await fs.readFileSync('cat_400x400.jpg');
+//     const base64data = buff.toString('base64');
+//     const T = get_twit(unique_id, access_token, access_token_secret);
+//     if(T) {
+//         T.post('account/update_profile_image', { name:'cat', image: base64data}, function(err, data) {
+//             console.log(data);
+//         });
+//     } else {
+//         console.error("get_twit not working");
+//     }
+// }
 
 export const get_twitter_profile_picture = async (twitter_name: string) => {
     // Get data from twitter such as profile picture url
     const user_data = await get_twitter_data(twitter_name);
     if(user_data) {
-        const image_url = user_data.data.profile_image_url.replace("normal", "400x400");
-        return image_url;
+        if(user_data.data?.profile_image_url !== undefined) {
+            const image_url = user_data.data.profile_image_url.replace("normal", "400x400");
+            return image_url;
+        }
     }
 
     return null;
@@ -57,9 +78,11 @@ export const set_profile_picture = async (unique_id: string, access_token: strin
     // let buff = await fs.readFileSync('cat_400x400.jpg');
     const base64data = image_data.toString('base64');
     const T = get_twit(unique_id, access_token, access_token_secret);
-    T.post('account/update_profile_image', { image: base64data}, function() {
+    if(T) {
+        T.post('account/update_profile_image', { image: base64data}, function() {
         // console.log(data);
-    });
+        });
+    }
 }
 
 export const get_twitter_data = async (twitter_name: string) => {
@@ -87,11 +110,11 @@ export const get_twitter_data = async (twitter_name: string) => {
  */
 function get_twit(unique_id: string, access_token: string, access_token_secret: string) {
     console.log(`Unique_id: ${unique_id}, access token ${access_token}, access token secret ${access_token_secret}`);
-    if(twit_dict[unique_id] === undefined) {
+    if(twit_dict[unique_id] === undefined && typeof process.env.TWITTER_CONSUMER_KEY) {
         try{
             twit_dict[unique_id] = new Twit({
-                consumer_key: process.env.TWITTER_CONSUMER_KEY,
-                consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+                consumer_key: twitter_consumer_key,
+                consumer_secret: twitter_consumer_secret,
                 access_token: access_token,
                 access_token_secret: access_token_secret
             })
