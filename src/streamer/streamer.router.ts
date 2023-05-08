@@ -185,7 +185,7 @@ streamerRouter.put("/twitch_code", async (req: Request, res: Response) => {
         res.status(200).send();
     } catch (e) {
         res.status(500).send(e);
-    }
+    } 
 });
 
 //TODO: Need a function to push twitter access tokens to mysql database
@@ -199,7 +199,7 @@ streamerRouter.put("/twitter_access", async (req: Request, res: Response) => {
 
         console.table(req.body);
 
-        const reply = getOAuthAccessTokenWith(twitter_oauth_token, twitter_oauth_token_secret, twitter_oauth_verifier);
+        const reply = await getOAuthAccessTokenWith(twitter_oauth_token, twitter_oauth_token_secret, twitter_oauth_verifier);
 
         console.log(`OAuth Access Tokens `);
         console.log(reply);
