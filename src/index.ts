@@ -1,5 +1,5 @@
 
-import express from "express";
+import express, { Request, Response } from "express";
 import * as dotenv from "dotenv";
 dotenv.config();
 
@@ -36,7 +36,7 @@ app.use(express.json());
 
 streamerService.setup_tracking();
 
-app.get('/api/public', (req, res) => {
+app.get('/api/public', (req: Request, res: Response) => {
     res.json({
         message: 'Hello from a public endpoint'
     });
@@ -46,7 +46,7 @@ app.use('/public', express.static('./public'));
 
 app.use(checkJwt);
 
-app.get('/api/private', (req, res) => {
+app.get('/api/private', (req: Request, res: Response) => {
     res.json({
         message: "Hello from a private endpoint"
     });
@@ -57,11 +57,11 @@ app.use("/api/profile", profileRouter);
 
 
 
-app.get('/settings-component/', (req, res) => {
+app.get('/settings-component/', (req: Request, res: Response) => {
     res.send('Settings Page');
 });
 
-app.get('/*', (req, res) => {
+app.get('/*', (req: Request, res: Response) => {
     res.send("General Page");
 });
 
