@@ -21,6 +21,9 @@ const checkJwt = auth({
     issuerBaseURL: process.env.ISSUER_BASE_URL,
 });
 
+if(!process.env.CORS_ORIGIN) {
+    process.exit(1);
+}
 const allowedOrigins = [process.env.CORS_ORIGIN];
 const options: cors.CorsOptions = {
     origin: allowedOrigins,
