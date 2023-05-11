@@ -1,7 +1,7 @@
 /**
  * Datamodel Interfaces
  */
-import { BaseStreamer } from "./streamer.interface";
+import { BaseStreamer, Tokens } from "./streamer.interface";
 // import { Streamers } from "./streamers.interface";
 import { Twitch_Streamer, auth_twitch } from "../twitch/twitch.service";
 import * as twitterService from "../twitter/twitter.service";
@@ -21,9 +21,17 @@ import { test } from "node:test";
  * Necessary Defines
  */
 console.log(`SQL Host is ${process.env.SQL_HOST}`);
+var sql_port: number;
+
+if(typeof process.env.SQL_PORT == 'string') {
+    sql_port = parseInt(process.env.SQL_PORT);
+} else {
+    process.exit(1);
+}
+
 const mysqlConfig = {
     host: process.env.SQL_HOST,
-    port: parseInt(process.env.SQL_PORT),
+    port: sql_port,
     user: process.env.SQL_USER,
     password: process.env.SQL_PASSWORD,
     database: process.env.SQL_DATABASE
@@ -47,7 +55,7 @@ export const find = async (unique_id: string): Promise<BaseStreamer | false> => 
         let streamer: BaseStreamer;
         const db = await makeDb();
         try{
-            const rows = (await db.query(queryString, [unique_id]))[0];
+            const rows = (await db.query(queryString, [unique_id]))[0] as unknown;
 
             // Converting output from service into BaseStreamer format, stripping any hidden information
             if(Array.isArray(rows) && rows.length>0) {
@@ -79,7 +87,7 @@ export const find = async (unique_id: string): Promise<BaseStreamer | false> => 
         // Handle test case
     }
 
-    return null;
+    return false;
 }
 
 export const setup_tracking = async () => {
@@ -89,7 +97,7 @@ export const setup_tracking = async () => {
 
 
     // const image_url = await twitterService.get_twitter_profile_picture("3dSpencer");
-    const test_tokens = await get_twitter_access_tokens('auth0|6342bd5808c244ef54eeb787');
+    const test_tokens: Tokens | null = await get_twitter_access_tokens('auth0|6342bd5808c244ef54eeb787');
     if(test_tokens !== null) {
         twitterService.twitter_test('auth0|6342bd5808c244ef54eeb787', test_tokens['twitter_access_token'], test_tokens['twitter_access_token_secret']);
     } else {
@@ -106,7 +114,7 @@ export const create = async (unique_id: string, streamer: BaseStreamer) => {
         const db = await makeDb();
         try{
             //Assume a new streamer is creating a free account and has set their account to active (the default)
-            const result = db.query(queryString, [unique_id, streamer.email, streamer.account_type, 'active']);
+            const result = await db.query(queryString, [unique_id, streamer.email, streamer.account_type, 'active']);
 
             if(result) {
                 return streamer;
@@ -149,7 +157,7 @@ async function makeDb() {
     const connection = await mysql.createConnection( mysqlConfig );
 
     return {
-        async query( sql, args ) {
+        async query( sql: any, args: any ) {
             return await connection.query(sql, args);
         },
         async close() {
@@ -160,7 +168,7 @@ async function makeDb() {
 
 export const add_twitter = async (unique_id: string, twitter_name: string) => {
     const user_data = await twitterService.get_twitter_data(twitter_name);
-    if(user_data) {
+    if(user_data && user_data.data !== undefined) {
         if(process.env.MYSQL == "true") {
             const queryString = "UPDATE streamers SET twitter_name=?, twitter_id=? WHERE unique_id=?";
             const db = await makeDb();
@@ -197,9 +205,9 @@ export const get_twitter_temp_oauth_secret = async (unique_id: string) => {
         const db = await makeDb();
 
         try{
-            const rows = await db.query(queryString, [unique_id]);
+            const rows = (await db.query(queryString, [unique_id]))[0] as unknown;
 
-            if(Array.isArray(rows[0]) && rows[0].length==0) {
+            if(Array.isArray(rows) && rows.length==0) {
                 return rows[0]['twitter_oauth_token_secret'];
             } else {
                 return false;
@@ -269,15 +277,16 @@ export const setup_twitch_events = async () => {
     let reply;
 
     try {
-        reply = await db.query(queryString, []);
+        reply = (await db.query(queryString, []))[0] as unknown;
+        if(Array.isArray(reply)) {
+            for (let index = 0; index < reply.length; index++) {
+                if(reply[index].twitch_id!==null) {
+                    // const access_token = reply[0][index].twitch_accessToken;
+                    // const refresh_token = reply[0][index].twitch_refreshToken;
 
-        for (let index = 0; index < reply[0].length; index++) {
-            if(reply[0][index].twitch_id!==null) {
-                // const access_token = reply[0][index].twitch_accessToken;
-                // const refresh_token = reply[0][index].twitch_refreshToken;
-
-                const twitch_streamer: Twitch_Streamer = await new Twitch_Streamer(reply[0][index].unique_id, {twitch_id: reply[0][index].twitch_id});
-                twitch_streamer.setup_live_subscriptions([streamer_go_live, streamer_go_offline]);
+                    const twitch_streamer: Twitch_Streamer = await new Twitch_Streamer(reply[0][index].unique_id, {twitch_id: reply[0][index].twitch_id});
+                    twitch_streamer.setup_live_subscriptions([streamer_go_live, streamer_go_offline]);
+                }
             }
         }
     } catch (error) {
@@ -296,18 +305,22 @@ export const streamer_go_live = async (twitch_id: string) => {
     let reply;
 
     try {
-        reply = await db.query(queryString, [twitch_id]);
+        reply = (await db.query(queryString, [twitch_id]))[0] as unknown;
 
-        const image_url = await twitterService.get_twitter_profile_picture(reply[0][0].twitter_name);
-        const filename = await canvasService.save_image_from_url(image_url);
-        if(filename !== null) {
-            store_image_filename(reply[0][0].unique_id, filename);
-            
-            const image_data = await canvasService.draw_circle_from_url(filename);
+        if(Array.isArray(reply)) {
+            const image_url: string | null = await twitterService.get_twitter_profile_picture(reply[0].twitter_name);
+            if(typeof image_url == 'string') {
+                const filename = await canvasService.save_image_from_url(image_url);
+                if(filename !== null) {
+                    store_image_filename(reply[0].unique_id, filename);
+                    
+                    const image_data = await canvasService.draw_circle_from_url(filename);
 
-            twitterService.set_profile_picture(reply[0][0].unique_id, reply[0][0].twitter_access_token, reply[0][0].twitter_access_token_secret, image_data);
-        } else {
-            console.log("No image returned, need to update discord once created.")
+                    twitterService.set_profile_picture(reply[0][0].unique_id, reply[0][0].twitter_access_token, reply[0][0].twitter_access_token_secret, image_data);
+                } else {
+                    console.log("No image returned, need to update discord once created.")
+                }
+            }
         }
 
     } finally {
@@ -322,14 +335,18 @@ export const streamer_go_offline = async (twitch_id: string) => {
     let reply;
 
     try {
-        reply = await db.query(queryString, [twitch_id]);
-        db.query(queryString2, [twitch_id])
-        const filepath: string = path.join(__dirname, '..', 'images', `${reply[0][0].twitter_return_image}.png`);
-        if(filepath != "null.png") {
-            const image_data: Buffer | null = await canvasService.retrieve_image_from_url(filepath);
-            twitterService.set_profile_picture(reply[0][0].unique_id, reply[0][0].twitter_access_token, reply[0][0].twitter_access_secret, image_data);
-        } else {
-            console.log("Image string is null");
+        reply = (await db.query(queryString, [twitch_id]))[0] as unknown;
+        if(Array.isArray(reply)) {
+            db.query(queryString2, [twitch_id])
+            const filepath: string = path.join(__dirname, '..', 'images', `${reply[0].twitter_return_image}.png`);
+            if(filepath != "null.png") {
+                const image_data: Buffer | null = await canvasService.retrieve_image_from_url(filepath);
+                if(image_data !== null) {
+                    twitterService.set_profile_picture(reply[0][0].unique_id, reply[0].twitter_access_token, reply[0].twitter_access_secret, image_data);
+                }
+            } else {
+                console.log("Image string is null");
+            }
         }
     } finally {
         db.close();
@@ -404,13 +421,13 @@ async function store_twitch_data_first_time(unique_id: string, access_token: Acc
     }
 }
 
-async function get_twitter_access_tokens(unique_id): Promise<Object | null> {
+async function get_twitter_access_tokens(unique_id: string): Promise<Tokens | null> {
     if(process.env.MYSQL == 'true') {
         const db = await makeDb();
         const queryString = "SELECT twitter_access_token, twitter_access_token_secret FROM streamers WHERE unique_id=?";
 
         try {
-            const rows = await db.query(queryString, [unique_id]);
+            const rows = (await db.query(queryString, [unique_id])) as unknown;
             if(Array.isArray(rows) && rows.length>0) {
 
                 const ret_obj = {
@@ -426,6 +443,7 @@ async function get_twitter_access_tokens(unique_id): Promise<Object | null> {
             db.close();
         }
     }
+    return null;
 }
 
-const StreamersList = {};
+const StreamersList: {[key: string]: any} = {};

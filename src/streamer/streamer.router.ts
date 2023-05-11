@@ -190,26 +190,31 @@ streamerRouter.put("/twitch_code", async (req: Request, res: Response) => {
 
 //TODO: Need a function to push twitter access tokens to mysql database
 streamerRouter.put("/twitter_access", async (req: Request, res: Response) => {
-    const streamer_id: string = req.auth.payload.sub;
-  
-    try {
-        const twitter_oauth_token: string = req.body.oauth_token;
-        const twitter_oauth_verifier: string = req.body.oauth_verifier;
-        const twitter_oauth_token_secret: string = await StreamerService.get_twitter_temp_oauth_secret(streamer_id);
+    if(req.auth !== undefined) {
+        const streamer_id: string | undefined = req.auth.payload.sub;
+    
+        try {
+            if(streamer_id !== undefined) {
+                const twitter_oauth_token: string = req.body.oauth_token;
+                const twitter_oauth_verifier: string = req.body.oauth_verifier;
+                const twitter_oauth_token_secret: string = await StreamerService.get_twitter_temp_oauth_secret(streamer_id);
 
-        console.table(req.body);
+                console.table(req.body);
 
-        const reply = await getOAuthAccessTokenWith(twitter_oauth_token, twitter_oauth_token_secret, twitter_oauth_verifier);
+                const reply: any = await getOAuthAccessTokenWith(twitter_oauth_token, twitter_oauth_token_secret, twitter_oauth_verifier);
 
-        console.log(`OAuth Access Tokens `);
-        console.log(reply);
+                console.log(`OAuth Access Tokens `);
+                console.log(reply);
 
-        StreamerService.add_twitter_access(streamer_id, reply["oauthAccessToken"], reply["oauthAccessTokenSecret"]);
+                StreamerService.add_twitter_access(streamer_id, reply["oauthAccessToken"], reply["oauthAccessTokenSecret"]);
 
-        res.status(200).send();
-    } catch (e) {
-        res.status(500).send(e.message);
-    }
+                res.status(200).send();
+            }
+        } catch (e: any) {
+            res.status(500).send(e.message);
+        }
+    } 
+    res.status(401).send();
 });
 
 streamerRouter.delete("/id", async(req: Request, res: Response) => {

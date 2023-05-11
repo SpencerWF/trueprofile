@@ -13,3 +13,8 @@ export interface BaseStreamer {
 export interface Streamer extends BaseStreamer {
     unique_id: string;
 }
+
+export interface Tokens {
+    twitter_access_token: string,
+    twitter_access_token_secret: string
+}

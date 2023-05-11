@@ -6,7 +6,7 @@
  * Necessary Imports
  */
 import Twit from "twit";
-import { Twits } from "./twitter.interface";
+import { Twits, Clients } from "./twitter.interface";
 import { Client } from "twitter-api-sdk";
 const fs = require('fs');
 
@@ -15,6 +15,7 @@ const fs = require('fs');
  */
 // Used for twitter api v1.1
 var twit_dict: Twits = {};
+var twitter_clients: Clients = {};
 
 // const T = new Twit({
 //     consumer_key: process.env.TWITTER_CONSUMER_KEY,
@@ -48,18 +49,19 @@ if(typeof process.env.TWITTER_CONSUMER_SECRET == 'string') {
 /**
  * Exported Functions
  */
-// export const twitter_test = async (unique_id: string, access_token: string, access_token_secret: string) => {
-//     const buff = await fs.readFileSync('cat_400x400.jpg');
-//     const base64data = buff.toString('base64');
-//     const T = get_twit(unique_id, access_token, access_token_secret);
-//     if(T) {
-//         T.post('account/update_profile_image', { name:'cat', image: base64data}, function(err, data) {
-//             console.log(data);
-//         });
-//     } else {
-//         console.error("get_twit not working");
-//     }
-// }
+export const twitter_test = async (unique_id: string, access_token: string, access_token_secret: string) => {
+    const buff = await fs.readFileSync('cat_400x400.jpg');
+    const base64data = buff.toString('base64');
+    const T: Twit | false = get_twit(unique_id, access_token, access_token_secret);
+    if(T) {
+        //@ts-ignore
+        T.post('account/update_profile_image', { name:'cat', image: base64data}, function(err, data) {
+            console.log(data);
+        });
+    } else {
+        console.error("get_twit not working");
+    }
+}
 
 export const get_twitter_profile_picture = async (twitter_name: string) => {
     // Get data from twitter such as profile picture url
@@ -74,13 +76,15 @@ export const get_twitter_profile_picture = async (twitter_name: string) => {
     return null;
 }
 
-export const set_profile_picture = async (unique_id: string, access_token: string, access_token_secret: string, image_data: string | Buffer) => {
+export const set_profile_picture = async (unique_id: string, access_token: string, access_token_secret: string, image_data: Buffer) => {
     // let buff = await fs.readFileSync('cat_400x400.jpg');
     const base64data = image_data.toString('base64');
-    const T = get_twit(unique_id, access_token, access_token_secret);
+    const T: Twit | false = get_twit(unique_id, access_token, access_token_secret);
     if(T) {
-        T.post('account/update_profile_image', { image: base64data}, function() {
-        // console.log(data);
+        //TODO: Can we fix this instead of ignoring it?
+        //@ts-ignore
+        T.post('account/update_profile_image', {image: base64data}, function(err, data, response) {
+            console.log(data);
         });
     }
 }
@@ -108,7 +112,7 @@ export const get_twitter_data = async (twitter_name: string) => {
 /**
  * Necessary Functions
  */
-function get_twit(unique_id: string, access_token: string, access_token_secret: string) {
+function get_twit(unique_id: string, access_token: string, access_token_secret: string): Twit | false {
     console.log(`Unique_id: ${unique_id}, access token ${access_token}, access token secret ${access_token_secret}`);
     if(twit_dict[unique_id] === undefined && typeof process.env.TWITTER_CONSUMER_KEY) {
         try{
@@ -125,6 +129,23 @@ function get_twit(unique_id: string, access_token: string, access_token_secret: 
     }
 
     return twit_dict[unique_id];
+}
+
+function get_twitter_client(unique_id: string, access_token: string, access_token_secret: string): Client | false {
+    console.log(`Unique ID: ${unique_id}, Access Token: ${access_token}, Access Token Secret: ${access_token_secret}`);
+    if(twitter_clients[unique_id] === undefined) {
+        if(typeof process.env.TWITTER_CONSUMER_KEY == 'string') {
+            try {
+
+            } catch(err) {
+                console.error(`Could not create Twitter Client with access token and access token secret, ${err}`);
+                return false;
+            }
+        }
+    } else {
+        return twitter_clients[unique_id];
+    }
+    return false;
 }
 
 /**
