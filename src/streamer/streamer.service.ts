@@ -20,7 +20,6 @@ import { test } from "node:test";
 /**
  * Necessary Defines
  */
-console.log(`SQL Host is ${process.env.SQL_HOST}`);
 var sql_port: number;
 
 if(typeof process.env.SQL_PORT == 'string') {

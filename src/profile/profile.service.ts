@@ -8,6 +8,14 @@ import { Profile, BaseProfile } from "./profile.interface";
  */
 import mysql from "mysql2/promise";
 
+var sql_port: number;
+
+if(typeof process.env.SQL_PORT == 'string') {
+    sql_port = parseInt(process.env.SQL_PORT);
+} else {
+    process.exit(1);
+}
+
 /**
  * Necessary Defines
  */
@@ -34,14 +42,14 @@ export const find = async (unique_id: string, profile_id: string): Promise<Profi
         const queryString = "SELECT * FROM profiles WHERE unique_id=? AND profile_id=?";
         const db = await makeDb();
         try{
-            const rows = await db.query(queryString, [unique_id, profile_id])[0];
+            const rows = (await db.query(queryString, [unique_id, profile_id]))[0];
             //TODO: Add find functionality
-            if(Array.isArray(rows[0])) {
+            if(Array.isArray(rows)) {
                 console.log("Code needs to be added to handle finding profiles");
             }
         } catch (err) {
             // Once a discord server is setup should report errors to a webhook on discord
-            console.log(err);
+            console.log(err)
         } finally {
             await db.close();
         }
@@ -52,17 +60,17 @@ export const find = async (unique_id: string, profile_id: string): Promise<Profi
     return null;
 }
 
-export const findProfileList = async (unique_id: string): Promise<BaseProfile[]> => {
+export const findProfileList = async (unique_id: string): Promise<BaseProfile[] | false> => {
     if(process.env.MYSQL == 'true') {
         const queryString = "SELECT * FROM profiles WHERE unique_id=?";
         const db = await makeDb();
         try{
-            const rows = await db.query(queryString, [unique_id]);
-            console.table(rows[0]);
+            const rows = (await db.query(queryString, [unique_id]))[0] as unknown;
+            console.table(rows);
             const profiles = [];
-            if(Array.isArray(rows[0])) {
-                for (let index = 0; index < rows[0].length; index++) {
-                    const element = rows[0][index];
+            if(Array.isArray(rows)) {
+                for (let index = 0; index < rows.length; index++) {
+                    const element = rows[index];
                     profiles.push({
                         name: element["name"],
                         img_change_type: element["img_change_type"],
@@ -83,7 +91,7 @@ export const findProfileList = async (unique_id: string): Promise<BaseProfile[]>
         // Handle test case
     }
 
-    return null;
+    return false;
 }
 
 export const create = async (unique_id: string, profile: BaseProfile): Promise<BaseProfile | null> => {
@@ -91,8 +99,8 @@ export const create = async (unique_id: string, profile: BaseProfile): Promise<B
         const queryString = "INSERT INTO profiles (unique_id, profile_id, name, img_change_type, custom_img, text_change_type, custom_text) VALUES (?, UUID_TO_BIN(UUID()), ?, ?, ?, ?, ?);";
         const db = await makeDb();
         try{
-            const rows = db.query(queryString, [unique_id, profile.name, profile.custom_img, profile.custom_text]);
-            if(Array.isArray(rows[0])) {
+            const rows = (await db.query(queryString, [unique_id, profile.name, profile.custom_img, profile.custom_text]))[0] as unknown;
+            if(Array.isArray(rows)) {
                 console.log("Need to complete profile create functionality");
             }
         } catch (err) {
@@ -115,8 +123,8 @@ export const update = async(unique_id: string, profile_id: string, profile: Base
         const queryString = "UPDATE profiles SET name=?, img_change_type=?, custom_img=?, text_change_type=?, custom_text=? WHERE unique_id=? AND profile_id=?";
         const db = await makeDb();
         try{
-            const rows = db.query(queryString, [profile.name, profile.custom_img, profile.custom_text, unique_id, profile_id]);
-            if(Array.isArray(rows[0])) {
+            const rows = (await db.query(queryString, [profile.name, profile.custom_img, profile.custom_text, unique_id, profile_id]))[0] as unknown;
+            if(Array.isArray(rows)) {
                 console.log()
             }
         } catch (err) {
@@ -158,7 +166,7 @@ async function makeDb() {
     const connection = await mysql.createConnection( mysqlConfig );
 
     return {
-        async query( sql, args ) {
+        async query( sql: string, args: any ) {
             return await connection.query(sql, args);
         },
         async close() {
