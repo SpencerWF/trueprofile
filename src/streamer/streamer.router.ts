@@ -89,8 +89,9 @@ streamerRouter.get("/twitter/request_token", async(req: Request, res: Response) 
 
             if(streamer) {
                 try {
-                    const reply = await getOAuthRequestToken();
-                    if(typeof reply == 'string' && reply["results"]["oauth_callback_confirmed"] != 'true') {
+                    const reply: any = await getOAuthRequestToken();
+                    //@ts-ignore
+                    if(typeof reply == 'string' && reply[2]["oauth_callback_confirmed"] != 'true') {
                         res.status(500);
                     }
                     console.log(`OAuth Request Tokens `);
@@ -140,27 +141,29 @@ streamerRouter.get("/twitter/request_token", async(req: Request, res: Response) 
 
 // POST streamer/id
 streamerRouter.post("/id", async(req: Request, res: Response) => {
-    const streamer_id: string = req.auth.payload.sub;
-    // const streamer_email: string = req.auth.payload[process.env.EMAIL_INDEX];
+    if(req.auth !== undefined && typeof req.auth.payload.sub == 'string') {
+        const streamer_id: string = req.auth.payload.sub;
+        // const streamer_email: string = req.auth.payload[process.env.EMAIL_INDEX];
 
-    try {
-        const streamer: BaseStreamer = req.body;
-            // Creating streamer
-            // const freshStreamer: BaseStreamer = {
-            //     email: streamer_email,
-            //     account_type: "free",
-            //     status: "active",
-            // }
+        try {
+            const streamer: BaseStreamer = req.body;
+                // Creating streamer
+                // const freshStreamer: BaseStreamer = {
+                //     email: streamer_email,
+                //     account_type: "free",
+                //     status: "active",
+                // }
 
-        const newStreamer = await StreamerService.create(streamer_id, streamer);
+            const newStreamer = await StreamerService.create(streamer_id, streamer);
 
-        res.status(201).json(newStreamer);
-    } catch (e) {
-        let errorMessage = "Failed without error instance";
-        if(e instanceof Error) {
-            errorMessage = e.message;
+            res.status(201).json(newStreamer);
+        } catch (e) {
+            let errorMessage = "Failed without error instance";
+            if(e instanceof Error) {
+                errorMessage = e.message;
+            }
+            res.status(500).send(errorMessage);
         }
-        res.status(500).send(errorMessage);
     }
 });
 
@@ -189,17 +192,19 @@ streamerRouter.post("/id", async(req: Request, res: Response) => {
 
 streamerRouter.put("/twitch_code", async (req: Request, res: Response) => {
     console.log("Received request to twitch_code");
-    const streamer_id: string = req.auth.payload.sub;
+    if(req.auth !== undefined && typeof req.auth.payload.sub == 'string') {
+        const streamer_id: string = req.auth.payload.sub;
 
-    try {
-        const twitch_code: string = req.body.code;
-        console.table(req.body);
+        try {
+            const twitch_code: string = req.body.code;
+            console.table(req.body);
 
-        await StreamerService.add_twitch(streamer_id, twitch_code);
-        res.status(200).send();
-    } catch (e) {
-        res.status(500).send(e);
-    } 
+            await StreamerService.add_twitch(streamer_id, twitch_code);
+            res.status(200).send();
+        } catch (e) {
+            res.status(500).send(e);
+        } 
+    }
 });
 
 //TODO: Need a function to push twitter access tokens to mysql database
@@ -232,57 +237,66 @@ streamerRouter.put("/twitter_access", async (req: Request, res: Response) => {
 });
 
 streamerRouter.delete("/id", async(req: Request, res: Response) => {
-    const streamer_id: string = req.auth.payload.sub;
+    if(req.auth !== undefined && typeof req.auth.payload.sub == 'string') {
+        const streamer_id: string = req.auth.payload.sub;
 
-    const existingStreamer: BaseStreamer | false = await StreamerService.find(streamer_id);
+        const existingStreamer: BaseStreamer | false = await StreamerService.find(streamer_id);
 
-    if (existingStreamer) {
-        await StreamerService.del(streamer_id);
+        if (existingStreamer) {
+            await StreamerService.del(streamer_id);
+        }
+
+        res.status(200).send();
     }
-
-    res.status(200).send();
+    res.status(401).send();
 });
 
 streamerRouter.delete("/twitch", async(req: Request, res: Response) => {
-    const streamer_id: string = req.auth.payload.sub;
-    console.log(`Delete Twitch ${streamer_id} - router`);
+    if(req.auth !== undefined && typeof req.auth.payload.sub == 'string') {
+        const streamer_id: string = req.auth.payload.sub;
+        console.log(`Delete Twitch ${streamer_id} - router`);
 
 
-    const existingStreamer: BaseStreamer | false = await StreamerService.find(streamer_id);
+        const existingStreamer: BaseStreamer | false = await StreamerService.find(streamer_id);
 
-    if (existingStreamer && existingStreamer.twitch_name) {
-        StreamerService.del_twitch(streamer_id);
+        if (existingStreamer && existingStreamer.twitch_name) {
+            StreamerService.del_twitch(streamer_id);
+        }
+
+        res.status(200).send();
     }
-
-    res.status(200).send();
+    res.status(401).send();
 });
 
 streamerRouter.delete("/twitter", async(req: Request, res: Response) => {
-    const streamer_id: string = req.auth.payload.sub;
+    if(req.auth !== undefined && typeof req.auth.payload.sub == 'string') {
+        const streamer_id: string = req.auth.payload.sub;
 
-    console.log(`Delete Twitter ${streamer_id} - router`);
+        console.log(`Delete Twitter ${streamer_id} - router`);
 
-    const existingStreamer: BaseStreamer | false = await StreamerService.find(streamer_id);
+        const existingStreamer: BaseStreamer | false = await StreamerService.find(streamer_id);
 
-    if (existingStreamer && existingStreamer.twitter_name) {
-        StreamerService.del_twitter(streamer_id);
+        if (existingStreamer && existingStreamer.twitter_name) {
+            StreamerService.del_twitter(streamer_id);
+        }
+
+        res.status(200).send();
     }
-
-    res.status(200).send();
+    res.status(401).send();
 });
 
-async function getOAuthAccessTokenWith (oauthRequestToken, oauthRequestTokenSecret, oauthVerifier) {
+async function getOAuthAccessTokenWith (oauthRequestToken: string, oauthRequestTokenSecret: string, oauthVerifier: string) {
     return new Promise((resolve, reject) => {
-      oauthConsumer.getOAuthAccessToken(oauthRequestToken, oauthRequestTokenSecret, oauthVerifier, function (error, oauthAccessToken, oauthAccessTokenSecret, results) {
+      oauthConsumer.getOAuthAccessToken(oauthRequestToken, oauthRequestTokenSecret, oauthVerifier, function (error: string, oauthAccessToken: string, oauthAccessTokenSecret: string, results: string) {
         return error
           ? reject(new Error('Error getting OAuth access token'))
           : resolve({ oauthAccessToken, oauthAccessTokenSecret, results })
       })
     })
 }
-async function getOAuthRequestToken () {
+async function getOAuthRequestToken (): Promise<any> {
     return new Promise((resolve, reject) => {
-        oauthConsumer.getOAuthRequestToken(function (error, oauthRequestToken, oauthRequestTokenSecret, results) {
+        oauthConsumer.getOAuthRequestToken(function (error: string, oauthRequestToken: string, oauthRequestTokenSecret: string, results: string) {
         return error
             ? reject(new Error('Error getting OAuth request token'))
             : resolve({ oauthRequestToken, oauthRequestTokenSecret, results })
