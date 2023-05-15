@@ -185,6 +185,7 @@ export const add_twitter = async (unique_id: string, twitter_name: string) => {
 
 export const add_twitter_access = async (unique_id: string, twitter_access_token: string, twitter_access_secret: string, twitter_id: string, twitter_name: string) => {
     if(process.env.MYSQL == "true") {
+        console.log(`Setting Twitter details for ${twitter_name}`)
         const queryString = "UPDATE streamers SET twitter_access_token=?, twitter_access_token_secret=?, twitter_id=?, twitter_name=? WHERE unique_id=?";
         const db = await makeDb();
         try{
