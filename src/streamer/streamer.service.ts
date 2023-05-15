@@ -129,7 +129,7 @@ export const create = async (unique_id: string, streamer: BaseStreamer) => {
 
     } //TODO: Add else if needed
 
-    return null;
+    return false;
 }
 
 export const del = async(streamer_id: string) => {

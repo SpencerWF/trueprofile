@@ -13,6 +13,13 @@ import { sign } from "crypto";
  */
  
 export const streamerRouter = express.Router();
+var email_index: string;
+
+if(typeof process.env.EMAIL_INDEX == 'string') {
+    email_index = process.env.EMAIL_INDEX;
+} else {
+    process.exit(1);
+}
 
 const oauth = require('oauth');
 const oauthConsumer = new oauth.OAuth(
@@ -36,65 +43,72 @@ var hmacsha1 = require('hmacsha1');
 
 streamerRouter.get("/id", async(req: Request, res: Response) => {
     //Not using any authentication or authorization, but may implement a timer
-    const streamer_id: string = req.auth.payload.sub;
-    // console.table(req.auth.payload[process.env.EMAIL_INDEX]); 
-    // console.log(`Looking for information about ${streamer_id}`);
+    if(req.auth !== undefined && typeof req.auth.payload.sub == 'string') {
+        const streamer_id: string = req.auth.payload.sub;
+            // console.table(req.auth.payload[process.env.EMAIL_INDEX]); 
+            // console.log(`Looking for information about ${streamer_id}`);
 
-    try{
-        let streamer: BaseStreamer | false = await StreamerService.find(streamer_id);
-        console.log("Received streamer from service");
-        console.table(streamer);
+        try{
+            let streamer: BaseStreamer | false = await StreamerService.find(streamer_id);
+            console.log("Received streamer from service");
+            console.table(streamer);
 
-        if(streamer) {
-            return res.status(200).send(streamer);
-        } else {
-            const new_streamer: BaseStreamer = {
-                email: req.auth.payload[process.env.EMAIL_INDEX],
-                account_type: "free",
-                status: "active"
+            if(streamer) {
+                return res.status(200).send(streamer);
+            } else {
+                if(typeof req.auth.payload[email_index] == 'string') {
+                    const new_streamer: BaseStreamer = {
+                        email: req.auth.payload[email_index] as string,
+                        account_type: "free",
+                        status: "active"
+                    }
+                    streamer = await StreamerService.create(streamer_id, new_streamer);
+                }
             }
-            streamer = await StreamerService.create(streamer_id, new_streamer);
-        }
 
-        res.status(404).send("Streamer not found");
-    } catch (e) {
-        let errorMessage = "Failed without Error instance";
-        if (e instanceof Error) {
-            errorMessage = e.message;
+            res.status(404).send("Streamer not found");
+        } catch (e) {
+            let errorMessage = "Failed without Error instance";
+            if (e instanceof Error) {
+                errorMessage = e.message;
+            }
+            res.status(500).send(errorMessage);
         }
-        res.status(500).send(errorMessage);
     }
+    res.status(401).send();
 });
 
 streamerRouter.get("/twitter/request_token", async(req: Request, res: Response) => {
     // Perform the first step in the Twitter OAuth process
-    const streamer_id: string = req.auth.payload.sub;
+    if(req.auth !== undefined && typeof req.auth.payload.sub == 'string') {
+        const streamer_id: string = req.auth.payload.sub;
 
-    try{
-        // Confirm user exists in the database
-        let streamer: BaseStreamer | false = await StreamerService.find(streamer_id);
+        try{
+            // Confirm user exists in the database
+            let streamer: BaseStreamer | false = await StreamerService.find(streamer_id);
 
-        if(streamer) {
-            try {
-                const reply = await getOAuthRequestToken();
-                if(typeof reply == 'string' && reply["results"]["oauth_callback_confirmed"] != 'true') {
-                    res.status(500);
+            if(streamer) {
+                try {
+                    const reply = await getOAuthRequestToken();
+                    if(typeof reply == 'string' && reply["results"]["oauth_callback_confirmed"] != 'true') {
+                        res.status(500);
+                    }
+                    console.log(`OAuth Request Tokens `);
+                    console.log(reply);
+                    StreamerService.add_twitter_oauth(streamer_id, reply["oauthRequestToken"], reply["oauthRequestTokenSecret"]);
+                    res.status(200).send(`https://api.twitter.com/oauth/authorize?oauth_token=${reply["oauthRequestToken"]}`);
+                } catch (error) {
+                    console.error(error);
+                    res.status(401);
                 }
-                console.log(`OAuth Request Tokens `);
-                console.log(reply);
-                StreamerService.add_twitter_oauth(streamer_id, reply["oauthRequestToken"], reply["oauthRequestTokenSecret"]);
-                res.status(200).send(`https://api.twitter.com/oauth/authorize?oauth_token=${reply["oauthRequestToken"]}`);
-            } catch (error) {
-                console.error(error);
-                res.status(401);
             }
+        } catch (e) {
+            let errorMessage = "Failed without Error instance";
+            if (e instanceof Error) {
+                errorMessage = e.message;
+            }
+            res.status(500).send(errorMessage);
         }
-    } catch (e) {
-        let errorMessage = "Failed without Error instance";
-        if (e instanceof Error) {
-            errorMessage = e.message;
-        }
-        res.status(500).send(errorMessage);
     }
 })
 
