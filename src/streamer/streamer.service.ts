@@ -189,7 +189,7 @@ export const add_twitter_access = async (unique_id: string, twitter_access_token
         const queryString = "UPDATE streamers SET twitter_access_token=?, twitter_access_token_secret=?, twitter_id=?, twitter_name=? WHERE unique_id=?";
         const db = await makeDb();
         try{
-            db.query(queryString, [twitter_access_token, twitter_access_secret, unique_id, twitter_id, twitter_name]);
+            constdb.query(queryString, [twitter_access_token, twitter_access_secret, twitter_id, twitter_name, unique_id]);
         } catch (err) {
             // Once a discord server is setup should report errors to a webhook on discord
             console.log(err);
