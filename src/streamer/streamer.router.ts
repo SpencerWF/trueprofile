@@ -225,7 +225,7 @@ streamerRouter.put("/twitter_access", async (req: Request, res: Response) => {
                 console.log(`OAuth Access Tokens `);
                 console.log(reply);
 
-                StreamerService.add_twitter_access(streamer_id, reply["oauthAccessToken"], reply["oauthAccessTokenSecret"]);
+                StreamerService.add_twitter_access(streamer_id, reply["oauthAccessToken"], reply["oauthAccessTokenSecret"], reply["results"]["user_id"], reply["results"]["screen_name"]);
 
                 res.status(200).send();
             }
