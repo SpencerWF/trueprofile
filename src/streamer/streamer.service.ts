@@ -284,7 +284,7 @@ export const setup_twitch_events = async () => {
                     // const access_token = reply[0][index].twitch_accessToken;
                     // const refresh_token = reply[0][index].twitch_refreshToken;
 
-                    const twitch_streamer: Twitch_Streamer = await new Twitch_Streamer(reply[0][index].unique_id, {twitch_id: reply[0][index].twitch_id});
+                    const twitch_streamer: Twitch_Streamer = await new Twitch_Streamer(reply[index].unique_id, {twitch_id: reply[index].twitch_id});
                     twitch_streamer.setup_live_subscriptions([streamer_go_live, streamer_go_offline]);
                 }
             }
