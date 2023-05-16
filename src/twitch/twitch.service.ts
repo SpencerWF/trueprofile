@@ -180,7 +180,7 @@ export class Twitch_Streamer {
         //     return false;
         // }
         console.log(`Setting up live subscriptions for ${this.name}`);
-        // setTimeout(async () => {
+        console.log(`Twitch ID is of type ${typeof this.twitch_id}`);
         if(typeof this.twitch_id == 'string') {
             try {
                 console.log(`Got to online events: ${this.twitch_id}`);
