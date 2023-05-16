@@ -53,8 +53,6 @@ profileRouter.get("/id/image/:image", async(req: Request, res: Response) => {
         const streamer_id: string = req.auth.payload.sub;
         const image_url: string = req.params.image;
 
-        console.log(`Looking for image for streamer: ${streamer_id} with ${image_url}`);
-
         try{
             if(fs.existsSync(`${__dirname}/../images/${image_url}.jpg`)) {
                 return res.sendFile(path.resolve(`${__dirname}/../images/${image_url}.jpg`));

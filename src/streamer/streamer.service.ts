@@ -58,7 +58,6 @@ export const find = async (unique_id: string): Promise<BaseStreamer | false> => 
 
             // Converting output from service into BaseStreamer format, stripping any hidden information
             if(Array.isArray(rows) && rows.length>0) {
-               console.log(`Received streamer ${rows[0]["unique_id"]} from mysql`);
                 streamer = {
                     email: rows[0][`email`],
                     account_type: rows[0]["account_type"],
@@ -68,9 +67,6 @@ export const find = async (unique_id: string): Promise<BaseStreamer | false> => 
                     twitter_name: rows[0]["twitter_name"],
                     status: rows[0]["status"],
                 }
-
-                console.log("Sending to router");
-                console.table(streamer);
 
                 return streamer;
             }

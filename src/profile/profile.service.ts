@@ -66,7 +66,6 @@ export const findProfileList = async (unique_id: string): Promise<BaseProfile[] 
         const db = await makeDb();
         try{
             const rows = (await db.query(queryString, [unique_id]))[0] as unknown;
-            console.table(rows);
             const profiles = [];
             if(Array.isArray(rows)) {
                 for (let index = 0; index < rows.length; index++) {
