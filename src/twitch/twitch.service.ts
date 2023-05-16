@@ -147,7 +147,7 @@ export class Twitch_Streamer {
 
                 console.log("Retreived me");
 
-                if(!this.twitch_id) {
+                if(this.twitch_id === null) {
                     console.log("Retreiving this user's data from twitch for first time");
                     this.twitch_id = data.id;
                     this.name = data.name;

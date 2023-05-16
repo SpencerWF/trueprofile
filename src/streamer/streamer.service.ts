@@ -285,8 +285,10 @@ export const setup_twitch_events = async () => {
                     streamer_count += 1;
                     console.log(`Setting up for streamer with twitch_id ${reply[index].twitch_id}`);
 
-                    const twitch_streamer: Twitch_Streamer = await new Twitch_Streamer(reply[index].unique_id, {twitch_id: reply[index].twitch_id});
-                    twitch_streamer.setup_live_subscriptions([streamer_go_live, streamer_go_offline]);
+                    // const twitch_streamer: Twitch_Streamer = await new Twitch_Streamer(reply[index].unique_id, {twitch_id: reply[index].twitch_id});
+                    // twitch_streamer.setup_live_subscriptions([streamer_go_live, streamer_go_offline]);
+                    StreamersList[reply[index].unique_id] = {}
+                    StreamersList[reply[index].unique_id]["Twitch_Streamer"] = await new Twitch_Streamer(reply[index].unique_id, {twitch_id: reply[index].twitch_id});
                 }
             }
         }
