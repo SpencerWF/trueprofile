@@ -96,12 +96,13 @@ export class Twitch_Streamer {
     private _store_data_callback: Function | null = null;
 
     constructor(unique_id: string, options: {twitch_id?: string, accessToken?: AccessToken, listenerSecret?: string}) {
+        console.log(`Twitch ID is ${options.twitch_id}`)
         this._unique_id = unique_id;
         if(options.accessToken) {
-            this._access_token = options.accessToken;
+            this.access_token = options.accessToken;
         }
         if(options.twitch_id) {
-            this._twitch_id = options.twitch_id;
+            this.twitch_id = options.twitch_id;
         }
     }
 

@@ -67,6 +67,8 @@ export const find = async (unique_id: string): Promise<BaseStreamer | false> => 
                     twitter_name: rows[0]["twitter_name"],
                     status: rows[0]["status"],
                 }
+                console.log("Streamer is");
+                console.log(streamer);
 
                 return streamer;
             }
@@ -271,6 +273,7 @@ export const setup_twitch_events = async () => {
     const db = await makeDb();
     const queryString = "SELECT unique_id, twitch_id FROM streamers WHERE status='active'";
     let reply;
+    let streamer_count = 0;
 
     try {
         reply = (await db.query(queryString, []))[0] as unknown;
@@ -279,6 +282,8 @@ export const setup_twitch_events = async () => {
                 if(reply[index].twitch_id!==null) {
                     // const access_token = reply[0][index].twitch_accessToken;
                     // const refresh_token = reply[0][index].twitch_refreshToken;
+                    streamer_count += 1;
+                    console.log(`Setting up for streamer with twitch_id ${reply[index].twitch_id}`);
 
                     const twitch_streamer: Twitch_Streamer = await new Twitch_Streamer(reply[index].unique_id, {twitch_id: reply[index].twitch_id});
                     twitch_streamer.setup_live_subscriptions([streamer_go_live, streamer_go_offline]);
