@@ -181,7 +181,7 @@ export class Twitch_Streamer {
         // }
         console.log(`Setting up live subscriptions for ${this.name}`);
         console.log(`Twitch ID is of type ${typeof this.twitch_id}`);
-        if(typeof this.twitch_id == 'string') {
+        if(typeof this.twitch_id == 'string' || typeof this.twitch_id == 'number') {
             try {
                 console.log(`Got to online events: ${this.twitch_id}`);
 
