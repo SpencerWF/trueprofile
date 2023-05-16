@@ -289,6 +289,7 @@ export const setup_twitch_events = async () => {
                     // twitch_streamer.setup_live_subscriptions([streamer_go_live, streamer_go_offline]);
                     StreamersList[reply[index].unique_id] = {}
                     StreamersList[reply[index].unique_id]["Twitch_Streamer"] = await new Twitch_Streamer(reply[index].unique_id, {twitch_id: reply[index].twitch_id});
+                    StreamersList[reply[index].unique_id]["Twitch_Streamer"].setup_live_subscriptions([streamer_go_live, streamer_go_offline]);
                 }
             }
         }
