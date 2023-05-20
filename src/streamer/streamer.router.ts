@@ -113,30 +113,6 @@ streamerRouter.get("/twitter/request_token", async(req: Request, res: Response) 
 
 // GET streamer/id/:streamerid
 
-// streamerRouter.get("/twitch/:twitchname", async(req: Request, res: Response) => {
-//     const twitch_name: string = req.params.twitchid;
-
-//     // Insert Auth here
-
-//     try {
-//         const streamer_id: string = await StreamerService.findIdByTwitchName(twitch_name);
-
-//         if(streamer_id) {
-//             return streamerRouter.get(streamer_id);
-//         }
-//         res.status(404).send("Streamer not found");
-        
-//     } catch (e) {
-//         let errorMessage = "Failed without error instance";
-//         if(e instanceof Error) {
-//             errorMessage = e.message;
-//         }
-//         res.status(500).send(errorMessage); 
-//     }
-
-// });
-// /api/streamer/twitch_code/
-
 // POST streamer/id
 streamerRouter.post("/id", async(req: Request, res: Response) => {
     if(req.auth !== undefined && typeof req.auth.payload.sub == 'string') {
@@ -164,29 +140,6 @@ streamerRouter.post("/id", async(req: Request, res: Response) => {
         }
     }
 });
-
-// PUT streamer/id/:streamerid
-
-// streamerRouter.put("/id", async (req: Request, res: Response) => {
-//     const streamer_id: string = req.auth.payload.sub;
-
-//     try {
-//       const StreamerUpdate: Streamer = req.body;
-  
-//       const existingStreamer: BaseStreamer | false = await StreamerService.find(streamer_id);
-  
-//       if (existingStreamer) {
-//         const updatedStreamer = await StreamerService.update(streamer_id, StreamerUpdate);
-//         return res.status(200).json(updatedStreamer);
-//       }
-  
-//       const newStreamer = await StreamerService.create(streamer_id, StreamerUpdate);
-  
-//       res.status(201).json(newStreamer);
-//     } catch (e) {
-//       res.status(500).send(e.message);
-//     }
-// });
 
 streamerRouter.put("/twitch_code", async (req: Request, res: Response) => {
     console.log("Received request to twitch_code");
@@ -292,6 +245,7 @@ async function getOAuthAccessTokenWith (oauthRequestToken: string, oauthRequestT
       })
     })
 }
+
 async function getOAuthRequestToken (): Promise<any> {
     return new Promise((resolve, reject) => {
         oauthConsumer.getOAuthRequestToken(function (error: string, oauthRequestToken: string, oauthRequestTokenSecret: string, results: string) {

@@ -1,11 +1,12 @@
 /**
  * Necessary Imports
  */
-import { ClientCredentialsAuthProvider, RefreshingAuthProvider, exchangeCode, AccessToken, RefreshConfig } from '@twurple/auth';
+import { RefreshingAuthProvider, exchangeCode, AccessToken, RefreshConfig } from '@twurple/auth';
 import { ApiClient, HelixPrivilegedUser } from '@twurple/api';
-import { EventSubListener, EventSubSubscription } from '@twurple/eventsub';
+import { EventSubHttpListener } from '@twurple/eventsub-http';
+import { EventSubSubscription } from '@twurple/eventsub-base';
 import { NgrokAdapter } from '@twurple/eventsub-ngrok';
-
+import { store_twitch_access_token } from '../streamer/streamer.service';
 /** 
  * Necessary Defines
  */
@@ -18,9 +19,27 @@ if(typeof process.env.TWITCH_CLIENT_ID == 'string' && typeof process.env.TWITCH_
 } else {
     process.exit();
 }
+
+const authProvider: RefreshingAuthProvider = new RefreshingAuthProvider(
+    {
+        clientId: twitchClientAuth.clientId,
+        clientSecret: twitchClientAuth.clientSecret,
+        onRefresh: async (userId, newTokenData) => await (store_twitch_access_token(userId, newTokenData)),
+    }
+)
+    
 // const clientId = process.env.TWITCH_CLIENT_ID;
 // const clientSecret = process.env.TWITCH_CLIENT_SECRET;
-const authProvider = new ClientCredentialsAuthProvider(twitchClientAuth.clientId, twitchClientAuth.clientSecret);
+// const authProvider = new AppTokenAuthProvider(twitchClientAuth.clientId, twitchClientAuth.clientSecret);
+
+// const authProvider = new RefreshingAuthProvider(
+//     {
+//         twitchClientAuth.clientId,
+//         process.env.TWITCH_CLIENT_SECRET,
+//         onRefresh:
+//     }
+// )
+
 const apiClient = new ApiClient({ authProvider });
 // const refreshingAuthProvider
 
@@ -37,7 +56,7 @@ if(typeof process.env.TWITCH_CALLBACK == 'string') {
 
 const listenerSecret = get_unique_reference_number();
 
-const twitch_listener = new EventSubListener({
+const twitch_listener = new EventSubHttpListener({
     apiClient,
     adapter: new NgrokAdapter(),
     secret: listenerSecret
@@ -49,7 +68,7 @@ const twitch_listener = new EventSubListener({
  */
 
 export const init_listener = async () => {
-    await twitch_listener.listen();
+    await twitch_listener.start();
 }
 
 // export const retrieve_twitch_id = async (twitch_name: string): Promise<string | null> => {
@@ -87,9 +106,8 @@ export class Twitch_Streamer {
     private _twitch_id: string | null = null;
     private _name: string | null = null;
     private _access_token: AccessToken | null = null;
-    private _refresh_config: RefreshConfig | null = null;
-    private _refreshingAuthProvider: RefreshingAuthProvider | null = null;
-    private _apiClient: ApiClient | null = null;
+    // private _refreshingAuthProvider: RefreshingAuthProvider | null = null;
+    // private _apiClient: ApiClient | null = null;
     // private _twitchListener: EventSubListener;
     private _onlineSubscription: EventSubSubscription | null = null;
     private _offlineSubscription: EventSubSubscription | null = null;
@@ -127,41 +145,44 @@ export class Twitch_Streamer {
     }
 
     public async retreive_twitch_data(store_data: Function): Promise<HelixPrivilegedUser | false> {
-        this._store_data_callback = store_data;
-        this._refresh_config = {
-            clientId: twitchClientAuth.clientId,
-            clientSecret: twitchClientAuth.clientSecret,
-            onRefresh: this.store_twitch_access_token
-        }
-        if(typeof this._access_token == 'string') {
-            this._refreshingAuthProvider = new RefreshingAuthProvider(this._refresh_config, this._access_token);
-            this._apiClient = new ApiClient({ authProvider: this._refreshingAuthProvider }); //TODO: Can set logger details with this
+        if(typeof this.twitch_id == 'string') {
+            if(!(authProvider.hasUser(this.twitch_id))) {
+                this._store_data_callback = store_data;
+                if(typeof this._access_token == 'string' && typeof this._twitch_id == 'string') {
+                    // this._refreshingAuthProvider = new RefreshingAuthProvider(this._refresh_config, this._access_token);
+                    await authProvider.addUser(this._twitch_id, this.access_token);
 
-            try {
-                await this.deleteSubscriptions();
-                console.log("Deleting Subscriptions");
+                    try {
+                        await this.deleteSubscriptions();
+                        console.log("Deleting Subscriptions");
 
-                const data: HelixPrivilegedUser = await this._apiClient.users.getMe();
+                        const data: HelixPrivilegedUser = await this._apiClient.users.getAuthenticatedUser();
 
-                console.log(data);
+                        console.log(data);
 
-                console.log("Retreived me");
+                        console.log("Retreived me");
 
-                if(this.twitch_id === null) {
-                    console.log("Retreiving this user's data from twitch for first time");
-                    this.twitch_id = data.id;
-                    this.name = data.name;
+                        if(this.twitch_id === null) {
+                            console.log("Retreiving this user's data from twitch for first time");
+                            this.twitch_id = data.id;
+                            this.name = data.name;
+                        }
+
+                        if(data) {
+                            return data;
+                        }
+                    } catch (e){
+                        console.log(`Failed to retrieve user data: ${e}`);
+                        return false;
+                    }
                 }
-
-                if(data) {
-                    return data;
-                }
-            } catch (e){
-                console.log(`Failed to retrieve user data: ${e}`);
+                console.log("Data not received for user");
                 return false;
             }
+            console.log("User Already in AuthProvider");
+            return false;
         }
-        console.log("Data not received for user");
+        console.log("Twitch ID does not exist");
         return false;
     }
 
@@ -202,6 +223,10 @@ export class Twitch_Streamer {
             } catch (error) {
                 console.log(`Error: ${error}`);
             }
+
+            console.log(``)
+        } else {
+            console.log(`No twitch ID for user: ${this._unique_id}`);
         }
             // }, 1000);
         // }, 1000);

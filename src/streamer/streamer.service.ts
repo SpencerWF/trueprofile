@@ -3,7 +3,7 @@
  */
 import { BaseStreamer, Tokens } from "./streamer.interface";
 // import { Streamers } from "./streamers.interface";
-import { Twitch_Streamer, auth_twitch } from "../twitch/twitch.service";
+import { Twitch_Streamer, auth_twitch} from "../twitch/twitch.service";
 import * as twitterService from "../twitter/twitter.service";
 import * as canvasService from "../canvas/canvas.service";
 import { AccessToken } from "@twurple/auth/lib";
@@ -287,9 +287,12 @@ export const setup_twitch_events = async () => {
 
                     // const twitch_streamer: Twitch_Streamer = await new Twitch_Streamer(reply[index].unique_id, {twitch_id: reply[index].twitch_id});
                     // twitch_streamer.setup_live_subscriptions([streamer_go_live, streamer_go_offline]);
-                    StreamersList[reply[index].unique_id] = {}
-                    StreamersList[reply[index].unique_id]["Twitch_Streamer"] = await new Twitch_Streamer(reply[index].unique_id, {twitch_id: reply[index].twitch_id});
-                    StreamersList[reply[index].unique_id]["Twitch_Streamer"].setup_live_subscriptions([streamer_go_live, streamer_go_offline]);
+                    const access_token: AccessToken | false = await get_twitch_access_token(reply[index].twitch_id);
+                    if(access_token) {
+                        StreamersList[reply[index].unique_id] = {}
+                        StreamersList[reply[index].unique_id]["Twitch_Streamer"] = await new Twitch_Streamer(reply[index].unique_id, {twitch_id: reply[index].twitch_id, accessToken: access_token});
+                        StreamersList[reply[index].unique_id]["Twitch_Streamer"].setup_live_subscriptions([streamer_go_live, streamer_go_offline]);
+                    }
                 }
             }
         }
@@ -320,7 +323,7 @@ export const streamer_go_live = async (twitch_id: string) => {
                     
                     const image_data = await canvasService.draw_circle_from_url(filename);
 
-                    twitterService.set_profile_picture(reply[0][0].unique_id, reply[0][0].twitter_access_token, reply[0][0].twitter_access_token_secret, image_data);
+                    twitterService.set_profile_picture(reply[0].unique_id, reply[0].twitter_access_token, reply[0].twitter_access_token_secret, image_data);
                 } else {
                     console.log("No image returned, need to update discord once created.")
                 }
@@ -397,13 +400,13 @@ async function store_image_filename(unique_id: string, filename: string) {
     }
 }
 
-async function store_twitch_access_token(user_id: string, access_token: AccessToken) {
+export const store_twitch_access_token = async (user_id: string, access_token: AccessToken) => {
     const db = await makeDb();
-    const queryString = "UPDATE streamers SET twitch_accessToken=?, twitch_refreshToken=?, twitch_expiresIn=? WHERE twitch_id=?";
+    const queryString = "UPDATE streamers SET twitch_accessToken=?, twitch_refreshToken=?, twitch_expiresIn=?, twitch_obtainmentTimestamp=?, twitch_scope=? WHERE twitch_id=?";
     // let reply;
 
     try {
-        db.query(queryString, [access_token.accessToken, access_token.refreshToken, access_token.expiresIn, user_id]); //TODO: await if needed
+        db.query(queryString, [access_token.accessToken, access_token.refreshToken, access_token.expiresIn, access_token.obtainmentTimestamp, access_token.scope.toString(), user_id]); //TODO: await if needed
     } catch {
         // TODO: Need a functional catch here in the scenario that the connection to the database cannot be established
     } finally {
@@ -413,10 +416,10 @@ async function store_twitch_access_token(user_id: string, access_token: AccessTo
 
 async function store_twitch_data_first_time(unique_id: string, access_token: AccessToken, twitch_id: string, twitch_name: string) {
     const db = await makeDb();
-    const queryString = "UPDATE streamers SET twitch_id=?, twitch_name=?, twitch_accessToken=?, twitch_refreshToken=?, twitch_expiresIn=? WHERE unique_id=?";
+    const queryString = "UPDATE streamers SET twitch_id=?, twitch_name=?, twitch_accessToken=?, twitch_refreshToken=?, twitch_expiresIn=?, twitch_scope=? WHERE unique_id=?";
 
     try {
-        db.query(queryString, [twitch_id, twitch_name, access_token.accessToken, access_token.refreshToken, access_token.expiresIn, unique_id]);
+        db.query(queryString, [twitch_id, twitch_name, access_token.accessToken, access_token.refreshToken, access_token.expiresIn, access_token.scope, unique_id]);
     } catch (e) {
         console.log(e);
         //TODO: Add proper catch functionality
@@ -425,18 +428,44 @@ async function store_twitch_data_first_time(unique_id: string, access_token: Acc
     }
 }
 
+async function get_twitch_access_token(twitch_id: string): Promise<AccessToken | false> {
+    if(process.env.MYSQL == 'true') {
+        const db = await makeDb();
+        const queryString = "SELECT twitch_accessToken, twitch_refreshToken, twitch_expiresIn, twitch_obtainmentTimestamp, twitch_scope WHERE twitch_id=?";
+
+        const rows = (await db.query(queryString, twitch_id))[0] as unknown;
+
+        if(Array.isArray(rows) && rows.length > 0) {
+            const return_token: AccessToken = {
+                accessToken: rows[0]['twitch_accessToken'],
+                expiresIn: rows[0]['twitch_expiresIn'],
+                obtainmentTimestamp: rows[0]['twitch_obtainmentTimestamp'],
+                refreshToken: rows[0]['twitch_refreshToken'],
+                scope: rows[0]['twitch_scope'].split(','),
+            }
+
+            return return_token;
+        }
+        console.log("Could not find user with access token for that twitch ID")
+        return false;
+    }
+
+    console.log("Could not get access token for that twitch ID");
+    return false;
+}
+
 async function get_twitter_access_tokens(unique_id: string): Promise<Tokens | null> {
     if(process.env.MYSQL == 'true') {
         const db = await makeDb();
         const queryString = "SELECT twitter_access_token, twitter_access_token_secret FROM streamers WHERE unique_id=?";
 
         try {
-            const rows = (await db.query(queryString, [unique_id])) as unknown;
+            const rows = (await db.query(queryString, [unique_id]))[0] as unknown;
             if(Array.isArray(rows) && rows.length>0) {
 
                 const ret_obj = {
-                    'twitter_access_token': rows[0][0]['twitter_access_token'],
-                    'twitter_access_token_secret': rows[0][0]['twitter_access_token_secret']
+                    'twitter_access_token': rows[0]['twitter_access_token'],
+                    'twitter_access_token_secret': rows[0]['twitter_access_token_secret']
                 }
                 return ret_obj;
             }
