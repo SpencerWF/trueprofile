@@ -156,7 +156,7 @@ export class Twitch_Streamer {
                         await this.deleteSubscriptions();
                         console.log("Deleting Subscriptions");
 
-                        const data: HelixPrivilegedUser = await this._apiClient.users.getAuthenticatedUser();
+                        const data: HelixPrivilegedUser = await apiClient.users.getAuthenticatedUser(this.twitch_id);
 
                         console.log(data);
 
@@ -206,7 +206,7 @@ export class Twitch_Streamer {
             try {
                 console.log(`Got to online events: ${this.twitch_id}`);
 
-                this._onlineSubscription = await twitch_listener.subscribeToStreamOnlineEvents(this.twitch_id, e => {
+                this._onlineSubscription = await twitch_listener.onStreamOnline(this.twitch_id, e => {
                     console.log(`${e.broadcasterDisplayName} just went live!`);
                     state_functions[0](this.twitch_id);
                 });
@@ -216,7 +216,7 @@ export class Twitch_Streamer {
                 // setTimeout(async () => {
             try {
                 console.log(`Got to offline events: ${this.twitch_id}`);
-                this._offlineSubscription = await twitch_listener.subscribeToStreamOfflineEvents(this.twitch_id, e => {
+                this._offlineSubscription = await twitch_listener.onStreamOffline(this.twitch_id, e => {
                     console.log(`${e.broadcasterDisplayName} just went offline.`);
                     state_functions[1](this.twitch_id);
                 });
@@ -246,8 +246,8 @@ export class Twitch_Streamer {
     }
 
     public async deleteSubscriptions() {
-        if(this._apiClient !== null) {
-            await this._apiClient.eventSub.deleteAllSubscriptions();
+        if(apiClient !== null) {
+            await apiClient.eventSub.deleteAllSubscriptions();
         }
     }
 }
