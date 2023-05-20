@@ -436,12 +436,18 @@ async function get_twitch_access_token(twitch_id: string): Promise<AccessToken |
         const rows = (await db.query(queryString, twitch_id))[0] as unknown;
 
         if(Array.isArray(rows) && rows.length > 0) {
-            const return_token: AccessToken = {
+            //@ts-ignore
+            var return_token: AccessToken = {
                 accessToken: rows[0]['twitch_accessToken'],
                 expiresIn: rows[0]['twitch_expiresIn'],
                 obtainmentTimestamp: rows[0]['twitch_obtainmentTimestamp'],
                 refreshToken: rows[0]['twitch_refreshToken'],
-                scope: rows[0]['twitch_scope'].split(','),
+            }
+
+            if(rows[0]['twitch_scope'] !== null) {
+                return_token.scope = rows[0]['twitch_scope'].split(',')
+            } else {
+                return_token.scope = [];
             }
 
             return return_token;
