@@ -431,7 +431,7 @@ async function store_twitch_data_first_time(unique_id: string, access_token: Acc
 async function get_twitch_access_token(twitch_id: string): Promise<AccessToken | false> {
     if(process.env.MYSQL == 'true') {
         const db = await makeDb();
-        const queryString = "SELECT twitch_accessToken, twitch_refreshToken, twitch_expiresIn, twitch_obtainmentTimestamp, twitch_scope WHERE twitch_id=?";
+        const queryString = "SELECT twitch_accessToken, twitch_refreshToken, twitch_expiresIn, twitch_obtainmentTimestamp, twitch_scope FROM streamers WHERE twitch_id=?";
 
         const rows = (await db.query(queryString, twitch_id))[0] as unknown;
 
