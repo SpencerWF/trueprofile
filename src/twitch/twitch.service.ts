@@ -33,8 +33,7 @@ if(process.env.NODE_ENV == 'development') {
 } else {
     console.log("Using Reverse Proxy Adapter");
     adapter = new ReverseProxyAdapter({
-        hostName: 'dev-creator.com',
-        pathPrefix: 'twitch',
+        hostName: 'twitch.dev-creator.com',
         port: 4004,
         usePathPrefixInHandlers: true
     });
