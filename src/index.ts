@@ -11,6 +11,8 @@ import { auth } from "express-oauth2-jwt-bearer";
 
 import cors from 'cors';
 
+console.log("******************")
+
 if(!process.env.PORT) {
     process.exit(1);
 }
