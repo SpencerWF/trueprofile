@@ -3,7 +3,7 @@
  */
 import { RefreshingAuthProvider, exchangeCode, AccessToken, RefreshConfig } from '@twurple/auth';
 import { ApiClient, HelixPrivilegedUser } from '@twurple/api';
-import { EventSubHttpListener , EnvPortAdapter} from '@twurple/eventsub-http';
+import { EventSubHttpListener , ReverseProxyAdapter} from '@twurple/eventsub-http';
 import { EventSubSubscription } from '@twurple/eventsub-base';
 import { NgrokAdapter } from '@twurple/eventsub-ngrok';
 import { store_twitch_access_token } from '../streamer/streamer.service';
@@ -25,13 +25,14 @@ if(typeof process.env.NGINX_HOSTNAME == 'string') {
     nginx_hostname = process.env.NGINX_HOSTNAME;
 }
 
-var adapter: EnvPortAdapter | NgrokAdapter;
+var adapter: ReverseProxyAdapter | NgrokAdapter;
 
 if(process.env.NODE_ENV == 'development') {
     adapter = new NgrokAdapter();
 } else {
-    adapter = new EnvPortAdapter({
-        hostName: '127.0.0.1',
+    adapter = new ReverseProxyAdapter({
+        hostName: 'dev-creator.com',
+        port: 3000
     });
 }
 
