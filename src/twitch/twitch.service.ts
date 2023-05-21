@@ -28,6 +28,7 @@ if(typeof process.env.NGINX_HOSTNAME == 'string') {
 var adapter: ReverseProxyAdapter | NgrokAdapter;
 
 if(process.env.NODE_ENV == 'development') {
+    console.log("Using Ngrok Adapter");
     adapter = new NgrokAdapter();
 } else {
     console.log("Using Reverse Proxy Adapter");
