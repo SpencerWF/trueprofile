@@ -3,7 +3,7 @@
  */
 import { RefreshingAuthProvider, exchangeCode, AccessToken, RefreshConfig } from '@twurple/auth';
 import { ApiClient, HelixPrivilegedUser } from '@twurple/api';
-import { EventSubHttpListener } from '@twurple/eventsub-http';
+import { EventSubHttpListener , EnvPortAdapter} from '@twurple/eventsub-http';
 import { EventSubSubscription } from '@twurple/eventsub-base';
 import { NgrokAdapter } from '@twurple/eventsub-ngrok';
 import { store_twitch_access_token } from '../streamer/streamer.service';
@@ -18,6 +18,21 @@ if(typeof process.env.TWITCH_CLIENT_ID == 'string' && typeof process.env.TWITCH_
     }
 } else {
     process.exit();
+}
+
+var nginx_hostname: string;
+if(typeof process.env.NGINX_HOSTNAME == 'string') {
+    nginx_hostname = process.env.NGINX_HOSTNAME;
+}
+
+var adapter: EnvPortAdapter | NgrokAdapter;
+
+if(process.env.NODE_ENV == 'development') {
+    adapter = new NgrokAdapter();
+} else {
+    adapter = new EnvPortAdapter({
+        hostName: '127.0.0.1',
+    });
 }
 
 const authProvider: RefreshingAuthProvider = new RefreshingAuthProvider(
