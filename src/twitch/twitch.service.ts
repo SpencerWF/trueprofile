@@ -71,15 +71,6 @@ export const init_listener = async () => {
     await twitch_listener.start();
 }
 
-// export const retrieve_twitch_id = async (twitch_name: string): Promise<string | null> => {
-//     const user_data = await apiClient.users.getUserByName(twitch_name);
-//     if(user_data.id) {
-//         return user_data.id;
-//     }
-
-//     return null;
-// }
-
 export const auth_twitch = async (twitch_code: string): Promise<AccessToken | false> => {
     try {
         if(typeof twitchClientAuth.clientId == 'string' && typeof twitchClientAuth.clientSecret == 'string') {
@@ -194,12 +185,6 @@ export class Twitch_Streamer {
     }
 
     public async setup_live_subscriptions(state_functions: Array<any>) {
-        // if(this.twitch_id == "") {
-        //     await this.retrieve_twitch_id();
-        // }
-        // if(!this.twitch_id) {
-        //     return false;
-        // }
         console.log(`Setting up live subscriptions for ${this.name}`);
         console.log(`Twitch ID is of type ${typeof this.twitch_id}`);
         if(typeof this.twitch_id == 'string' || typeof this.twitch_id == 'number') {
@@ -223,14 +208,11 @@ export class Twitch_Streamer {
             } catch (error) {
                 console.log(`Error: ${error}`);
             }
-
-            console.log(``)
         } else {
             console.log(`No twitch ID for user: ${this._unique_id}`);
         }
-            // }, 1000);
-        // }, 1000);
 
+        console.log(this._onlineSubscription);
     }
 
     public async cancel_live_subscriptions() {
