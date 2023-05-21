@@ -212,7 +212,7 @@ export class Twitch_Streamer {
             console.log(`No twitch ID for user: ${this._unique_id}`);
         }
 
-        console.log(this._onlineSubscription);
+        console.log(this._onlineSubscription?.authUserId);
     }
 
     public async cancel_live_subscriptions() {
