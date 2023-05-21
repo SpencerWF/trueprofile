@@ -211,7 +211,7 @@ export class Twitch_Streamer {
         } else {
             console.log(`No twitch ID for user: ${this._unique_id}`);
         }
-        console.log(`User ID: ${this._onlineSubscription?.authUserId} Sub Scription verified ${this._onlineSubscription?.verified} and test command: ${this._onlineSubscription?.getCliTestCommand()}`);
+        console.log(`User ID: ${this._onlineSubscription?.authUserId} Sub Scription verified ${this._onlineSubscription?.verified} and test command: ${await this._onlineSubscription?.getCliTestCommand()}`);
     }
 
     public async cancel_live_subscriptions() {

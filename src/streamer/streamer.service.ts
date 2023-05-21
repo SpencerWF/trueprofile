@@ -3,7 +3,7 @@
  */
 import { BaseStreamer, Tokens } from "./streamer.interface";
 // import { Streamers } from "./streamers.interface";
-import { Twitch_Streamer, auth_twitch} from "../twitch/twitch.service";
+import { Twitch_Streamer, auth_twitch, init_listener} from "../twitch/twitch.service";
 import * as twitterService from "../twitter/twitter.service";
 import * as canvasService from "../canvas/canvas.service";
 import { AccessToken } from "@twurple/auth/lib";
@@ -301,6 +301,8 @@ export const setup_twitch_events = async () => {
     } finally {
         db.close();
     }
+
+    await init_listener();
 
     console.log("Setup twitch events completed");
 }
