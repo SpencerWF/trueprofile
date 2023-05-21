@@ -73,7 +73,7 @@ const listenerSecret = get_unique_reference_number();
 
 const twitch_listener = new EventSubHttpListener({
     apiClient,
-    adapter: new NgrokAdapter(),
+    adapter: adapter,
     secret: listenerSecret
 });
 // let refreshingAuths = {}
