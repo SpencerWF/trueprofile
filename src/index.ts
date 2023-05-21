@@ -44,22 +44,20 @@ app.get('/api/public', (req: Request, res: Response) => {
 
 app.use('/public', express.static('./public'));
 
-app.use(checkJwt);
+// app.use(checkJwt);
 
-app.get('/api/private', (req: Request, res: Response) => {
+app.get('/api/private', checkJwt, (req: Request, res: Response) => {
     res.json({
         message: "Hello from a private endpoint"
     });
 });
 
-app.use("/api/streamer", streamerRouter);
-app.use("/api/profile", profileRouter);
+app.use("/api/streamer", checkJwt, streamerRouter);
+app.use("/api/profile", checkJwt, profileRouter);
 
-
-
-app.get('/settings-component/', (req: Request, res: Response) => {
-    res.send('Settings Page');
-});
+// app.get('/settings-component/', (req: Request, res: Response) => {
+//     res.send('Settings Page');
+// });
 
 app.get('/*', (req: Request, res: Response) => {
     res.send("General Page");
