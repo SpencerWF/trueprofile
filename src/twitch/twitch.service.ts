@@ -30,6 +30,7 @@ var adapter: ReverseProxyAdapter | NgrokAdapter;
 if(process.env.NODE_ENV == 'development') {
     adapter = new NgrokAdapter();
 } else {
+    console.log("Using Reverse Proxy Adapter");
     adapter = new ReverseProxyAdapter({
         hostName: 'dev-creator.com',
         pathPrefix: 'twitch',
