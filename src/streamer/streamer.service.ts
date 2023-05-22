@@ -274,6 +274,7 @@ export const add_twitch = async (unique_id: string, twitch_code: string) => {
 export const setup_twitch_events = async () => {
     const db = await makeDb();
     const queryString = "SELECT unique_id, twitch_id FROM streamers WHERE status='active'";
+    let subscription_count = 0;
     let reply;
     let streamer_count = 0;
 
@@ -291,9 +292,13 @@ export const setup_twitch_events = async () => {
                     // twitch_streamer.setup_live_subscriptions([streamer_go_live, streamer_go_offline]);
                     const access_token: AccessToken | false = await get_twitch_access_token(reply[index].twitch_id);
                     if(access_token) {
+
                         StreamersList[reply[index].unique_id] = {}
                         StreamersList[reply[index].unique_id]["Twitch_Streamer"] = await new Twitch_Streamer(reply[index].unique_id, {twitch_id: reply[index].twitch_id, accessToken: access_token});
-                        await StreamersList[reply[index].unique_id]["Twitch_Streamer"].setup_live_subscriptions([streamer_go_live, streamer_go_offline]);
+                        const subscription_return = await StreamersList[reply[index].unique_id]["Twitch_Streamer"].setup_live_subscriptions([streamer_go_live, streamer_go_offline]);
+                        if(subscription_return) {
+                            subscription_count += 2;
+                        }
                     }
                 }
             }
@@ -305,8 +310,12 @@ export const setup_twitch_events = async () => {
     }
 
     await init_listener();
-
-    console.log("Setup twitch events completed");
+    const sub_list = await list_twitch_subscriptions();
+    if(sub_list !== false) {
+        return subscription_count == sub_list['total'];
+    } else {
+        return false;
+    }
 }
 
 export const streamer_go_live = async (twitch_id: string) => {

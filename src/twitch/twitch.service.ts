@@ -111,10 +111,11 @@ export const auth_twitch = async (twitch_code: string): Promise<AccessToken | fa
 export const list_twitch_subscriptions = async () => {
     try{
         const twitch_subs = await apiClient.eventSub.getSubscriptions();
-        console.log(twitch_subs);
+        return twitch_subs;
     } catch (e) {
         console.error(e);
     }
+    return false;
 }
 
 export const deleteSubscriptions = async () => {
