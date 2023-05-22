@@ -264,11 +264,11 @@ export class Twitch_Streamer {
         }
     }
 
-    public async deleteSubscriptions() {
-        if(apiClient !== null) {
-            await apiClient.eventSub.deleteAllSubscriptions();
-        }
-    }
+    // public async deleteSubscriptions() {
+    //     if(apiClient !== null) {
+    //         await apiClient.eventSub.deleteAllSubscriptions();
+    //     }
+    // }
 }
 
 /**
