@@ -3,7 +3,7 @@
  */
 import { BaseStreamer, Tokens } from "./streamer.interface";
 // import { Streamers } from "./streamers.interface";
-import { Twitch_Streamer, auth_twitch, init_listener, list_twitch_subscriptions} from "../twitch/twitch.service";
+import { Twitch_Streamer, auth_twitch, deleteSubscriptions, init_listener, list_twitch_subscriptions} from "../twitch/twitch.service";
 import * as twitterService from "../twitter/twitter.service";
 import * as canvasService from "../canvas/canvas.service";
 import { AccessToken } from "@twurple/auth/lib";
@@ -89,6 +89,8 @@ export const find = async (unique_id: string): Promise<BaseStreamer | false> => 
 
 export const setup_tracking = async () => {
     // await deleteSubscriptions
+    await deleteSubscriptions();
+    await list_twitch_subscriptions();
     await setup_twitch_events();
     list_twitch_subscriptions();
 

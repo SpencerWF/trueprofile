@@ -60,8 +60,8 @@ const authProvider: RefreshingAuthProvider = new RefreshingAuthProvider(
 // )
 
 const apiClient = new ApiClient({ authProvider });
-deleteSubscriptions();
-console.log("Deleting subscriptions");
+// deleteSubscriptions();
+// console.log("Deleting subscriptions");
 // const refreshingAuthProvider
 
 var twitch_callback: string;
@@ -115,6 +115,14 @@ export const list_twitch_subscriptions = async () => {
     } catch (e) {
         console.error(e);
     }
+}
+
+export const deleteSubscriptions = async () => {
+    if(apiClient !== null) {
+        await apiClient.eventSub.deleteAllSubscriptions();
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -266,12 +274,6 @@ export class Twitch_Streamer {
 /**
  * Service Functions 
  */
-
-async function deleteSubscriptions() {
-    if(apiClient !== null) {
-        await apiClient.eventSub.deleteAllSubscriptions();
-    }
-}
 
 function make_reference_number(): string {
     let output_string = "";
