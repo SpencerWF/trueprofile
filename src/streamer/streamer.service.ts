@@ -88,11 +88,15 @@ export const find = async (unique_id: string): Promise<BaseStreamer | false> => 
 }
 
 export const setup_tracking = async () => {
-    // await deleteSubscriptions();
-    await list_twitch_subscriptions();
-    await setup_twitch_events();
-    list_twitch_subscriptions();
-
+    const del_result = await deleteSubscriptions();
+    if(del_result) {
+        const sub_result = await setup_twitch_events();
+        if(sub_result) {
+            console.log("Subscription Count matches");
+        } else {
+            console.log("Subscription count does not match");
+        }
+    }
 
 
     // const image_url = await twitterService.get_twitter_profile_picture("3dSpencer");
