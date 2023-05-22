@@ -60,6 +60,9 @@ const authProvider: RefreshingAuthProvider = new RefreshingAuthProvider(
 // )
 
 const apiClient = new ApiClient({ authProvider });
+
+apiClient.eventSub.deleteAllSubscriptions();
+console.log("Deleting subscriptions");
 // const refreshingAuthProvider
 
 var twitch_callback: string;
@@ -163,8 +166,8 @@ export class Twitch_Streamer {
                     await authProvider.addUser(this._twitch_id, this.access_token);
 
                     try {
-                        await this.deleteSubscriptions();
-                        console.log("Deleting Subscriptions");
+                        // await this.deleteSubscriptions();
+                        // console.log("Deleting Subscriptions");
 
                         const data: HelixPrivilegedUser = await apiClient.users.getAuthenticatedUser(this.twitch_id);
 
