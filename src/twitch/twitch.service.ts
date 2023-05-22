@@ -60,8 +60,7 @@ const authProvider: RefreshingAuthProvider = new RefreshingAuthProvider(
 // )
 
 const apiClient = new ApiClient({ authProvider });
-
-apiClient.eventSub.deleteAllSubscriptions();
+deleteSubscriptions();
 console.log("Deleting subscriptions");
 // const refreshingAuthProvider
 
@@ -107,7 +106,16 @@ export const auth_twitch = async (twitch_code: string): Promise<AccessToken | fa
 
     return false;
     //TODO: Store access token in Mysql Database, create twitch streamer
-} 
+}
+
+export const list_twitch_subscriptions = async () => {
+    try{
+        const twitch_subs = await apiClient.eventSub.getSubscriptions();
+        console.log(twitch_subs);
+    } catch (e) {
+        console.error(e);
+    }
+}
 
 /**
  * Streamer Class
@@ -258,6 +266,12 @@ export class Twitch_Streamer {
 /**
  * Service Functions 
  */
+
+async function deleteSubscriptions() {
+    if(apiClient !== null) {
+        await apiClient.eventSub.deleteAllSubscriptions();
+    }
+}
 
 function make_reference_number(): string {
     let output_string = "";
