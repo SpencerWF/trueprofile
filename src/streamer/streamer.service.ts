@@ -310,14 +310,14 @@ export const setup_twitch_events = async () => {
 export const streamer_go_live = async (twitch_id: string) => {
     // Need to react to the streamer going live
     const db = await makeDb();
-    const queryString = "SELECT unique_id, twitter_access_token, twitter_access_token_secret, twitter_name FROM streamers WHERE twitch_id=?"
+    const queryString = "SELECT unique_id, twitter_access_token, twitter_access_token_secret, twitter_name, twitter_id FROM streamers WHERE twitch_id=?"
     let reply;
 
     try {
         reply = (await db.query(queryString, [twitch_id]))[0] as unknown;
 
         if(Array.isArray(reply)) {
-            const image_url: string | null = await twitterService.get_twitter_profile_picture(reply[0].twitter_name);
+            const image_url: string | null = await twitterService.get_twitter_profile_picture(reply[0].twitter_id);
             if(typeof image_url == 'string') {
                 const filename = await canvasService.save_image_from_url(image_url);
                 if(filename !== null) {

@@ -63,9 +63,9 @@ if(typeof process.env.TWITTER_CONSUMER_SECRET == 'string') {
 //     }
 // }
 
-export const get_twitter_profile_picture = async (twitter_name: string) => {
+export const get_twitter_profile_picture = async (twitter_id: string) => {
     // Get data from twitter such as profile picture url
-    const user_data = await get_twitter_data(twitter_name);
+    const user_data = await get_twitter_data_by_id(twitter_id);
     if(user_data) {
         if(user_data.data?.profile_image_url !== undefined) {
             const image_url = user_data.data.profile_image_url.replace("normal", "400x400");
@@ -94,6 +94,25 @@ export const get_twitter_data = async (twitter_name: string) => {
         const user = await twitter_client.users.findUserByUsername(twitter_name, {"user.fields":["profile_image_url"]});
         if(!user) {
             throw new Error("No user with name found");            
+        } else {
+            return user;
+        }
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+}
+
+export const get_twitter_data_by_id = async (twitter_id: string) => {
+    try{
+        var user;
+        if(twitter_id == process.env.TWITTER_ID) {
+            user = await twitter_client.users.findMyUser({"user.fields":["profile_image_url"]});
+        } else {
+            user = await twitter_client.users.findUserById(twitter_id, {"user.fields":["profile_image_url"]});
+        }
+        if(!user) {
+            throw new Error("No user with id found")
         } else {
             return user;
         }
