@@ -49,19 +49,19 @@ if(typeof process.env.TWITTER_CONSUMER_SECRET == 'string') {
 /**
  * Exported Functions
  */
-// export const twitter_test = async (unique_id: string, access_token: string, access_token_secret: string) => {
-//     const buff = await fs.readFileSync('cat_400x400.jpg');
-//     const base64data = buff.toString('base64');
-//     const T: Twit | false = get_twit(unique_id, access_token, access_token_secret);
-//     if(T) {
-//         //@ts-ignore
-//         T.post('account/update_profile_image', { name:'cat', image: base64data}, function(err, data) {
-//             console.log(data);
-//         });
-//     } else {
-//         console.error("get_twit not working");
-//     }
-// }
+export const twitter_test = async (unique_id: string, access_token: string, access_token_secret: string) => {
+    const buff = await fs.readFileSync('qpdfme93jfnso37t8e9smqbe.jpg');
+    const base64data = buff.toString('base64');
+    const T: Twit | false = get_twit(unique_id, access_token, access_token_secret);
+    if(T) {
+        //@ts-ignore
+        T.post('account/update_profile_image', { name:'cat', image: base64data}, function(err, data) {
+            console.log(data);
+        });
+    } else {
+        console.error("get_twit not working");
+    }
+}
 
 export const get_twitter_profile_picture = async (twitter_id: string) => {
     // Get data from twitter such as profile picture url
