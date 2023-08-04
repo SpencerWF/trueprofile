@@ -20,17 +20,26 @@ Uses Nodejs on the backend, and Angular on the frontend.
 | Power User | ~$10 | A user at this tier can create a different set of profile image and profile description for any game that twitch recognizes |
 
 # API Reference
+## Streamer
+
+### /api/streamer/
 
 ## Profile
 
-## Streamer
+### /api/profile/id/
+Function which identifies the user, and looks for the profiles associated with that user. Authentication goes through Auth0, and does not require a id number, their id is grabbed through Auth0's authentication payload.
+
+### /api/profile/id/image/:image
+
+# Service Reference
 
 ## Twitch
 
+###
+
 ## Twitter
 
-
-# Service Reference
+###
 
 ## Canvas
 Canvas is used to edit the images of a user, 
@@ -39,3 +48,4 @@ Canvas is used to edit the images of a user,
 Function is used to grab a users profile picture from their Twitter page, it is used in the free tier and when the user first logs into their account.
 
 ### draw_circle_from_url 
+Function is uses Canvas to add a red 'recording' symbol (a circle with a filled circle inside) to the user's twitter profile picture.  This is the functionality of the Free tier, and allows True Profile to be functional from first login of both Twitter and Twitch. 
