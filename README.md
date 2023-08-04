@@ -26,16 +26,26 @@ Uses Nodejs on the backend, and Angular on the frontend.
 
 ## Profile
 
-### /api/profile/id/
-Function which identifies the user, and looks for the profiles associated with that user. Authentication goes through Auth0, and does not require a id number, their id is grabbed through Auth0's authentication payload.
+### get /api/profile/id/
+API route which identifies the user, and looks for the list of profiles associated with that user. Authentication goes through Auth0, and does not require a id number, their id is grabbed through Auth0's authentication payload.
 
-### /api/profile/id/image/:image
+### get /api/profile/id/image/:image
+Each profile has an associated image, which is the image that a user's Twitter profile image will change to upon going live (and for a power user selecting the correct game for that profile).  This path is to grab that image from the server using the image file name, which is provided in the SQL database.
+
+### post /api/profile/id/profile
+This route is used to create a new profile for the particular user, at the Free and User tiers it is only used when first creating the user, for a Power User it is also used for each new profile that user creates.
+
+### put /api/profile/:streamerid/profile/profile/:profileid
+An API path which was used to add single profile from the database using the streamer id and the profile id, but after the initiation of using Auth0 on True Profile this path stopped being used.
+
+### delete /api/profile/id/profile
+This is the path used to delete a specific user's proifle, primarily used for Power Users when they delete a profile no longer in use. 
 
 # Service Reference
 
 ## Twitch
 
-###
+### 
 
 ## Twitter
 
