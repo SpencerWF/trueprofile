@@ -36,3 +36,5 @@ Canvas is used to edit the images of a user,
 
 ### save_image_from_url
 Function is used to grab a users profile picture from their Twitter page, it is used in the free tier and when the user first logs into their account.
+
+### draw_circle_from_url 
