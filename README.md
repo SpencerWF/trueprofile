@@ -1,4 +1,4 @@
-*This was a project to take the state of a streamer from Twitch.tv and use it to update the Twitter profile of that streamer.*
+*This was a project to take the state of a streamer from Twitch.tv and use it to update the Twitter profile of that streamer.  This project was not completed due to the API changes of Twitter.*
 
 To update a twitter profile picture requried the twitter api path 'https://api.twitter.com/1.1/account/update_profile_image.json'.  Which has been deprecated as of May 2023.
 
