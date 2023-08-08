@@ -43,9 +43,29 @@ This is the path used to delete a specific user's proifle, primarily used for Po
 
 # Service Reference
 
-## Twitch
+## Streamer Class
+An instance of this class is created for each user, then used to control all database communication and hold an associated instance of the Twitch_Streamer class and manage direct the Twitter side communication.
 
-### 
+## Twitch
+The Twitch.tv API functionality is defined in a single folder called 'twitch' which uses the Twitch.tv API library called '[Twurple](https://twurple.js.org/)'.  When the server is first started an automatically refreshing AuthProvider is created which manages all of the direct requests to the Twitch API. 
+
+### init_listener
+This function is used to initialize the listener, specifically for subscribing to events from the Twitch.tv API.
+
+### list_twitch_subscriptions
+During debugging and testing this function is used to get the list of subscriptions to Twitch.tv that have been set up. 
+
+### deleteSubscriptions
+During initial setup all subscriptions to Twitch.tv are deleted, before the appropriate subscriptions are set up.  This is to ensure that no residue subscriptions are using up the available allocated by Twitch.tv.
+
+## Twitch_Streamer Class
+This is a class which is used to manage the twitch side interactions for users, including setting up subscriptions, grabbing the user ID information and the twitch access token. An instance of this class is created for each user in the database which has an appropriate access token.
+
+### retreive_twitch_data 
+When the server is first started a 
+
+###
+
 
 ## Twitter
 
