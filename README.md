@@ -62,10 +62,22 @@ During initial setup all subscriptions to Twitch.tv are deleted, before the appr
 This is a class which is used to manage the twitch side interactions for users, including setting up subscriptions, grabbing the user ID information and the twitch access token. An instance of this class is created for each user in the database which has an appropriate access token.
 
 ### retreive_twitch_data 
-When the server is first started a 
+When the server is first started or a user has just logged into Twitch, giving Twitch access, this function is used to pull all of their needed Twitch data from the Twitch.tv API. It's a purely backend function which is needed for later functionality. 
 
-###
+### store_twitch_access_token
+This function is used to store the twitch access token when a user is going through the Twitch login process.
 
+### setup_live_subscription
+Using the Twitch API requires that one registers with the Twitch API as a 'subscription' to specific events.  This is done by this function, which is run when the server first runs or when a user first provides access to their Twitch.tv account.  For this function to run a user must have given permission and an access token for the user on Twitch, without which the Twitch.tv API subscription count is very limited.
+
+### cancel_live_subscriptions
+Upon first running the server all pre-existing subscriptions on twitch are cancelled, and an appropriate set of subscriptions are set up for each of the users in the database with approproate accounts for the service.
+
+### make_reference_number
+Creates a reference string for Auth0 access.
+
+### get_unique_reference_number
+Uses the 'make_reference_number' function to create and return a reference id for the particular run of the server, should only be done once per run of the server. Once the full system is setup this will be run against an appropriate database to ensure that they are unique.
 
 ## Twitter
 
