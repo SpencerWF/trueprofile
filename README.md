@@ -80,8 +80,28 @@ Creates a reference string for Auth0 access.
 Uses the 'make_reference_number' function to create and return a reference id for the particular run of the server, should only be done once per run of the server. Once the full system is setup this will be run against an appropriate database to ensure that they are unique.
 
 ## Twitter
+The Twitter API is used to authenticate the user when they first login and get access tokens to allow True Profile to change the user's profile picture and display information. For the API calls we use the library '[Twit](https://www.npmjs.com/package/twit). When using this library one needs to create a twitter client for each user, which uses the appropriate access tokens.
 
-###
+### twitter_test
+This is a debugging function used merely to ensure the twit library is functioning correctly.
+
+### get_twitter_profile_picture
+Grabs the user's profile picture, used to replace the picture with an edited version which adds a recording symbol to the profile picture.
+
+### set_profile_picture
+The core value of true profile is the ability to have a changing twitter profile picture to reflect the current real state of a streamer. This function provides that capability, by updating the twitter profile picture through the twitter ['POST update_profile_picture' API path](https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/manage-account-settings/api-reference/post-account-update_profile_image).
+
+### get_twitter_data
+When the server is first started up we need to retreive data about the each user's twitter profile, this is done here. 
+
+### get_twitter_data_by_id
+This function is getting phased out in place of the above 'get_twitter_data' function. 'get_twitter_data_by_id is used to retreive data about the user for storage in the database and live use.
+
+### get_twit
+Returns the twit object for a particular user, if the twit object doesn't exist for this user, it creates one for the user. 
+
+### get_twitter_client
+This function is used to grab the appropriate twitter client for a given user and return it.
 
 ## Canvas
 Canvas is used to edit the images of a user, 
