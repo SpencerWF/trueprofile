@@ -1,5 +1,7 @@
 *This was a project to take the state of a streamer from Twitch.tv and use it to update the Twitter profile of that streamer.  This project was not completed due to the API changes of Twitter.*
 
+![WholeGoLive](https://github.com/SpencerWF/trueprofile_frontend/assets/6613586/9f50f555-bb6d-4a1d-a1a4-18d72b5bc835)
+
 To update a twitter profile picture requried the twitter api path 'https://api.twitter.com/1.1/account/update_profile_image.json'.  Which has been deprecated as of May 2023.
 
 As such this is now just an example project I will refer back to sometimes when needed, all secrets have been removed.
